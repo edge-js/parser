@@ -38,7 +38,6 @@ test.group('Fixtures', () => {
 
       const parser = new Parser(template, tags)
       const output = parser.toString()
-
       assert.equal(output, out)
     })
   })

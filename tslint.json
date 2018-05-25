@@ -5,6 +5,7 @@
       "options": ["single"]
     },
     "semicolon": false,
+    "only-arrow-functions": ["allow-named-functions"],
     "space-before-function-paren": true,
     "no-shadowed-variable": [ false ],
     "ordered-imports": false,

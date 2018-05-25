@@ -24,3 +24,6 @@ indent_style = tab
 
 [*.md]
 trim_trailing_whitespace = false
+
+[fixtures/**/*]
+insert_final_newline = false

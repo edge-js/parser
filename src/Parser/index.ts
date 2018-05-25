@@ -14,6 +14,7 @@ import { generate } from 'astring'
 
 import { IParser } from '../Contracts'
 import EdgeBuffer from '../EdgeBuffer'
+import { getCallExpression } from '../utils'
 import Expressions = require('../Expressions')
 
 export default class Parser implements IParser {
@@ -59,6 +60,14 @@ export default class Parser implements IParser {
     return tokens
   }
 
+  private normalizeJsArg (arg: string): string {
+    return arg.replace(/^\n|\n$/g, '')
+  }
+
+  private isEscaped (type: Contracts.MustacheType): boolean {
+    return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1
+  }
+
   private parse (cb: (any)): void {
     this.tokenizer.parse()
 
@@ -73,11 +82,27 @@ export default class Parser implements IParser {
         return
       }
 
-      if (token.type === 'mustache') {
-        const ast = acorn.parse((token as Contracts.IBlockNode).properties.jsArg)
-        const nodes = ast.body.map((node) => this.parseStatement(node))
-        cb(nodes[0])
+      if (token.properties.name === Contracts.MustacheType.EMUSTACHE) {
+        cb(`\`{{${token.properties.jsArg}}}\``)
+        return
+      }
 
+      if (token.properties.name === Contracts.MustacheType.ESMUSTACHE) {
+        cb(`\`{{{${token.properties.jsArg}}}}\``)
+        return
+      }
+
+      if (token.type === 'mustache') {
+        const props = (token as Contracts.IMustacheNode).properties
+        const ast = acorn.parse(this.normalizeJsArg(props.jsArg))
+        const nodes = ast.body.map((node) => this.parseStatement(node))
+
+        if (props.name === Contracts.MustacheType.SMUSTACHE) {
+          cb(getCallExpression(nodes))
+          return
+        }
+
+        cb(nodes[0])
         return
       }
     })
