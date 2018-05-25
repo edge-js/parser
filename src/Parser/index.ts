@@ -16,7 +16,7 @@ import { IParser } from '../Contracts'
 import EdgeBuffer from '../EdgeBuffer'
 import Expressions = require('../Expressions')
 
-class Parser implements IParser {
+export default class Parser implements IParser {
   private parseInvoked: boolean = false
   private tokenizer: Tokenizer
 
@@ -83,5 +83,3 @@ class Parser implements IParser {
     })
   }
 }
-
-export = Parser

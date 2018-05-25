@@ -1,5 +1,5 @@
 import { IParser } from '../Contracts';
-declare class Parser implements IParser {
+export default class Parser implements IParser {
     private parseInvoked;
     private tokenizer;
     constructor(template: string, tags: any);
@@ -8,4 +8,3 @@ declare class Parser implements IParser {
     toObject(): object[];
     private parse(cb);
 }
-export = Parser;

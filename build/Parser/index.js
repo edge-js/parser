@@ -7,6 +7,7 @@
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
 */
+Object.defineProperty(exports, "__esModule", { value: true });
 const Tokenizer = require("edge-lexer");
 const acorn = require("acorn");
 const astring_1 = require("astring");
@@ -63,4 +64,4 @@ class Parser {
         });
     }
 }
-module.exports = Parser;
+exports.default = Parser;
