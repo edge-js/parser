@@ -7,6 +7,7 @@ export default class EdgeBuffer {
     indent(): void;
     dedent(): void;
     writeLine(text: string): void;
+    writeStatement(text: string): void;
     writeInterpol(text: string): void;
     flush(): string;
     private getSpace();
