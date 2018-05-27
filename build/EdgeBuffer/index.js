@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * @module Parser
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
 /*
 * edge-lexer
 *
@@ -7,7 +11,6 @@
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
 */
-Object.defineProperty(exports, "__esModule", { value: true });
 class EdgeBuffer {
     constructor() {
         this.lines = '';

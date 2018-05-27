@@ -36,8 +36,8 @@ test.group('Fixtures', () => {
       const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
       const out = readFileSync(join(dirBasePath, 'index.js'), 'utf-8')
 
-      const parser = new Parser(template, tags)
-      const output = parser.toString()
+      const parser = new Parser(tags)
+      const output = parser.parseTemplate(template)
       assert.equal(output, out)
     })
   })

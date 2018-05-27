@@ -1,3 +1,7 @@
+/**
+ * @module Parser
+ */
+
 /*
 * edge-parser
 *
@@ -16,27 +20,43 @@ import { IParser } from '../Contracts'
 import EdgeBuffer from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import Expressions = require('../Expressions')
+import { UnAllowedExpressionException } from '../Exceptions'
 
 export default class Parser implements IParser {
   private parseInvoked: boolean = false
-  private tokenizer: Tokenizer
 
-  constructor (template: string, tags) {
-    this.tokenizer = new Tokenizer(template, tags)
+  constructor (public tags: object) {
   }
 
+  /**
+   * Parses a given acorn statement.
+   */
   public parseStatement (statement: any) {
     if (Expressions[statement.type]) {
       return Expressions[statement.type].toStatement(statement, this)
     }
 
-    throw new Error(`${statement.type}: Expression not allowed`)
+    const { type, loc } = statement
+    throw UnAllowedExpressionException.invoke(type, loc.line, loc.col)
   }
 
-  public toString (): string {
+  /**
+   * Converts a given acorn statement node to it's string
+   * representation
+   */
+  public statementToString (statement: any): string {
+    const parsed = this.parseStatement(statement)
+    return generate(parsed)
+  }
+
+  /**
+   * Parses the template string to a function string, which
+   * can be invoked using `new Function` keyword.
+   */
+  public parseTemplate (template: string): string {
     const buffer = new EdgeBuffer()
 
-    this.parse((node) => {
+    this.parse(template, (node) => {
       if (typeof(node) === 'string') {
         buffer.writeLine(node)
         return
@@ -53,56 +73,90 @@ export default class Parser implements IParser {
     return buffer.flush()
   }
 
-  public toObject (): object[] {
-    const tokens = []
-    this.parse((node) => (tokens.push(node)))
-
-    return tokens
-  }
-
+  /**
+   * Normalizes jsArg by removing newlines from starting and end.
+   * It is done to get right line numbers when parsing the
+   * arg.
+   */
   private normalizeJsArg (arg: string): string {
     return arg.replace(/^\n|\n$/g, '')
   }
 
+  /**
+   * Returns a boolean telling if a token type is escaped and
+   * hence not be processed
+   */
   private isEscaped (type: Contracts.MustacheType): boolean {
     return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1
   }
 
-  private parse (cb: (any)): void {
-    this.tokenizer.parse()
+  /**
+   * Parses template into tokens and then each token is processed
+   * with acorn.
+   *
+   * This method will invoke the callback for each token and the
+   * entire process is synchrohous.
+   */
+  private parse (template: string, cb: (any)): void {
+    const tokenizer = new Tokenizer(template, this.tags)
+    tokenizer.parse()
 
-    this.tokenizer.tokens.forEach((token) => {
+    tokenizer.tokens.forEach((token) => {
+      /**
+       * Raw node
+       */
       if (token.type === 'raw') {
         cb(`'${token.value}'`)
         return
       }
 
+      /**
+       * New line node
+       */
       if (token.type === 'newline') {
         cb(`'\\n'`)
         return
       }
 
+      /**
+       * Token is a mustache node, but is escaped
+       */
       if (token.properties.name === Contracts.MustacheType.EMUSTACHE) {
         cb(`\`{{${token.properties.jsArg}}}\``)
         return
       }
 
+      /**
+       * Token is a safe mustache node, but is escaped
+       */
       if (token.properties.name === Contracts.MustacheType.ESMUSTACHE) {
         cb(`\`{{{${token.properties.jsArg}}}}\``)
         return
       }
 
+      /**
+       * Token is a mustache node and must be processed as a Javascript
+       * expression
+       */
       if (token.type === 'mustache') {
         const props = (token as Contracts.IMustacheNode).properties
-        const ast = acorn.parse(this.normalizeJsArg(props.jsArg))
-        const nodes = ast.body.map((node) => this.parseStatement(node))
 
+        const ast = acorn.parse(this.normalizeJsArg(props.jsArg), {
+          locations: true,
+          ecmaVersion: 7,
+        })
+
+        const node = this.parseStatement(ast.body[0])
+
+        /**
+         * If safe node, then wrap it inside a function to disable escaping
+         */
         if (props.name === Contracts.MustacheType.SMUSTACHE) {
-          cb(getCallExpression(nodes))
+          cb(getCallExpression([node], 'safe'))
           return
         }
 
-        cb(nodes[0])
+        cb(node)
         return
       }
     })

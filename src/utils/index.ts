@@ -1,3 +1,7 @@
+/**
+ * @module Parser
+ */
+
 /*
  * edge-parser
  *
@@ -7,7 +11,8 @@
  * file that was distributed with this source code.
 */
 
-function getCallExpression (args: object[]): object {
+/** @hidden */
+function getCallExpression (args: object[], fnName: string): object {
   return {
     type: 'CallExpression',
     callee: {
@@ -18,7 +23,7 @@ function getCallExpression (args: object[]): object {
       },
       property: {
         type: 'Identifier',
-        name: 'safe',
+        name: fnName,
       },
     },
     arguments: args,

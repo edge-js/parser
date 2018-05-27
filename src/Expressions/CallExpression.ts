@@ -1,3 +1,7 @@
+/**
+ * @module Parser
+ */
+
 export default {
   toStatement (statement, parser) {
     if (statement.callee.type !== 'MemberExpression') {

@@ -1,4 +1,8 @@
 "use strict";
+/**
+ * @module Parser
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
 /*
  * edge-parser
  *
@@ -7,8 +11,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
 */
-Object.defineProperty(exports, "__esModule", { value: true });
-function getCallExpression(args) {
+/** @hidden */
+function getCallExpression(args, fnName) {
     return {
         type: 'CallExpression',
         callee: {
@@ -19,7 +23,7 @@ function getCallExpression(args) {
             },
             property: {
                 type: 'Identifier',
-                name: 'safe',
+                name: fnName,
             },
         },
         arguments: args,

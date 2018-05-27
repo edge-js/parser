@@ -1,3 +1,6 @@
+/**
+ * @module Parser
+ */
 export default class EdgeBuffer {
     private lines;
     private indentSpaces;

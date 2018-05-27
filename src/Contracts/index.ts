@@ -1,7 +1,11 @@
+/**
+ * @module Parser
+ */
+
 interface IParser {
   parseStatement<T> (statement: T): T
-  toString (): string
-  toObject (): object[]
+  parseTemplate (template: string): string
+  statementToString (statement: any): string
 }
 
 export { IParser as IParser }

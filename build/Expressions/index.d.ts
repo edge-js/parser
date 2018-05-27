@@ -1,3 +1,6 @@
+/**
+ * @module Parser
+ */
 export { default as Identifier } from './Identifier';
 export { default as MemberExpression } from './MemberExpression';
 export { default as ExpressionStatement } from './ExpressionStatement';
@@ -8,3 +11,7 @@ export { default as TemplateLiteral } from './TemplateLiteral';
 export { default as BinaryExpression } from './BinaryExpression';
 export { default as ArrayExpression } from './ArrayExpression';
 export { default as ObjectExpression } from './ObjectExpression';
+export { default as UnaryExpression } from './UnaryExpression';
+export { default as ConditionalExpression } from './ConditionalExpression';
+export { default as LogicalExpression } from './LogicalExpression';
+export { default as SequenceExpression } from './SequenceExpression';

@@ -1,40 +1,26 @@
 "use strict";
+/**
+ * @module Parser
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("../utils");
+/** @hidden */
 const WHITE_LISTED = ['Object', 'ctx'];
 exports.default = {
+    toObject(statement) {
+        const value = WHITE_LISTED.indexOf(statement.name) > -1 ? statement.name : `\ctx.resolve('${statement.name}')`;
+        return `\{ ${[statement.name]}: ${value} }`;
+    },
     toStatement(statement) {
         if (WHITE_LISTED.indexOf(statement.name) > -1) {
             return statement;
         }
-        return {
-            type: 'CallExpression',
-            start: statement.start,
-            end: statement.end + 13,
-            callee: {
-                type: 'MemberExpression',
-                start: statement.start,
-                end: statement.start + 11,
-                object: {
-                    type: 'Identifier',
-                    start: statement.start,
-                    end: statement.start + 4,
-                    name: 'ctx',
-                },
-                property: {
-                    type: 'Identifier',
-                    start: statement.start + 4,
-                    end: statement.start + 11,
-                    name: 'resolve',
-                },
-                computed: false,
-            },
-            arguments: [
-                Object.assign({}, statement, {
-                    type: 'Literal',
-                    value: statement.name,
-                    raw: `'${statement.name}'`,
-                }),
-            ],
-        };
+        return utils_1.getCallExpression([
+            Object.assign({}, statement, {
+                type: 'Literal',
+                value: statement.name,
+                raw: `'${statement.name}'`,
+            }),
+        ], 'resolve');
     },
 };

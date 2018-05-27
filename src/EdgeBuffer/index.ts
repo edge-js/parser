@@ -1,3 +1,7 @@
+/**
+ * @module Parser
+ */
+
 /*
 * edge-lexer
 *
