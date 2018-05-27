@@ -1,14 +1,9 @@
-import { IParser, ITag } from '../Contracts';
 import EdgeBuffer from '../EdgeBuffer';
-declare class Parser implements IParser {
-    tags: {
-        [key: string]: ITag;
-    };
+declare class Parser {
+    tags: object;
     private parseInvoked;
     private acornArgs;
-    constructor(tags: {
-        [key: string]: ITag;
-    });
+    constructor(tags: object);
     /**
      * Parses a given acorn statement.
      */

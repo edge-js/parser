@@ -16,20 +16,19 @@ import Contracts = require('edge-lexer/build/Contracts')
 import * as acorn from 'acorn'
 import { generate } from 'astring'
 
-import { IParser, ITag } from '../Contracts'
 import EdgeBuffer from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import Expressions = require('../Expressions')
 import { UnAllowedExpressionException } from '../Exceptions'
 
-class Parser implements IParser {
+class Parser {
   private parseInvoked: boolean = false
   private acornArgs: object = {
     locations: true,
     ecmaVersion: 7,
   }
 
-  constructor (public tags: { [key: string]: ITag }) {
+  constructor (public tags: object) {
   }
 
   /**

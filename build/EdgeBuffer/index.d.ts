@@ -1,8 +1,7 @@
 /**
  * @module Parser
  */
-import { IEdgeBuffer } from '../Contracts';
-export default class EdgeBuffer implements IEdgeBuffer {
+export default class EdgeBuffer {
     private lines;
     private indentSpaces;
     indent(): void;
