@@ -66,26 +66,76 @@ class Parser {
      */
     parseTemplate(template) {
         const buffer = new EdgeBuffer_1.default();
-        this.parse(template, (node) => {
-            if (typeof (node) === 'string') {
-                buffer.writeLine(node);
-                return;
-            }
-            if (node.type === 'TemplateLiteral') {
-                buffer.writeLine(astring_1.generate(node));
-                return;
-            }
-            buffer.writeInterpol(astring_1.generate(node));
+        const tokenizer = new Tokenizer(template, this.tags);
+        tokenizer.parse();
+        tokenizer.tokens.forEach((token) => {
+            this.processToken(token, buffer);
         });
         return buffer.flush();
     }
     /**
-     * Normalizes jsArg by removing newlines from starting and end.
-     * It is done to get right line numbers when parsing the
-     * arg.
+     * Process a token and writes the output to the buffer instance
      */
-    normalizeJsArg(arg) {
-        return arg.replace(/^\n|\n$/g, '');
+    processToken(token, buffer) {
+        /**
+         * Raw node
+         */
+        if (token.type === 'raw') {
+            buffer.writeLine(`'${token.value}'`);
+            return;
+        }
+        /**
+         * New line node
+         */
+        if (token.type === 'newline') {
+            buffer.writeLine(`'\\n'`);
+            return;
+        }
+        /**
+         * A block level token (AKA tag)
+         */
+        if (token.type === 'block') {
+            this.tags[token.properties.name].compile(this, buffer, token);
+            return;
+        }
+        const mustacheToken = token;
+        /**
+         * Token is a mustache node, but is escaped
+         */
+        if (mustacheToken.properties.name === Contracts.MustacheType.EMUSTACHE) {
+            buffer.writeLine(`\`{{${mustacheToken.properties.jsArg}}}\``);
+            return;
+        }
+        /**
+         * Token is a safe mustache node, but is escaped
+         */
+        if (mustacheToken.properties.name === Contracts.MustacheType.ESMUSTACHE) {
+            buffer.writeLine(`\`{{{${mustacheToken.properties.jsArg}}}}\``);
+            return;
+        }
+        /**
+         * Token is a mustache node and must be processed as a Javascript
+         * expression
+         */
+        if (mustacheToken.type === 'mustache') {
+            const node = this.parseJsArg(mustacheToken.properties.jsArg, mustacheToken.lineno);
+            /**
+             * If safe node, then wrap it inside a function to disable escaping
+             */
+            if (mustacheToken.properties.name === Contracts.MustacheType.SMUSTACHE) {
+                buffer.writeInterpol(this.statementToString(utils_1.getCallExpression([node], 'safe')));
+                return;
+            }
+            /**
+             * Template literal, so there is no need to wrap it inside another
+             * template string
+             */
+            if (node.type === 'TemplateLiteral') {
+                buffer.writeLine(this.statementToString(node));
+                return;
+            }
+            buffer.writeInterpol(this.statementToString(node));
+        }
     }
     /**
      * Returns a boolean telling if a token type is escaped and
@@ -93,64 +143,6 @@ class Parser {
      */
     isEscaped(type) {
         return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1;
-    }
-    /**
-     * Parses template into tokens and then each token is processed
-     * with acorn.
-     *
-     * This method will invoke the callback for each token and the
-     * entire process is synchrohous.
-     */
-    parse(template, cb) {
-        const tokenizer = new Tokenizer(template, this.tags);
-        tokenizer.parse();
-        tokenizer.tokens.forEach((token) => {
-            /**
-             * Raw node
-             */
-            if (token.type === 'raw') {
-                cb(`'${token.value}'`);
-                return;
-            }
-            /**
-             * New line node
-             */
-            if (token.type === 'newline') {
-                cb(`'\\n'`);
-                return;
-            }
-            /**
-             * Token is a mustache node, but is escaped
-             */
-            if (token.properties.name === Contracts.MustacheType.EMUSTACHE) {
-                cb(`\`{{${token.properties.jsArg}}}\``);
-                return;
-            }
-            /**
-             * Token is a safe mustache node, but is escaped
-             */
-            if (token.properties.name === Contracts.MustacheType.ESMUSTACHE) {
-                cb(`\`{{{${token.properties.jsArg}}}}\``);
-                return;
-            }
-            /**
-             * Token is a mustache node and must be processed as a Javascript
-             * expression
-             */
-            if (token.type === 'mustache') {
-                const props = token.properties;
-                const node = this.parseJsArg(props.jsArg, token.lineno);
-                /**
-                 * If safe node, then wrap it inside a function to disable escaping
-                 */
-                if (props.name === Contracts.MustacheType.SMUSTACHE) {
-                    cb(utils_1.getCallExpression([node], 'safe'));
-                    return;
-                }
-                cb(node);
-                return;
-            }
-        });
     }
 }
 exports.default = Parser;

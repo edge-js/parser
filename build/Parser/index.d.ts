@@ -1,9 +1,14 @@
-import { IParser } from '../Contracts';
+import { IParser, ITag } from '../Contracts';
+import EdgeBuffer from '../EdgeBuffer';
 export default class Parser implements IParser {
-    tags: object;
+    tags: {
+        [key: string]: ITag;
+    };
     private parseInvoked;
     private acornArgs;
-    constructor(tags: object);
+    constructor(tags: {
+        [key: string]: ITag;
+    });
     /**
      * Parses a given acorn statement.
      */
@@ -24,22 +29,12 @@ export default class Parser implements IParser {
      */
     parseTemplate(template: string): string;
     /**
-     * Normalizes jsArg by removing newlines from starting and end.
-     * It is done to get right line numbers when parsing the
-     * arg.
+     * Process a token and writes the output to the buffer instance
      */
-    private normalizeJsArg(arg);
+    processToken(token: any, buffer: EdgeBuffer): void;
     /**
      * Returns a boolean telling if a token type is escaped and
      * hence not be processed
      */
     private isEscaped(type);
-    /**
-     * Parses template into tokens and then each token is processed
-     * with acorn.
-     *
-     * This method will invoke the callback for each token and the
-     * entire process is synchrohous.
-     */
-    private parse(template, cb);
 }

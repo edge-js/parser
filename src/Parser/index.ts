@@ -16,7 +16,7 @@ import Contracts = require('edge-lexer/build/Contracts')
 import * as acorn from 'acorn'
 import { generate } from 'astring'
 
-import { IParser } from '../Contracts'
+import { IParser, ITag } from '../Contracts'
 import EdgeBuffer from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import Expressions = require('../Expressions')
@@ -29,7 +29,7 @@ export default class Parser implements IParser {
     ecmaVersion: 7,
   }
 
-  constructor (public tags: object) {
+  constructor (public tags: { [key: string]: ITag }) {
   }
 
   /**
@@ -73,31 +73,88 @@ export default class Parser implements IParser {
    */
   public parseTemplate (template: string): string {
     const buffer = new EdgeBuffer()
+    const tokenizer = new Tokenizer(template, this.tags)
+    tokenizer.parse()
 
-    this.parse(template, (node) => {
-      if (typeof(node) === 'string') {
-        buffer.writeLine(node)
-        return
-      }
-
-      if (node.type === 'TemplateLiteral') {
-        buffer.writeLine(generate(node))
-        return
-      }
-
-      buffer.writeInterpol(generate(node))
+    tokenizer.tokens.forEach((token) => {
+      this.processToken(token, buffer)
     })
 
     return buffer.flush()
   }
 
   /**
-   * Normalizes jsArg by removing newlines from starting and end.
-   * It is done to get right line numbers when parsing the
-   * arg.
+   * Process a token and writes the output to the buffer instance
    */
-  private normalizeJsArg (arg: string): string {
-    return arg.replace(/^\n|\n$/g, '')
+  public processToken (token, buffer: EdgeBuffer): void {
+    /**
+     * Raw node
+     */
+    if (token.type === 'raw') {
+      buffer.writeLine(`'${token.value}'`)
+      return
+    }
+
+    /**
+     * New line node
+     */
+    if (token.type === 'newline') {
+      buffer.writeLine(`'\\n'`)
+      return
+    }
+
+    /**
+     * A block level token (AKA tag)
+     */
+    if (token.type === 'block') {
+      this.tags[token.properties.name].compile(this, buffer, token as Contracts.IBlockNode)
+      return
+    }
+
+    const mustacheToken = token as Contracts.IMustacheNode
+
+    /**
+     * Token is a mustache node, but is escaped
+     */
+    if (mustacheToken.properties.name === Contracts.MustacheType.EMUSTACHE) {
+      buffer.writeLine(`\`{{${mustacheToken.properties.jsArg}}}\``)
+      return
+    }
+
+    /**
+     * Token is a safe mustache node, but is escaped
+     */
+    if (mustacheToken.properties.name === Contracts.MustacheType.ESMUSTACHE) {
+      buffer.writeLine(`\`{{{${mustacheToken.properties.jsArg}}}}\``)
+      return
+    }
+
+    /**
+     * Token is a mustache node and must be processed as a Javascript
+     * expression
+     */
+    if (mustacheToken.type === 'mustache') {
+      const node = this.parseJsArg(mustacheToken.properties.jsArg, mustacheToken.lineno)
+
+      /**
+       * If safe node, then wrap it inside a function to disable escaping
+       */
+      if (mustacheToken.properties.name === Contracts.MustacheType.SMUSTACHE) {
+        buffer.writeInterpol(this.statementToString(getCallExpression([node], 'safe')))
+        return
+      }
+
+      /**
+       * Template literal, so there is no need to wrap it inside another
+       * template string
+       */
+      if (node.type === 'TemplateLiteral') {
+        buffer.writeLine(this.statementToString(node))
+        return
+      }
+
+      buffer.writeInterpol(this.statementToString(node))
+    }
   }
 
   /**
@@ -106,71 +163,5 @@ export default class Parser implements IParser {
    */
   private isEscaped (type: Contracts.MustacheType): boolean {
     return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1
-  }
-
-  /**
-   * Parses template into tokens and then each token is processed
-   * with acorn.
-   *
-   * This method will invoke the callback for each token and the
-   * entire process is synchrohous.
-   */
-  private parse (template: string, cb: (any)): void {
-    const tokenizer = new Tokenizer(template, this.tags)
-    tokenizer.parse()
-
-    tokenizer.tokens.forEach((token) => {
-      /**
-       * Raw node
-       */
-      if (token.type === 'raw') {
-        cb(`'${token.value}'`)
-        return
-      }
-
-      /**
-       * New line node
-       */
-      if (token.type === 'newline') {
-        cb(`'\\n'`)
-        return
-      }
-
-      /**
-       * Token is a mustache node, but is escaped
-       */
-      if (token.properties.name === Contracts.MustacheType.EMUSTACHE) {
-        cb(`\`{{${token.properties.jsArg}}}\``)
-        return
-      }
-
-      /**
-       * Token is a safe mustache node, but is escaped
-       */
-      if (token.properties.name === Contracts.MustacheType.ESMUSTACHE) {
-        cb(`\`{{{${token.properties.jsArg}}}}\``)
-        return
-      }
-
-      /**
-       * Token is a mustache node and must be processed as a Javascript
-       * expression
-       */
-      if (token.type === 'mustache') {
-        const props = (token as Contracts.IMustacheNode).properties
-        const node = this.parseJsArg(props.jsArg, token.lineno)
-
-        /**
-         * If safe node, then wrap it inside a function to disable escaping
-         */
-        if (props.name === Contracts.MustacheType.SMUSTACHE) {
-          cb(getCallExpression([node], 'safe'))
-          return
-        }
-
-        cb(node)
-        return
-      }
-    })
   }
 }
