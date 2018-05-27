@@ -7,6 +7,7 @@ interface IParser {
     parseStatement(statement: any): any;
     parseTemplate(template: string): string;
     statementToString(statement: any): string;
+    parseJsArg(arg: string, lineno: number): any;
     processToken(token: Contracts.IBlockNode | Contracts.IMustacheNode | Contracts.INode, buffer: EdgeBuffer): void;
 }
 interface ITag {

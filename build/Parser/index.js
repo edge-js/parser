@@ -2,7 +2,6 @@
 /**
  * @module Parser
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 /*
 * edge-parser
 *
@@ -145,4 +144,4 @@ class Parser {
         return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1;
     }
 }
-exports.default = Parser;
+module.exports = Parser;

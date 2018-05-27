@@ -22,7 +22,7 @@ import { getCallExpression } from '../utils'
 import Expressions = require('../Expressions')
 import { UnAllowedExpressionException } from '../Exceptions'
 
-export default class Parser implements IParser {
+class Parser implements IParser {
   private parseInvoked: boolean = false
   private acornArgs: object = {
     locations: true,
@@ -165,3 +165,5 @@ export default class Parser implements IParser {
     return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1
   }
 }
+
+export = Parser

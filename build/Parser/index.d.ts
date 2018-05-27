@@ -1,6 +1,6 @@
 import { IParser, ITag } from '../Contracts';
 import EdgeBuffer from '../EdgeBuffer';
-export default class Parser implements IParser {
+declare class Parser implements IParser {
     tags: {
         [key: string]: ITag;
     };
@@ -38,3 +38,4 @@ export default class Parser implements IParser {
      */
     private isEscaped(type);
 }
+export = Parser;

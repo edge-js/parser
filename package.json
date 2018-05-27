@@ -2,7 +2,7 @@
   "name": "edge-parser",
   "version": "1.0.0",
   "description": "Parser for edge template engine",
-  "main": "index.js",
+  "main": "./build/Parser/index.js",
   "scripts": {
     "pretest": "tsc && npm run lint",
     "test": "japa",
