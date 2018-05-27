@@ -23,6 +23,10 @@ class Parser {
     constructor(tags) {
         this.tags = tags;
         this.parseInvoked = false;
+        this.acornArgs = {
+            locations: true,
+            ecmaVersion: 7,
+        };
     }
     /**
      * Parses a given acorn statement.
@@ -32,15 +36,29 @@ class Parser {
             return Expressions[statement.type].toStatement(statement, this);
         }
         const { type, loc } = statement;
-        throw Exceptions_1.UnAllowedExpressionException.invoke(type, loc.line, loc.col);
+        throw Exceptions_1.UnAllowedExpressionException.invoke(type, loc.start.line, loc.end.column);
     }
     /**
      * Converts a given acorn statement node to it's string
      * representation
      */
     statementToString(statement) {
-        const parsed = this.parseStatement(statement);
-        return astring_1.generate(parsed);
+        return astring_1.generate(statement);
+    }
+    /**
+     * Parses the `jsArg` property of a token and also patches
+     * the lineno in the errors raised by acorn (if any)
+     */
+    parseJsArg(arg, lineno) {
+        try {
+            const ast = acorn.parse(arg, this.acornArgs);
+            return this.parseStatement(ast.body[0]);
+        }
+        catch (error) {
+            error.message = error.message.replace(/\(\d+:\d+\)/, '');
+            error.loc.line = (lineno + error.loc.line) - 1;
+            throw error;
+        }
     }
     /**
      * Parses the template string to a function string, which
@@ -121,11 +139,7 @@ class Parser {
              */
             if (token.type === 'mustache') {
                 const props = token.properties;
-                const ast = acorn.parse(this.normalizeJsArg(props.jsArg), {
-                    locations: true,
-                    ecmaVersion: 7,
-                });
-                const node = this.parseStatement(ast.body[0]);
+                const node = this.parseJsArg(props.jsArg, token.lineno);
                 /**
                  * If safe node, then wrap it inside a function to disable escaping
                  */

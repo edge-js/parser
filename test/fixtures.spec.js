@@ -21,7 +21,7 @@ const tags = {
   }
 }
 
-const Parser = require('../build/Parser').default
+const Parser = require('..')
 const basePath = join(__dirname, '../fixtures')
 
 test.group('Fixtures', () => {

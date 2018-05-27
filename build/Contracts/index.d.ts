@@ -2,7 +2,7 @@
  * @module Parser
  */
 interface IParser {
-    parseStatement<T>(statement: T): T;
+    parseStatement(statement: any): any;
     parseTemplate(template: string): string;
     statementToString(statement: any): string;
 }

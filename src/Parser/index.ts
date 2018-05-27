@@ -24,6 +24,10 @@ import { UnAllowedExpressionException } from '../Exceptions'
 
 export default class Parser implements IParser {
   private parseInvoked: boolean = false
+  private acornArgs: object = {
+    locations: true,
+    ecmaVersion: 7,
+  }
 
   constructor (public tags: object) {
   }
@@ -31,13 +35,13 @@ export default class Parser implements IParser {
   /**
    * Parses a given acorn statement.
    */
-  public parseStatement (statement: any) {
+  public parseStatement (statement: any): any {
     if (Expressions[statement.type]) {
       return Expressions[statement.type].toStatement(statement, this)
     }
 
     const { type, loc } = statement
-    throw UnAllowedExpressionException.invoke(type, loc.line, loc.col)
+    throw UnAllowedExpressionException.invoke(type, loc.start.line, loc.end.column)
   }
 
   /**
@@ -45,8 +49,22 @@ export default class Parser implements IParser {
    * representation
    */
   public statementToString (statement: any): string {
-    const parsed = this.parseStatement(statement)
-    return generate(parsed)
+    return generate(statement)
+  }
+
+  /**
+   * Parses the `jsArg` property of a token and also patches
+   * the lineno in the errors raised by acorn (if any)
+   */
+  public parseJsArg (arg: string, lineno: number): any {
+    try {
+      const ast = acorn.parse(arg, this.acornArgs)
+      return this.parseStatement(ast.body[0])
+    } catch (error) {
+      error.message = error.message.replace(/\(\d+:\d+\)/, '')
+      error.loc.line = (lineno + error.loc.line) - 1
+      throw error
+    }
   }
 
   /**
@@ -140,13 +158,7 @@ export default class Parser implements IParser {
        */
       if (token.type === 'mustache') {
         const props = (token as Contracts.IMustacheNode).properties
-
-        const ast = acorn.parse(this.normalizeJsArg(props.jsArg), {
-          locations: true,
-          ecmaVersion: 7,
-        })
-
-        const node = this.parseStatement(ast.body[0])
+        const node = this.parseJsArg(props.jsArg, token.lineno)
 
         /**
          * If safe node, then wrap it inside a function to disable escaping

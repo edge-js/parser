@@ -2,6 +2,7 @@ import { IParser } from '../Contracts';
 export default class Parser implements IParser {
     tags: object;
     private parseInvoked;
+    private acornArgs;
     constructor(tags: object);
     /**
      * Parses a given acorn statement.
@@ -12,6 +13,11 @@ export default class Parser implements IParser {
      * representation
      */
     statementToString(statement: any): string;
+    /**
+     * Parses the `jsArg` property of a token and also patches
+     * the lineno in the errors raised by acorn (if any)
+     */
+    parseJsArg(arg: string, lineno: number): any;
     /**
      * Parses the template string to a function string, which
      * can be invoked using `new Function` keyword.
