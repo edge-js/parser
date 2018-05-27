@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Parser for edge template engine",
   "main": "./build/Parser/index.js",
+  "types": "./build/Parser/index.d.ts",
   "scripts": {
     "pretest": "tsc && npm run lint",
     "test": "japa",
