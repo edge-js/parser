@@ -19,12 +19,18 @@ interface ITagInstance {
 }
 
 interface ITag {
-  block: boolean
-  seekable: boolean
-  name: string
-  new(): ITagInstance
+  new( ): ITagInstance
+}
+
+interface IEdgeBuffer {
+  indent (): void
+  dedent (): void
+  writeLine (text: string): void
+  writeInterpol (text: string): void
+  flush (): string
 }
 
 export { IParser as IParser }
 export { ITag as ITag }
 export { ITagInstance as ITagInstance }
+export { IEdgeBuffer as IEdgeBuffer }

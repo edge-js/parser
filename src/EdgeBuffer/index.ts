@@ -11,7 +11,9 @@
 * file that was distributed with this source code.
 */
 
-export default class EdgeBuffer {
+import { IEdgeBuffer } from '../Contracts'
+
+export default class EdgeBuffer implements IEdgeBuffer {
   private lines: string = ''
   private indentSpaces: number = 2
 
