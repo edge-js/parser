@@ -94,7 +94,8 @@ class Parser {
          * A block level token (AKA tag)
          */
         if (token.type === 'block') {
-            this.tags[token.properties.name].compile(this, buffer, token);
+            const tagInstance = new this.tags[token.properties.name]();
+            tagInstance.compile(this, buffer, token);
             return;
         }
         const mustacheToken = token;

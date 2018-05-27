@@ -10,12 +10,16 @@ interface IParser {
     parseJsArg(arg: string, lineno: number): any;
     processToken(token: Contracts.IBlockNode | Contracts.IMustacheNode | Contracts.INode, buffer: EdgeBuffer): void;
 }
-interface ITag {
-    block: boolean;
-    seekable: boolean;
-    name: boolean;
+interface ITagInstance {
     compile(parser: IParser, buffer: EdgeBuffer, token: Contracts.IBlockNode): void;
     run(): any;
 }
+interface ITag {
+    block: boolean;
+    seekable: boolean;
+    name: string;
+    new (): ITagInstance;
+}
 export { IParser as IParser };
 export { ITag as ITag };
+export { ITagInstance as ITagInstance };

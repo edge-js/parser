@@ -107,7 +107,8 @@ class Parser implements IParser {
      * A block level token (AKA tag)
      */
     if (token.type === 'block') {
-      this.tags[token.properties.name].compile(this, buffer, token as Contracts.IBlockNode)
+      const tagInstance = new this.tags[token.properties.name]()
+      tagInstance.compile(this, buffer, token as Contracts.IBlockNode)
       return
     }
 

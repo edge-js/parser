@@ -82,6 +82,12 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported"><a href="parser.itag.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="parser.itag.html#block" class="tsd-kind-icon">block</a></li>
@@ -89,14 +95,27 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="parser.itag.html#seekable" class="tsd-kind-icon">seekable</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported"><a href="parser.itag.html#compile" class="tsd-kind-icon">compile</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported"><a href="parser.itag.html#run" class="tsd-kind-icon">run</a></li>
-							</ul>
-						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">new ITag<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="parser.itaginstance.html" class="tsd-signature-type">ITagInstance</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/4888736/src/Contracts/index.ts#L24">Contracts/index.ts:24</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="parser.itaginstance.html" class="tsd-signature-type">ITagInstance</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
@@ -107,17 +126,17 @@
 					<div class="tsd-signature tsd-kind-icon">block<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/90396cd/src/Contracts/index.ts#L17">Contracts/index.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/4888736/src/Contracts/index.ts#L22">Contracts/index.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 					<a name="name" class="tsd-anchor"></a>
 					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/90396cd/src/Contracts/index.ts#L19">Contracts/index.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/4888736/src/Contracts/index.ts#L24">Contracts/index.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -127,58 +146,9 @@
 					<div class="tsd-signature tsd-kind-icon">seekable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/90396cd/src/Contracts/index.ts#L18">Contracts/index.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/4888736/src/Contracts/index.ts#L23">Contracts/index.ts:23</a></li>
 						</ul>
 					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="compile" class="tsd-anchor"></a>
-					<h3>compile</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>parser<span class="tsd-signature-symbol">: </span><a href="parser.iparser.html" class="tsd-signature-type">IParser</a>, buffer<span class="tsd-signature-symbol">: </span><a href="../classes/parser.edgebuffer.html" class="tsd-signature-type">EdgeBuffer</a>, token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IBlockNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/90396cd/src/Contracts/index.ts#L20">Contracts/index.ts:20</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>parser: <a href="parser.iparser.html" class="tsd-signature-type">IParser</a></h5>
-								</li>
-								<li>
-									<h5>buffer: <a href="../classes/parser.edgebuffer.html" class="tsd-signature-type">EdgeBuffer</a></h5>
-								</li>
-								<li>
-									<h5>token: <span class="tsd-signature-type">IBlockNode</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="run" class="tsd-anchor"></a>
-					<h3>run</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/poppinss/edge-parser/blob/90396cd/src/Contracts/index.ts#L21">Contracts/index.ts:21</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-						</li>
-					</ul>
 				</section>
 			</section>
 		</div>
@@ -212,6 +182,9 @@
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="parser.itag.html" class="tsd-kind-icon">ITag</a>
 						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="parser.itag.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 								<a href="parser.itag.html#block" class="tsd-kind-icon">block</a>
 							</li>
@@ -221,16 +194,13 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 								<a href="parser.itag.html#seekable" class="tsd-kind-icon">seekable</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="parser.itag.html#compile" class="tsd-kind-icon">compile</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="parser.itag.html#run" class="tsd-kind-icon">run</a>
-							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="parser.itaginstance.html" class="tsd-kind-icon">ITag<wbr>Instance</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
