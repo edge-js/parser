@@ -29,6 +29,7 @@
     "husky": "^1.0.0-rc.8",
     "japa": "^1.0.6",
     "japa-cli": "^1.0.1",
+    "pkg-ok": "^2.2.0",
     "tslint": "^5.10.0",
     "typedoc": "^0.11.1",
     "typedoc-plugin-external-module-name": "^1.1.1",
@@ -36,7 +37,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build",
+      "pre-commit": "npm run build && pkg-ok && git add .",
       "pre-push": "npm run test"
     }
   }
