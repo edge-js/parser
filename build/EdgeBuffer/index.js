@@ -26,7 +26,7 @@ class EdgeBuffer {
         this.lines += `\n${this.getSpace()}out += ${text}`;
     }
     writeStatement(text) {
-        this.lines += text;
+        this.lines += `\n${this.getSpace()}${text}`;
     }
     writeInterpol(text) {
         this.lines += `\n${this.getSpace()}out += \`\${${text}}\``;

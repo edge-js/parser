@@ -28,7 +28,7 @@ export default class EdgeBuffer {
   }
 
   public writeStatement (text: string): void {
-    this.lines += text
+    this.lines += `\n${this.getSpace()}${text}`
   }
 
   public writeInterpol (text: string): void {
