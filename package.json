@@ -26,11 +26,18 @@
   "devDependencies": {
     "@types/node": "^10.1.2",
     "dedent": "^0.7.0",
+    "husky": "^1.0.0-rc.8",
     "japa": "^1.0.6",
     "japa-cli": "^1.0.1",
     "tslint": "^5.10.0",
     "typedoc": "^0.11.1",
     "typedoc-plugin-external-module-name": "^1.1.1",
     "typescript": "^2.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build",
+      "pre-push": "npm run test"
+    }
   }
 }
