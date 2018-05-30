@@ -1,14 +1,6 @@
 {
-  "extends": "./node_modules/tslint/lib/configs/recommended",
-  "rules": {
-    "quotemark": {
-      "options": ["single"]
-    },
-    "semicolon": false,
-    "only-arrow-functions": ["allow-named-functions"],
-    "space-before-function-paren": true,
-    "no-shadowed-variable": [ false ],
-    "ordered-imports": false,
-    "object-literal-sort-keys": false
-  }
+  "extends": [
+    "adonis-ts-arche/_tslint"
+  ],
+  "rules": {}
 }

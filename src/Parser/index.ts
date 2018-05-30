@@ -22,7 +22,6 @@ import Expressions = require('../Expressions')
 import { UnAllowedExpressionException } from '../Exceptions'
 
 class Parser {
-  private parseInvoked: boolean = false
   private acornArgs: object = {
     locations: true,
     ecmaVersion: 7,
@@ -155,14 +154,6 @@ class Parser {
 
       buffer.writeInterpol(this.statementToString(node))
     }
-  }
-
-  /**
-   * Returns a boolean telling if a token type is escaped and
-   * hence not be processed
-   */
-  private isEscaped (type: Contracts.MustacheType): boolean {
-    return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1
   }
 }
 

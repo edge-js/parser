@@ -1,18 +1,3 @@
 {
-  "compilerOptions": {
-    "target": "ES2016",
-    "module": "commonjs",
-    "declaration": true,
-    "moduleResolution": "node",
-    "outDir": "./build",
-    "rootDir": "./src",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules/*",
-    "test/**"
-  ]
+  "extends": "./node_modules/adonis-ts-arche/_tsconfig"
 }

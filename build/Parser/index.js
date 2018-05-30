@@ -21,7 +21,6 @@ const Exceptions_1 = require("../Exceptions");
 class Parser {
     constructor(tags) {
         this.tags = tags;
-        this.parseInvoked = false;
         this.acornArgs = {
             locations: true,
             ecmaVersion: 7,
@@ -136,13 +135,6 @@ class Parser {
             }
             buffer.writeInterpol(this.statementToString(node));
         }
-    }
-    /**
-     * Returns a boolean telling if a token type is escaped and
-     * hence not be processed
-     */
-    isEscaped(type) {
-        return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1;
     }
 }
 module.exports = Parser;

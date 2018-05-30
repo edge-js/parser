@@ -1,7 +1,6 @@
 import EdgeBuffer from '../EdgeBuffer';
 declare class Parser {
     tags: object;
-    private parseInvoked;
     private acornArgs;
     constructor(tags: object);
     /**
@@ -27,10 +26,5 @@ declare class Parser {
      * Process a token and writes the output to the buffer instance
      */
     processToken(token: any, buffer: EdgeBuffer): void;
-    /**
-     * Returns a boolean telling if a token type is escaped and
-     * hence not be processed
-     */
-    private isEscaped(type);
 }
 export = Parser;

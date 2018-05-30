@@ -5,10 +5,9 @@
   "main": "./build/Parser/index.js",
   "types": "./build/Parser/index.d.ts",
   "scripts": {
-    "pretest": "tsc && npm run lint",
-    "test": "japa",
-    "lint": "tslint --project tslint.json",
-    "build": "tsc && typedoc --out docs"
+    "test": "builder run npm:test",
+    "lint": "builder run npm:lint",
+    "build": "builder run npm:build"
   },
   "keywords": [
     "edge",
@@ -24,21 +23,10 @@
     "node-exceptions": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^10.1.2",
+    "adonis-ts-arche": "^1.0.6",
+    "builder": "^4.0.0",
     "dedent": "^0.7.0",
     "husky": "^1.0.0-rc.8",
-    "japa": "^1.0.6",
-    "japa-cli": "^1.0.1",
-    "pkg-ok": "^2.2.0",
-    "tslint": "^5.10.0",
-    "typedoc": "^0.11.1",
-    "typedoc-plugin-external-module-name": "^1.1.1",
-    "typescript": "^2.8.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run build && pkg-ok && git add .",
-      "pre-push": "npm run test"
-    }
+    "pkg-ok": "^2.2.0"
   }
 }
