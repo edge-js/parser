@@ -64,23 +64,76 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h2 id="expressions-allowed">Expressions Allowed</h2>
-				<p>The following is the list of allowed expressions. Anything unlisted here is not supported.</p>
-				<ul>
-					<li>[x] Identifier</li>
-					<li>[x] Literal</li>
-					<li>[x] ArrayExpression</li>
-					<li>[x] ObjectExpression</li>
-					<li>[x] UnaryExpression</li>
-					<li>[x] BinaryExpression</li>
-					<li>[x] LogicalExpression</li>
-					<li>[x] MemberExpression</li>
-					<li>[x] ConditionalExpression</li>
-					<li>[x] CallExpression</li>
-					<li>[ ] SequenceExpression</li>
-					<li>[x] TemplateLiteral</li>
-					<li>[x] ArrowFunctionExpression</li>
-				</ul>
+				<h1 id="edge-parser">Edge Parser</h1>
+				<p>This repo is the <strong>parser to convert edge templates</strong> inside a self invoked Javascript function. Later you can invoke this function by providing a context.</p>
+				<p>Example:</p>
+				<p><strong>Input</strong></p>
+				<pre><code>Hello {{ username }}
+</code></pre><p><strong>Output</strong></p>
+				<pre><code>(<span class="hljs-name">function</span> (<span class="hljs-name">ctx</span>) {
+  let out = ''
+  out += <span class="hljs-symbol">'Hello</span> '
+  out += `${ctx.escape(<span class="hljs-name">ctx.resolve</span>(<span class="hljs-symbol">'username</span>'))}`
+  out += '\n'
+  return out
+})(<span class="hljs-name">ctx</span>)
+</code></pre><p>Notice of use of <code>ctx</code> in the function body. Parser doesn&#39;t provide the implementation of <code>ctx</code>, the runtime of template engine should provide it.</p>
+				<h2 id="supported-expressions">Supported Expressions</h2>
+				<p>The following expressions are supported by the parser.</p>
+				<h4 id="identifier">Identifier</h4>
+				<p>The identifier is wrapped inside <code>ctx.resolve</code>. The <code>resolve</code> method job is to resolve the value.</p>
+				<p>In following statement <code>username</code> is the identifier</p>
+				<pre><code>Hello {{ username }}
+</code></pre><h4 id="literal">Literal</h4>
+				<p>A string literal</p>
+				<pre><code>Hello {{ <span class="hljs-string">'Guest'</span> }}
+</code></pre><h4 id="arrayexpression">ArrayExpression</h4>
+				<p>The <code>[1, 2, 3, 4]</code> is an array expression.</p>
+				<pre><code>Evens are {{
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>].filter((num) =&gt; num % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>)
+}}
+</code></pre><h4 id="objectexpression">ObjectExpression</h4>
+				<p>The <code>{ username: &#39;virk&#39; }</code> is an Object expression</p>
+				<pre><code>{{ toJSON({ username: &#39;virk&#39; })  }}
+</code></pre><h4 id="unaryexpression">UnaryExpression</h4>
+				<p>Following are examples of <code>UnaryExpression</code>.</p>
+				<pre><code>{{ typeof(<span class="hljs-name">username</span>) }}
+
+{{ !!username }} 
+</code></pre><h4 id="binaryexpression">BinaryExpression</h4>
+				<p>Here <code>{{ 2 + 2 }}</code> is the binary expression</p>
+				<pre><code>{{ <span class="hljs-number">2</span> + <span class="hljs-number">2</span> }} = <span class="hljs-number">4</span>
+</code></pre><h4 id="logicalexpression">LogicalExpression</h4>
+				<p>Following is the example of <code>LogicalExpression</code>.</p>
+				<pre><code>{{ username || admin.username }}
+</code></pre><h4 id="memberexpression">MemberExpression</h4>
+				<pre><code>{{ username.toUpperCase() }}
+</code></pre><h4 id="conditionalexpression">ConditionalExpression</h4>
+				<pre><code>{{ username ? username : <span class="hljs-string">'Guest'</span> }}
+</code></pre><h4 id="callexpression">CallExpression</h4>
+				<pre><code>{{ upper(<span class="hljs-name">username</span>) }}
+</code></pre><h4 id="sequenceexpression">SequenceExpression</h4>
+				<p>Sequence is not supported in mustache blocks and instead used inside tags. For example:</p>
+				<p>Everything inside <code>()</code> is a sequence expression.</p>
+				<pre><code><span class="hljs-meta">@component</span>(<span class="hljs-symbol">'butto</span>n', text = <span class="hljs-symbol">'Submi</span>t', <span class="hljs-class"><span class="hljs-keyword">type</span> </span>= <span class="hljs-symbol">'Primar</span>y')
+</code></pre><h4 id="templateliteral">TemplateLiteral</h4>
+				<pre><code>{{ Hello `${username}` }}
+</code></pre><h4 id="arrowfunctionexpression">ArrowFunctionExpression</h4>
+				<pre><code>{{
+  users.map((<span class="hljs-name">user</span>) =&gt; {
+    return user.username
+  })
+}}
+</code></pre><h2 id="context-expectations">Context expectations</h2>
+				<p>Context must have following methods to work with the core parser.</p>
+				<pre><code class="lang-ts"><span class="hljs-keyword">class</span> Context {
+  <span class="hljs-comment">// Resolve value for a key</span>
+  resolve(key: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">any</span>
+
+  <span class="hljs-comment">// make input HTML safe</span>
+  <span class="hljs-built_in">escape</span> (input: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span>
+}
+</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
