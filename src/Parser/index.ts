@@ -136,10 +136,10 @@ class Parser {
       const node = this.parseJsArg(mustacheToken.properties.jsArg, mustacheToken.lineno)
 
       /**
-       * If safe node, then wrap it inside a function to disable escaping
+       * If not safe mustache node, then wrap it inside `escape` call
        */
-      if (mustacheToken.properties.name === Contracts.MustacheType.SMUSTACHE) {
-        buffer.writeInterpol(this.statementToString(getCallExpression([node], 'safe')))
+      if (mustacheToken.properties.name === Contracts.MustacheType.MUSTACHE) {
+        buffer.writeInterpol(this.statementToString(getCallExpression([node], 'escape')))
         return
       }
 

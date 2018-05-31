@@ -1,8 +1,8 @@
 (function (ctx) {
   let out = ''
-  out += `${Object.keys({
+  out += `${ctx.escape(Object.keys({
   username: ctx.resolve('user').username
-}).join(',')}`
+}).join(','))}`
   out += '\n'
   return out
 })(ctx)
