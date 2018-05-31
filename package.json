@@ -19,7 +19,7 @@
   "dependencies": {
     "acorn": "^5.5.3",
     "astring": "^1.3.0",
-    "edge-lexer": "git+https://github.com/poppinss/edge-lexer.git#develop",
+    "edge-lexer": "^1.0.0",
     "node-exceptions": "^3.0.0"
   },
   "devDependencies": {
