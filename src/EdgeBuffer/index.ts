@@ -31,6 +31,14 @@ class EdgeBuffer {
   }
 
   /**
+   * Writes raw text to the output
+   */
+  public writeRaw (text: string): void {
+    text = text.replace(/[']/g, '\\\'')
+    this.lines += `\n${this.getSpace()}out += '${text}'`
+  }
+
+  /**
    * Write a new line to the output
    */
   public writeLine (text: string): void {

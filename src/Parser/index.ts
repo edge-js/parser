@@ -89,7 +89,7 @@ class Parser {
      * Raw node
      */
     if (token.type === 'raw') {
-      buffer.writeLine(`'${token.value}'`)
+      buffer.writeRaw(token.value)
       return
     }
 
@@ -97,7 +97,7 @@ class Parser {
      * New line node
      */
     if (token.type === 'newline') {
-      buffer.writeLine(`'\\n'`)
+      buffer.writeRaw(`\\n`)
       return
     }
 

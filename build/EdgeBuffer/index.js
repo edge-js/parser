@@ -29,6 +29,13 @@ class EdgeBuffer {
         this.indentSpaces -= 2;
     }
     /**
+     * Writes raw text to the output
+     */
+    writeRaw(text) {
+        text = text.replace(/[']/g, '\\\'');
+        this.lines += `\n${this.getSpace()}out += '${text}'`;
+    }
+    /**
      * Write a new line to the output
      */
     writeLine(text) {
