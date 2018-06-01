@@ -57,11 +57,11 @@ class EdgeBuffer {
    * invoked function.
    */
   public flush () {
-    let returnValue = '(function (ctx) {'
+    let returnValue = '(function (template, ctx) {'
     returnValue += `\n  let out = ''`
     returnValue += `${this.lines}`
     returnValue += '\n  return out'
-    returnValue += '\n})(ctx)'
+    returnValue += '\n})(template, ctx)'
 
     /**
      * Reset internal props.
