@@ -16,7 +16,7 @@ import Contracts = require('edge-lexer/build/Contracts')
 import * as acorn from 'acorn'
 import { generate } from 'astring'
 
-import EdgeBuffer from '../EdgeBuffer'
+import EdgeBuffer = require('../EdgeBuffer')
 import { getCallExpression } from '../utils'
 import Expressions = require('../Expressions')
 import { UnAllowedExpressionException } from '../Exceptions'

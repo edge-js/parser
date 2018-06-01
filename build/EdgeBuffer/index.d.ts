@@ -1,7 +1,7 @@
 /**
  * @module Parser
  */
-export default class EdgeBuffer {
+declare class EdgeBuffer {
     private lines;
     private indentSpaces;
     /**
@@ -37,3 +37,4 @@ export default class EdgeBuffer {
      */
     private getSpace();
 }
+export = EdgeBuffer;

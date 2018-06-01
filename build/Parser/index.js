@@ -14,7 +14,7 @@ const Tokenizer = require("edge-lexer");
 const Contracts = require("edge-lexer/build/Contracts");
 const acorn = require("acorn");
 const astring_1 = require("astring");
-const EdgeBuffer_1 = require("../EdgeBuffer");
+const EdgeBuffer = require("../EdgeBuffer");
 const utils_1 = require("../utils");
 const Expressions = require("../Expressions");
 const Exceptions_1 = require("../Exceptions");
@@ -63,7 +63,7 @@ class Parser {
      * can be invoked using `new Function` keyword.
      */
     parseTemplate(template) {
-        const buffer = new EdgeBuffer_1.default();
+        const buffer = new EdgeBuffer();
         const tokenizer = new Tokenizer(template, this.tags);
         tokenizer.parse();
         tokenizer.tokens.forEach((token) => {

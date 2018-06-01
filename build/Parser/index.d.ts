@@ -1,4 +1,4 @@
-import EdgeBuffer from '../EdgeBuffer';
+import EdgeBuffer = require('../EdgeBuffer');
 declare class Parser {
     tags: object;
     private acornArgs;

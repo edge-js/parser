@@ -2,7 +2,6 @@
 /**
  * @module Parser
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 /*
 * edge-lexer
 *
@@ -77,4 +76,4 @@ class EdgeBuffer {
         return spaces;
     }
 }
-exports.default = EdgeBuffer;
+module.exports = EdgeBuffer;
