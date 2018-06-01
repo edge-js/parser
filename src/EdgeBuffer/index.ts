@@ -11,7 +11,7 @@
 * file that was distributed with this source code.
 */
 
-export default class EdgeBuffer {
+class EdgeBuffer {
   private lines: string = ''
   private indentSpaces: number = 2
 
@@ -84,3 +84,5 @@ export default class EdgeBuffer {
     return spaces
   }
 }
+
+export = EdgeBuffer

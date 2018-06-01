@@ -1,6 +1,6 @@
 {
   "name": "edge-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Parser for edge template engine",
   "main": "./build/Parser/index.js",
   "types": "./build/Parser/index.d.ts",
@@ -9,6 +9,12 @@
     "lint": "builder run npm:lint",
     "build": "builder run npm:build"
   },
+  "files": [
+    "build",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE.md"
+  ],
   "keywords": [
     "edge",
     "template",
