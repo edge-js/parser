@@ -1,4 +1,4 @@
-(function (ctx) {
+(function (template, ctx) {
   let out = ''
   out += 'Your friends are '
   out += `${ctx.escape(ctx.resolve('users').map(user => {
@@ -6,4 +6,4 @@
 }))}`
   out += '\n'
   return out
-})(ctx)
+})(template, ctx)

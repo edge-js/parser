@@ -1,7 +1,6 @@
 (function (template, ctx) {
   let out = ''
-  out += 'Hello '
-  out += `${ctx.escape(ctx.resolve('username').toUpperCase())}`
+  out += `${ctx.escape(ctx.resolve('first') + ' ' + ctx.resolve('last'))}`
   out += '\n'
   return out
 })(template, ctx)

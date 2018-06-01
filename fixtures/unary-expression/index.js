@@ -1,7 +1,7 @@
-(function (ctx) {
+(function (template, ctx) {
   let out = ''
   out += 'Inspect '
   out += `${ctx.escape(typeof ctx.resolve('username'))}`
   out += '\n'
   return out
-})(ctx)
+})(template, ctx)

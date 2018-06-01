@@ -1,7 +1,7 @@
-(function (ctx) {
+(function (template, ctx) {
   let out = ''
   out += 'Hello '
   out += `${ctx.resolve('greeting')}`
   out += '\n'
   return out
-})(ctx)
+})(template, ctx)

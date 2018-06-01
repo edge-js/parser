@@ -1,4 +1,4 @@
-(function (ctx) {
+(function (template, ctx) {
   let out = ''
   out += 'Hello '
   out += `{{
@@ -8,4 +8,4 @@
 }}`
   out += '\n'
   return out
-})(ctx)
+})(template, ctx)

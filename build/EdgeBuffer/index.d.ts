@@ -14,6 +14,10 @@ declare class EdgeBuffer {
      */
     dedent(): void;
     /**
+     * Writes raw text to the output
+     */
+    writeRaw(text: string): void;
+    /**
      * Write a new line to the output
      */
     writeLine(text: string): void;

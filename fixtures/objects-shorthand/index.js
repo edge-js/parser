@@ -1,4 +1,4 @@
-(function (ctx) {
+(function (template, ctx) {
   let out = ''
   out += `${ctx.escape(ctx.resolve('toJSON')(ctx, {
   [ctx.resolve('username')]: ctx.resolve('username'),
@@ -6,4 +6,4 @@
 }))}`
   out += '\n'
   return out
-})(ctx)
+})(template, ctx)

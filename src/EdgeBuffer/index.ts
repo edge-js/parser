@@ -31,6 +31,14 @@ class EdgeBuffer {
   }
 
   /**
+   * Writes raw text to the output
+   */
+  public writeRaw (text: string): void {
+    text = text.replace(/[']/g, '\\\'')
+    this.lines += `\n${this.getSpace()}out += '${text}'`
+  }
+
+  /**
    * Write a new line to the output
    */
   public writeLine (text: string): void {
@@ -57,11 +65,11 @@ class EdgeBuffer {
    * invoked function.
    */
   public flush () {
-    let returnValue = '(function (ctx) {'
+    let returnValue = '(function (template, ctx) {'
     returnValue += `\n  let out = ''`
     returnValue += `${this.lines}`
     returnValue += '\n  return out'
-    returnValue += '\n})(ctx)'
+    returnValue += '\n})(template, ctx)'
 
     /**
      * Reset internal props.
