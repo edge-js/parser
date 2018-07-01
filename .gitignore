@@ -4,3 +4,11 @@ node_modules
 npm-debug.log
 .idea
 .nyc_output
+.DS_STORE
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.log
+yarn.lock
+build
+dist

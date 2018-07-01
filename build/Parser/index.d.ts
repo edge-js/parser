@@ -1,3 +1,6 @@
+/**
+ * @module Parser
+ */
 import EdgeBuffer = require('../EdgeBuffer');
 declare class Parser {
     tags: object;

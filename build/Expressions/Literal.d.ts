@@ -1,3 +1,6 @@
+/**
+ * @module Parser
+ */
 declare const _default: {
     toStatement(statement: any): any;
 };

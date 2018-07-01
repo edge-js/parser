@@ -11,7 +11,9 @@
 * file that was distributed with this source code.
 */
 
-class EdgeBuffer {
+import { EOL } from 'os'
+
+export class EdgeBuffer {
   private lines: string = ''
   private indentSpaces: number = 2
 
@@ -35,14 +37,14 @@ class EdgeBuffer {
    */
   public writeRaw (text: string): void {
     text = text.replace(/[']/g, '\\\'')
-    this.lines += `\n${this.getSpace()}out += '${text}'`
+    this.lines += `${EOL}${this.getSpace()}out += '${text}'`
   }
 
   /**
    * Write a new line to the output
    */
   public writeLine (text: string): void {
-    this.lines += `\n${this.getSpace()}out += ${text}`
+    this.lines += `${EOL}${this.getSpace()}out += ${text}`
   }
 
   /**
@@ -50,14 +52,14 @@ class EdgeBuffer {
    * output. `if (something) {` is a statement.
    */
   public writeStatement (text: string): void {
-    this.lines += `\n${this.getSpace()}${text}`
+    this.lines += `${EOL}${this.getSpace()}${text}`
   }
 
   /**
    * Write string as interpolation to the output
    */
   public writeInterpol (text: string): void {
-    this.lines += `\n${this.getSpace()}out += \`\${${text}}\``
+    this.lines += `${EOL}${this.getSpace()}out += \`\${${text}}\``
   }
 
   /**
@@ -66,10 +68,10 @@ class EdgeBuffer {
    */
   public flush () {
     let returnValue = '(function (template, ctx) {'
-    returnValue += `\n  let out = ''`
+    returnValue += `${EOL}  let out = ''`
     returnValue += `${this.lines}`
-    returnValue += '\n  return out'
-    returnValue += '\n})(template, ctx)'
+    returnValue += `${EOL}  return out`
+    returnValue += `${EOL}})(template, ctx)`
 
     /**
      * Reset internal props.
@@ -92,5 +94,3 @@ class EdgeBuffer {
     return spaces
   }
 }
-
-export = EdgeBuffer

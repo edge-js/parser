@@ -39,6 +39,6 @@ declare class EdgeBuffer {
      * Returns the number of spaces to the added to the current line for
      * pretty identation.
      */
-    private getSpace();
+    private getSpace;
 }
 export = EdgeBuffer;
