@@ -16,8 +16,10 @@
     "compile": "npm run lint && npm run clean && tsc",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
+  "main": "build/src/Parser/index.js",
+  "typings": "build/src/Parser/index.d.ts",
   "files": [
-    "build",
+    "build/src",
     "README.md",
     "CHANGELOG.md",
     "LICENSE.md"
