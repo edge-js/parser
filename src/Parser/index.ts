@@ -13,6 +13,7 @@
 
 import * as acorn from 'acorn'
 import { generate } from 'astring'
+import { EOL } from 'os'
 
 import * as Tokenizer from 'edge-lexer'
 import * as Contracts from 'edge-lexer/build/src/Contracts'
@@ -98,7 +99,7 @@ export class Parser {
      * New line node
      */
     if (token.type === 'newline') {
-      buffer.writeRaw(`\\n`)
+      buffer.writeRaw(EOL === '\n' ? '\\n' : '\\r\\n')
       return
     }
 

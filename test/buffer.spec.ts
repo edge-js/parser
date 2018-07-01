@@ -8,52 +8,51 @@
 */
 
 import * as test from 'japa'
-import * as dedent from 'dedent'
 import { EdgeBuffer } from '../src/EdgeBuffer'
 
-test.group('Parser', () => {
+test.group('Buffer', () => {
   test('write line to the output', (assert) => {
     const buff = new EdgeBuffer()
     buff.writeLine(`'hello world'`)
 
-    assert.equal(buff.flush(), dedent`(function (template, ctx) {
-      let out = ''
-      out += 'hello world'
-      return out
-    })(template, ctx)`)
+    assert.stringEqual(buff.flush(), `(function (template, ctx) {
+  let out = ''
+  out += 'hello world'
+  return out
+})(template, ctx)`)
   })
 
   test('write raw line to the output', (assert) => {
     const buff = new EdgeBuffer()
     buff.writeRaw('hello world')
 
-    assert.equal(buff.flush(), dedent`(function (template, ctx) {
-      let out = ''
-      out += 'hello world'
-      return out
-    })(template, ctx)`)
+    assert.stringEqual(buff.flush(), `(function (template, ctx) {
+  let out = ''
+  out += 'hello world'
+  return out
+})(template, ctx)`)
   })
 
   test('escape quotes in raw line', (assert) => {
     const buff = new EdgeBuffer()
     buff.writeRaw(`'hello world'`)
 
-    assert.equal(buff.flush(), dedent`(function (template, ctx) {
-      let out = ''
-      out += '\'hello world\''
-      return out
-    })(template, ctx)`)
+    assert.stringEqual(buff.flush(), `(function (template, ctx) {
+  let out = ''
+  out += '\\'hello world\\''
+  return out
+})(template, ctx)`)
   })
 
   test('write statement', (assert) => {
     const buff = new EdgeBuffer()
     buff.writeStatement('if (username) {')
 
-    assert.equal(buff.flush(), dedent`(function (template, ctx) {
-      let out = ''
-      if (username) {
-      return out
-    })(template, ctx)`)
+    assert.stringEqual(buff.flush(), `(function (template, ctx) {
+  let out = ''
+  if (username) {
+  return out
+})(template, ctx)`)
   })
 
   test('indent output', (assert) => {
@@ -64,12 +63,12 @@ test.group('Parser', () => {
     buff.dedent()
     buff.writeStatement('}')
 
-    assert.equal(buff.flush(), dedent`(function (template, ctx) {
-      let out = ''
-      if (username) {
-        out += 'hello world'
-      }
-      return out
-    })(template, ctx)`)
+    assert.stringEqual(buff.flush(), `(function (template, ctx) {
+  let out = ''
+  if (username) {
+    out += 'hello world'
+  }
+  return out
+})(template, ctx)`)
   })
 })
