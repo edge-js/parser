@@ -11,17 +11,18 @@
 * file that was distributed with this source code.
 */
 
-import Tokenizer = require('edge-lexer')
-import Contracts = require('edge-lexer/build/Contracts')
 import * as acorn from 'acorn'
 import { generate } from 'astring'
 
-import EdgeBuffer = require('../EdgeBuffer')
+import * as Tokenizer from 'edge-lexer'
+import * as Contracts from 'edge-lexer/build/src/Contracts'
+import { EdgeBuffer } from '../EdgeBuffer'
+
 import { getCallExpression } from '../utils'
-import Expressions = require('../Expressions')
+import * as Expressions from '../Expressions'
 import { UnAllowedExpressionException } from '../Exceptions'
 
-class Parser {
+export class Parser {
   private acornArgs: object = {
     locations: true,
     ecmaVersion: 7,
@@ -156,5 +157,3 @@ class Parser {
     }
   }
 }
-
-export = Parser

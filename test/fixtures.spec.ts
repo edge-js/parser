@@ -1,5 +1,3 @@
-// @ts-check
-
 /*
 * edge-parser
 *
@@ -9,20 +7,18 @@
 * file that was distributed with this source code.
 */
 
-const test = require('japa')
-const os = require('os')
-const dedent = require('dedent')
-const { readdirSync, readFileSync, statSync } = require('fs')
-const { join } = require('path')
+import * as test from 'japa'
+import { readdirSync, readFileSync, statSync } from 'fs'
+import { join } from 'path'
+import { Parser } from '../src/Parser'
+
+const basePath = join(__dirname, '../fixtures')
 
 const tags = {
   if: {
     block: true,
-  }
+  },
 }
-
-const Parser = require('..')
-const basePath = join(__dirname, '../fixtures')
 
 test.group('Fixtures', () => {
   const dirs = readdirSync(basePath).filter((file) => {

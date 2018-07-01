@@ -13,7 +13,7 @@
 
 import * as NE from 'node-exceptions'
 
-class UnAllowedExpressionException extends NE.LogicalException {
+export class UnAllowedExpressionException extends NE.LogicalException {
   public static invoke (expression: string, line: number, column: number): UnAllowedExpressionException {
     const message = `${expression} is not allowed`
     const error = new this(message, 500, 'E_UNALLOWED_EXPRESSION')
@@ -28,5 +28,3 @@ class UnAllowedExpressionException extends NE.LogicalException {
     super(message, status, code, errShLink)
   }
 }
-
-export { UnAllowedExpressionException as UnAllowedExpressionException }

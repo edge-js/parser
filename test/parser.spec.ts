@@ -1,6 +1,4 @@
-// @ts-check
-
-/**
+/*
  * edge-parser
  *
  * (c) Harminder Virk <virk@adonisjs.com>
@@ -9,17 +7,15 @@
  * file that was distributed with this source code.
 */
 
-const test = require('japa')
-const os = require('os')
-const dedent = require('dedent')
+import * as test from 'japa'
+import * as dedent from 'dedent'
+import { Parser } from '../src/Parser'
 
 const tags = {
   if: {
     block: true,
-  }
+  },
 }
-
-const Parser = require('..')
 
 test.group('Parser', () => {
   test('report correct line number when expression is not allowed', (assert) => {

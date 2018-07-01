@@ -2,8 +2,6 @@
   "name": "edge-parser",
   "version": "1.0.2",
   "description": "Parser for edge template engine",
-  "main": "./build/Parser/index.js",
-  "types": "./build/Parser/index.d.ts",
   "scripts": {
     "pretest": "npm run lint",
     "test": "nyc japa",
