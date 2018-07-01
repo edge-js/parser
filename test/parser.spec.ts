@@ -12,8 +12,10 @@ import * as dedent from 'dedent'
 import { Parser } from '../src/Parser'
 
 const tags = {
-  if: {
-    block: true,
+  if: class If {
+    public static block = true
+    public static seekable = true
+    public static selfclosed = false
   },
 }
 

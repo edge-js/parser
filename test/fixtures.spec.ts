@@ -16,8 +16,10 @@ import { EOL } from 'os'
 const basePath = join(__dirname, '../fixtures')
 
 const tags = {
-  if: {
-    block: true,
+  if: class If {
+    public static block = true
+    public static seekable = true
+    public static selfclosed = false
   },
 }
 
