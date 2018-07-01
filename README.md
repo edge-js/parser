@@ -1,6 +1,12 @@
 # Edge Parser
 
-This repo is the **parser to convert edge templates** inside a self invoked Javascript function. Later you can invoke this function by providing a context.
+[![travis-image]][travis-url]
+[![appveyor-image]][appveyor-url]
+[![coveralls-image]][coveralls-url]
+[![npm-image]][npm-url]
+![](https://img.shields.io/badge/Uses-Typescript-294E80.svg?style=flat-square&colorA=ddd)
+
+This repo is the **parser to convert edge templates** to a self invoked Javascript function. Later you can invoke this function by providing a [context](#context-expectations).
 
 Example:
 
@@ -13,7 +19,7 @@ Hello {{ username }}
 **Output**
 
 ```
-(function (ctx) {
+(function (template, ctx) {
   let out = ''
   out += 'Hello '
   out += `${ctx.escape(ctx.resolve('username'))}`
@@ -148,3 +154,31 @@ class Context {
 }
 ```
 
+## Change log
+
+The change log can be found in the [CHANGELOG.md](https://github.com/poppinss/edge-parser/CHANGELOG.md) file.
+
+## Contributing
+
+Everyone is welcome to contribute. Please go through the following guides, before getting started.
+
+1. [Contributing](https://adonisjs.com/contributing)
+2. [Code of conduct](https://adonisjs.com/code-of-conduct)
+
+
+## Authors & License
+[thetutlage](https://github.com/thetutlage) and [contributors](https://github.com/poppinss/edge-parser/graphs/contributors).
+
+MIT License, see the included [MIT](LICENSE.md) file.
+
+[travis-image]: https://img.shields.io/travis/poppinss/edge-parser/master.svg?style=flat-square&logo=travis
+[travis-url]: https://travis-ci.org/poppinss/edge-parser "travis"
+
+[appveyor-image]: https://img.shields.io/appveyor/ci/thetutlage/edge-parser/master.svg?style=flat-square&logo=appveyor
+[appveyor-url]: https://ci.appveyor.com/project/thetutlage/edge-parser "appveyor"
+
+[coveralls-image]: https://img.shields.io/coveralls/poppinss/edge-parser/master.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/github/poppinss/edge-parser "coveralls"
+
+[npm-image]: https://img.shields.io/npm/v/edge-parser.svg?style=flat-square&logo=npm
+[npm-url]: https://npmjs.org/package/edge-parser "npm"
