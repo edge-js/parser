@@ -10,7 +10,7 @@
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "commit": "git-cz",
     "prepublishOnly": "npm run build",
-    "test:win": "./node_modules/japa-cli/index.js",
+    "test:win": "node ./node_modules/japa-cli/index.js",
     "lint": "tslint --project tsconfig.json",
     "clean": "del build",
     "compile": "npm run lint && npm run clean && tsc",
