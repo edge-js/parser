@@ -1,3 +1,13 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/poppinss/edge-parser/compare/v1.0.2...v1.0.3) (2018-07-01)
+
+
+### Bug Fixes
+
+* **newline:** use os.EOL convert \n to new lines ([4fa76a9](https://github.com/poppinss/edge-parser/commit/4fa76a9))
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/poppinss/edge-parser/compare/v1.0.0...v1.0.2) (2018-06-01)
 
