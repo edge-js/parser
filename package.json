@@ -23,16 +23,12 @@
   "author": "virk",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^5.5.3",
-    "astring": "^1.3.0",
-    "edge-lexer": "^1.0.0",
+    "acorn": "^5.7.1",
+    "astring": "^1.3.1",
+    "edge-lexer": "^1.0.2",
     "node-exceptions": "^3.0.0"
   },
   "devDependencies": {
-    "adonis-ts-arche": "^1.0.6",
-    "builder": "^4.0.0",
-    "dedent": "^0.7.0",
-    "husky": "^1.0.0-rc.8",
-    "pkg-ok": "^2.2.0"
+    "dedent": "^0.7.0"
   }
 }
