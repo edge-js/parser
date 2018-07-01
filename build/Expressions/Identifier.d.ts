@@ -1,3 +1,6 @@
+/**
+ * @module Parser
+ */
 declare const _default: {
     toObject(statement: any): string;
     toStatement(statement: any): object;
