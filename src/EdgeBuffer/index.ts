@@ -66,16 +66,19 @@ export class EdgeBuffer {
    * Return all the lines from the buffer wrapped inside a self
    * invoked function.
    */
-  public flush () {
-    let returnValue = '(function (template, ctx) {'
-    returnValue += `${EOL}  let out = ''`
-    returnValue += `${this.lines}`
-    returnValue += `${EOL}  return out`
-    returnValue += `${EOL}})(template, ctx)`
+  public flush (wrapAsFunction: boolean = true) {
+    let returnValue = ''
 
-    /**
-     * Reset internal props.
-     */
+    if (wrapAsFunction) {
+      returnValue = '(function (template, ctx) {'
+      returnValue += `${EOL}  let out = ''`
+      returnValue += `${this.lines}`
+      returnValue += `${EOL}  return out`
+      returnValue += `${EOL}})(template, ctx)`
+    } else {
+      returnValue = this.lines
+    }
+
     this.lines = ''
     this.indentSpaces = 2
 
