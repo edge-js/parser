@@ -1,6 +1,6 @@
 {
   "name": "edge-parser",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Parser for edge template engine",
   "scripts": {
     "pretest": "npm run lint",
