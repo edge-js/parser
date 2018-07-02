@@ -14,14 +14,14 @@
 import * as acorn from 'acorn'
 import { generate } from 'astring'
 import { EOL } from 'os'
-
-import * as Tokenizer from 'edge-lexer'
+import { Tokenizer } from 'edge-lexer'
 import * as Contracts from 'edge-lexer/build/src/Contracts'
-import { EdgeBuffer } from '../EdgeBuffer'
 
+import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
 import { UnAllowedExpressionException } from '../Exceptions'
+import { ITag } from '../Contracts'
 
 export class Parser {
   private acornArgs: object = {
@@ -29,7 +29,7 @@ export class Parser {
     ecmaVersion: 7,
   }
 
-  constructor (public tags: object) {
+  constructor (public tags: { [key: string]: ITag }) {
   }
 
   /**
