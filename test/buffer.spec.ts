@@ -71,4 +71,12 @@ test.group('Buffer', () => {
   return out
 })(template, ctx)`)
   })
+
+  test('flush lines without wrapping inside fuction', (assert) => {
+    const buff = new EdgeBuffer()
+    buff.writeLine(`'hello world'`)
+
+    assert.stringEqual(buff.flush(false), `
+  out += 'hello world'`)
+  })
 })

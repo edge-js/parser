@@ -71,7 +71,7 @@ export class Parser {
    * Parses the template string to a function string, which
    * can be invoked using `new Function` keyword.
    */
-  public parseTemplate (template: string): string {
+  public parseTemplate (template: string, wrapAsFunction: boolean = true): string {
     const buffer = new EdgeBuffer()
     const tokenizer = new Tokenizer(template, this.tags)
     tokenizer.parse()
@@ -80,7 +80,7 @@ export class Parser {
       this.processToken(token, buffer)
     })
 
-    return buffer.flush()
+    return buffer.flush(wrapAsFunction)
   }
 
   /**

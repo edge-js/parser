@@ -1,3 +1,14 @@
+<a name="1.0.5"></a>
+## [1.0.5](https://github.com/poppinss/edge-parser/compare/v1.0.4...v1.0.5) (2018-07-02)
+
+
+### Features
+
+* **buffer:** add support to return unwrapped lines ([da27c99](https://github.com/poppinss/edge-parser/commit/da27c99))
+* **parser:** add support for unwrapped templates ([853ba21](https://github.com/poppinss/edge-parser/commit/853ba21))
+
+
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/poppinss/edge-parser/compare/v1.0.2...v1.0.3) (2018-07-01)
 
