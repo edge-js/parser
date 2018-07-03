@@ -67,17 +67,19 @@ export class EdgeBuffer {
    * invoked function.
    */
   public flush (wrapAsFunction: boolean = true) {
-    let returnValue = ''
+    /**
+     * Conditional, when needs to be wrapped inside a function
+     */
+    let returnValue = wrapAsFunction ? '(function (template, ctx) {' : ''
 
-    if (wrapAsFunction) {
-      returnValue = '(function (template, ctx) {'
-      returnValue += `${EOL}  let out = ''`
-      returnValue += `${this.lines}`
-      returnValue += `${EOL}  return out`
-      returnValue += `${EOL}})(template, ctx)`
-    } else {
-      returnValue = this.lines
-    }
+    returnValue += `${EOL}  let out = ''`
+    returnValue += `${this.lines}`
+    returnValue += `${EOL}  return out`
+
+    /**
+     * Conditional, when needs to be wrapped inside a function
+     */
+    returnValue += wrapAsFunction ? `${EOL}})(template, ctx)` : ''
 
     this.lines = ''
     this.indentSpaces = 2

@@ -77,6 +77,8 @@ test.group('Buffer', () => {
     buff.writeLine(`'hello world'`)
 
     assert.stringEqual(buff.flush(false), `
-  out += 'hello world'`)
+  let out = ''
+  out += 'hello world'
+  return out`)
   })
 })
