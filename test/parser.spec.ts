@@ -34,9 +34,9 @@ test.group('Parser', () => {
 
     try {
       parser.parseTemplate(template)
-    } catch ({ message, loc }) {
+    } catch ({ message, line }) {
       assert.equal(message, 'E_UNALLOWED_EXPRESSION: ClassDeclaration is not allowed')
-      assert.equal(loc.line, 4)
+      assert.equal(line, 4)
     }
   })
 
@@ -56,9 +56,9 @@ test.group('Parser', () => {
 
     try {
       parser.parseTemplate(template)
-    } catch ({ message, loc }) {
+    } catch ({ message, line }) {
       assert.equal(message, 'Unexpected token ')
-      assert.equal(loc.line, 5)
+      assert.equal(line, 5)
     }
   })
 })
