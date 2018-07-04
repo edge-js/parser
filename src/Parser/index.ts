@@ -21,7 +21,7 @@ import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
 import { UnAllowedExpressionException } from '../Exceptions'
-import { ITag } from '../Contracts'
+import { ITag, ILoc } from '../Contracts'
 
 export class Parser {
   private acornArgs: object = {
@@ -35,14 +35,13 @@ export class Parser {
   /**
    * Parses a given acorn statement.
    */
-  public parseStatement (statement: any, lineno: number): any {
+  public parseStatement (statement: any): any {
     if (Expressions[statement.type]) {
       return Expressions[statement.type].toStatement(statement, this)
     }
 
     const { type, loc } = statement
-    const line = this.patchNodeLine(loc.start.line, lineno)
-    throw UnAllowedExpressionException.invoke(type, line, loc.end.column)
+    throw UnAllowedExpressionException.invoke(type, loc.start.line, loc.end.column)
   }
 
   /**
@@ -51,8 +50,9 @@ export class Parser {
    * acorn and acorn calculates the line number from those
    * partials
    */
-  public patchNodeLine (startLine: number, tokenLine: number): number {
-    return (tokenLine + startLine) - 1
+  public patchLoc (loc: ILoc, tokenLine: number): void {
+    loc.start.line = (loc.start.line + tokenLine) - 1
+    loc.end.line = (loc.end.line + tokenLine) - 1
   }
 
   /**
@@ -68,10 +68,13 @@ export class Parser {
    */
   public generateAst (arg: string, lineno: number): any {
     try {
-      return acorn.parse(arg, this.acornArgs)
+      const ast = acorn.parse(arg, this.acornArgs)
+      this.patchLoc(ast.body[0].loc, lineno)
+
+      return ast
     } catch (error) {
       error.message = error.message.replace(/\(\d+:\d+\)/, '')
-      error.loc.line = this.patchNodeLine(error.loc.line, lineno)
+      error.loc.line = (error.loc.line + lineno) - 1
       throw error
     }
   }
@@ -82,7 +85,7 @@ export class Parser {
    */
   public parseJsArg (arg: string, lineno: number): any {
     const ast = this.generateAst(arg, lineno)
-    return this.parseStatement(ast.body[0], lineno)
+    return this.parseStatement(ast.body[0])
   }
 
   /**

@@ -16,3 +16,14 @@ import { ITagDefination } from 'edge-lexer/build/src/Contracts'
 export interface ITag extends ITagDefination {
   new ()
 }
+
+export type ILoc = {
+  start: {
+    line: number
+    column: number,
+  },
+  end: {
+    line: number
+    column: number,
+  },
+}
