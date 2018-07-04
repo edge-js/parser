@@ -41,7 +41,7 @@ export class Parser {
     }
 
     const { type, loc } = statement
-    throw UnAllowedExpressionException.invoke(type, loc.start.line, loc.end.column)
+    throw UnAllowedExpressionException.invoke(type, loc.start.line)
   }
 
   /**
@@ -74,7 +74,7 @@ export class Parser {
       return ast
     } catch (error) {
       error.message = error.message.replace(/\(\d+:\d+\)/, '')
-      error.loc.line = (error.loc.line + lineno) - 1
+      error.line = (error.loc.line + lineno) - 1
       throw error
     }
   }
