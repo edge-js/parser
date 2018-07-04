@@ -1,3 +1,18 @@
+<a name="1.0.7"></a>
+## [1.0.7](https://github.com/poppinss/edge-parser/compare/v1.0.6...v1.0.7) (2018-07-04)
+
+
+### Code Refactoring
+
+* **parser:** patch the loc node of ast in place ([4314ded](https://github.com/poppinss/edge-parser/commit/4314ded))
+
+
+### BREAKING CHANGES
+
+* **parser:** removed patchNodeLine
+
+
+
 <a name="1.0.5"></a>
 ## [1.0.5](https://github.com/poppinss/edge-parser/compare/v1.0.4...v1.0.5) (2018-07-02)
 
