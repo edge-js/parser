@@ -1,3 +1,18 @@
+<a name="1.0.9"></a>
+## [1.0.9](https://github.com/poppinss/edge-parser/compare/v1.0.8...v1.0.9) (2018-07-05)
+
+
+### Bug Fixes
+
+* **objectexpression:** turn off shorthand objects ([c43444f](https://github.com/poppinss/edge-parser/commit/c43444f))
+
+
+### Features
+
+* **AssignmentExpression:** add support ([c920387](https://github.com/poppinss/edge-parser/commit/c920387))
+
+
+
 <a name="1.0.8"></a>
 ## [1.0.8](https://github.com/poppinss/edge-parser/compare/v1.0.7...v1.0.8) (2018-07-04)
 
