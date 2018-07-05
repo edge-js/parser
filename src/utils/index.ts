@@ -12,7 +12,7 @@
 */
 
 /** @hidden */
-export function getCallExpression (args: object[], fnName: string): object {
+export function getCallExpression (args: object[], fnName: string): any {
   return {
     type: 'CallExpression',
     callee: {
