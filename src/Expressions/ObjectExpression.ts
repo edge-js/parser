@@ -5,10 +5,13 @@
 export default {
   toStatement (statement, parser) {
     statement.properties = statement.properties.map((node) => {
-      if (node.shorthand) {
-        node.computed = true
-        node.shorthand = false
-      }
+
+      /**
+       * Since we change the structure of node.value, we have to
+       * turn of shorthand objects, so that the astring outputs
+       * the key name explicitly
+       */
+      node.shorthand = false
 
       if (node.computed === true) {
         node.key = parser.parseStatement(node.key)
