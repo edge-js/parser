@@ -162,7 +162,8 @@ export class Parser {
        * If not safe mustache node, then wrap it inside `escape` call
        */
       if (mustacheToken.properties.name === Contracts.MustacheType.MUSTACHE) {
-        buffer.writeInterpol(this.statementToString(getCallExpression([node], 'escape')))
+        const escaped = node.assignment ? node : getCallExpression([node], 'escape')
+        buffer.writeInterpol(this.statementToString(escaped))
         return
       }
 
