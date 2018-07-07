@@ -81,4 +81,17 @@ test.group('Buffer', () => {
   out += 'hello world'
   return out`)
   })
+
+  test('wrap inside custom function', (assert) => {
+    const buff = new EdgeBuffer()
+    buff.writeLine(`'hello world'`)
+    buff.wrap('return function () {', '}')
+
+    assert.stringEqual(buff.flush(false), `
+return function () {
+  let out = ''
+  out += 'hello world'
+  return out
+}`)
+  })
 })
