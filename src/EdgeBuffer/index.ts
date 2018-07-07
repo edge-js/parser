@@ -16,6 +16,11 @@ import { EOL } from 'os'
 export class EdgeBuffer {
   private lines: string = ''
   private indentSpaces: number = 2
+  private suffixList: string[] = []
+  private prefixList: string[] = []
+
+  constructor (private outputVar: string = 'out') {
+  }
 
   /**
    * Indent output by 2 spaces
@@ -37,14 +42,14 @@ export class EdgeBuffer {
    */
   public writeRaw (text: string): void {
     text = text.replace(/[']/g, '\\\'')
-    this.lines += `${EOL}${this.getSpace()}out += '${text}'`
+    this.lines += `${EOL}${this.getSpace()}${this.outputVar} += '${text}'`
   }
 
   /**
    * Write a new line to the output
    */
   public writeLine (text: string): void {
-    this.lines += `${EOL}${this.getSpace()}out += ${text}`
+    this.lines += `${EOL}${this.getSpace()}${this.outputVar} += ${text}`
   }
 
   /**
@@ -59,7 +64,15 @@ export class EdgeBuffer {
    * Write string as interpolation to the output
    */
   public writeInterpol (text: string): void {
-    this.lines += `${EOL}${this.getSpace()}out += \`\${${text}}\``
+    this.lines += `${EOL}${this.getSpace()}${this.outputVar} += \`\${${text}}\``
+  }
+
+  /**
+   * Wrap the final output with a suffix and prefix
+   */
+  public wrap (suffix: string, prefix: string): void {
+    this.suffixList.push(suffix)
+    this.prefixList.push(prefix)
   }
 
   /**
@@ -72,13 +85,20 @@ export class EdgeBuffer {
      */
     let returnValue = wrapAsFunction ? '(function (template, ctx) {' : ''
 
-    returnValue += `${EOL}  let out = ''`
+    this.suffixList.forEach((suffix) => {
+      returnValue += `${EOL}${suffix}`
+    })
+
+    returnValue += `${EOL}  let ${this.outputVar} = ''`
     returnValue += `${this.lines}`
-    returnValue += `${EOL}  return out`
+    returnValue += `${EOL}  return ${this.outputVar}`
 
     /**
      * Conditional, when needs to be wrapped inside a function
      */
+    this.prefixList.forEach((prefix) => {
+      returnValue += `${EOL}${prefix}`
+    })
     returnValue += wrapAsFunction ? `${EOL}})(template, ctx)` : ''
 
     this.lines = ''

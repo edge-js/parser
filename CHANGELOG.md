@@ -1,3 +1,13 @@
+<a name="1.0.10"></a>
+## [1.0.10](https://github.com/poppinss/edge-parser/compare/v1.0.9...v1.0.10) (2018-07-07)
+
+
+### Features
+
+* **buffer:** add support for wrapping statements ([5242f7d](https://github.com/poppinss/edge-parser/commit/5242f7d))
+
+
+
 <a name="1.0.9"></a>
 ## [1.0.9](https://github.com/poppinss/edge-parser/compare/v1.0.8...v1.0.9) (2018-07-05)
 
