@@ -10,12 +10,16 @@
 import * as test from 'japa'
 import * as dedent from 'dedent'
 import { Parser } from '../src/Parser'
+import { EdgeBuffer } from '../src/EdgeBuffer'
+import { IBlockNode } from 'edge-lexer/build/src/Contracts'
 
 const tags = {
   if: class If {
     public static block = true
     public static seekable = true
     public static selfclosed = false
+    public static compile (parser: Parser, buffer: EdgeBuffer, tag: IBlockNode) {
+    }
   },
 }
 

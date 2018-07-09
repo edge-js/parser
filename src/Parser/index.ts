@@ -128,8 +128,7 @@ export class Parser {
      * A block level token (AKA tag)
      */
     if (token.type === 'block') {
-      const tagInstance = new this.tags[token.properties.name]()
-      tagInstance.compile(this, buffer, token as Contracts.IBlockNode)
+      this.tags[token.properties.name].compile(this, buffer, token as Contracts.IBlockNode)
       return
     }
 
