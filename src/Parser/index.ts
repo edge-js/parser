@@ -94,14 +94,20 @@ export class Parser {
    */
   public parseTemplate (template: string, wrapAsFunction: boolean = true): string {
     const buffer = new EdgeBuffer()
+    const tokens = this.generateTokens(template)
+
+    tokens.forEach((token) => (this.processToken(token, buffer)))
+    return buffer.flush(wrapAsFunction)
+  }
+
+  /**
+   * Generates and returns AST tokens for a given template
+   */
+  public generateTokens (template: string): Contracts.INode[] {
     const tokenizer = new Tokenizer(template, this.tags)
     tokenizer.parse()
 
-    tokenizer.tokens.forEach((token) => {
-      this.processToken(token, buffer)
-    })
-
-    return buffer.flush(wrapAsFunction)
+    return tokenizer.tokens
   }
 
   /**
