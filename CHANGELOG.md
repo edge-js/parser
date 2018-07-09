@@ -1,3 +1,13 @@
+<a name="1.0.13"></a>
+## [1.0.13](https://github.com/poppinss/edge-parser/compare/v1.0.12...v1.0.13) (2018-07-09)
+
+
+### Features
+
+* **parser:** expose generateTokens method to generate lexer tokens ([9c5073f](https://github.com/poppinss/edge-parser/commit/9c5073f))
+
+
+
 <a name="1.0.12"></a>
 ## [1.0.12](https://github.com/poppinss/edge-parser/compare/v1.0.11...v1.0.12) (2018-07-09)
 
