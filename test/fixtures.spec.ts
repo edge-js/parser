@@ -10,8 +10,11 @@
 import * as test from 'japa'
 import { readdirSync, readFileSync, statSync } from 'fs'
 import { join } from 'path'
-import { Parser } from '../src/Parser'
 import { EOL } from 'os'
+
+import { Parser } from '../src/Parser'
+import { EdgeBuffer } from '../src/EdgeBuffer'
+import { IBlockNode } from 'edge-lexer/build/src/Contracts'
 
 const basePath = join(__dirname, '../fixtures')
 
@@ -20,6 +23,8 @@ const tags = {
     public static block = true
     public static seekable = true
     public static selfclosed = false
+    public static compile (parser: Parser, buffer: EdgeBuffer, tag: IBlockNode) {
+    }
   },
 }
 
