@@ -77,8 +77,11 @@ export class Parser {
    */
   public generateAst (arg: string, lineno: number): any {
     try {
-      const ast = acorn.parse(arg, this.acornArgs)
-      this.patchLoc(ast.body[0].loc, lineno)
+      const ast = acorn.parse(arg, Object.assign(this.acornArgs, {
+        onToken: (token) => {
+          this.patchLoc(token.loc, lineno)
+        },
+      }))
 
       return ast
     } catch (error) {

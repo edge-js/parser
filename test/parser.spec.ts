@@ -11,7 +11,7 @@ import * as test from 'japa'
 import * as dedent from 'dedent'
 import { Parser } from '../src/Parser'
 import { EdgeBuffer } from '../src/EdgeBuffer'
-import { IBlockNode } from 'edge-lexer/build/src/Contracts'
+import { IBlockNode, IMustacheNode } from 'edge-lexer/build/src/Contracts'
 
 const tags = {
   if: class If {
@@ -64,5 +64,30 @@ test.group('Parser', () => {
       assert.equal(message, 'Unexpected token ')
       assert.equal(stack.split('\n')[1], '    at (foo.edge:5:16)')
     }
+  })
+
+  test('patch line number of all the tokens inside the top level expressions', (assert) => {
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    const template = dedent`
+    Hello world!
+
+    The list of friends are {{
+      users.map((user) => {
+        return user.username
+      })
+    }}
+    `
+
+    const tokens = parser.generateTokens(template)
+    const mustacheToken = tokens.find((token) => token.type === 'mustache')
+    const mustacheExpression = parser.parseJsArg((mustacheToken as IMustacheNode).properties.jsArg, (mustacheToken as IMustacheNode).lineno)
+
+    assert.equal(mustacheExpression.loc.start.line, 4)
+    assert.equal(mustacheExpression.callee.loc.start.line, 4)
+    assert.equal(mustacheExpression.arguments[0].loc.start.line, 4)
+    assert.equal(mustacheExpression.arguments[0].body.body[0].loc.start.line, 5)
+    assert.equal(mustacheExpression.arguments[0].body.body[0].argument.loc.start.line, 5)
+    assert.equal(mustacheExpression.arguments[0].body.body[0].argument.object.loc.start.line, 5)
+    assert.equal(mustacheExpression.arguments[0].body.body[0].argument.property.loc.start.line, 5)
   })
 })
