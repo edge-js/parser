@@ -40,7 +40,7 @@ test.group('Fixtures', () => {
       const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
       const out = readFileSync(join(dirBasePath, 'index.js'), 'utf-8').replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
 
-      const parser = new Parser(tags)
+      const parser = new Parser(tags, { filename: join(dirBasePath, 'index.edge') })
       const output = parser.parseTemplate(template)
       assert.stringEqual(output, out)
     })

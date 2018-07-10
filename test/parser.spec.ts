@@ -27,7 +27,7 @@ test.group('Parser', () => {
   test('report correct line number when expression is not allowed', (assert) => {
     assert.plan(2)
 
-    const parser = new Parser(tags)
+    const parser = new Parser(tags, { filename: 'foo.edge' })
     const template = dedent`
     Hello {{ username }}
 
@@ -38,16 +38,16 @@ test.group('Parser', () => {
 
     try {
       parser.parseTemplate(template)
-    } catch ({ message, line }) {
-      assert.equal(message, 'E_UNALLOWED_EXPRESSION: ClassDeclaration is not allowed')
-      assert.equal(line, 4)
+    } catch ({ message, stack }) {
+      assert.equal(message, 'ClassDeclaration is not supported')
+      assert.equal(stack.split('\n')[1], '    at (foo.edge:4:2)')
     }
   })
 
   test('report syntax errors with correct line number', (assert) => {
     assert.plan(2)
 
-    const parser = new Parser(tags)
+    const parser = new Parser(tags, { filename: 'foo.edge' })
     const template = dedent`
     Hello world!
 
@@ -60,9 +60,9 @@ test.group('Parser', () => {
 
     try {
       parser.parseTemplate(template)
-    } catch ({ message, line }) {
+    } catch ({ message, stack }) {
       assert.equal(message, 'Unexpected token ')
-      assert.equal(line, 5)
+      assert.equal(stack.split('\n')[1], '    at (foo.edge:5:16)')
     }
   })
 })
