@@ -16,12 +16,16 @@ import { generate } from 'astring'
 import { EOL } from 'os'
 import { Tokenizer } from 'edge-lexer'
 import * as Contracts from 'edge-lexer/build/src/Contracts'
+import { EdgeError } from 'edge-error'
 
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
-import { UnAllowedExpressionException } from '../Exceptions'
 import { ITag, ILoc } from '../Contracts'
+
+type parserOptions = {
+  filename: string,
+}
 
 export class Parser {
   private acornArgs: object = {
@@ -29,7 +33,7 @@ export class Parser {
     ecmaVersion: 7,
   }
 
-  constructor (public tags: { [key: string]: ITag }) {
+  constructor (public tags: { [key: string]: ITag }, private options: parserOptions) {
   }
 
   /**
@@ -41,7 +45,12 @@ export class Parser {
     }
 
     const { type, loc } = statement
-    throw UnAllowedExpressionException.invoke(type, loc.start.line)
+
+    throw new EdgeError(`${type} is not supported`, 'UNALLOWED_EXPRESSION', {
+      line: loc.start.line,
+      col: loc.start.column,
+      filename: this.options.filename,
+    })
   }
 
   /**
@@ -73,9 +82,11 @@ export class Parser {
 
       return ast
     } catch (error) {
-      error.message = error.message.replace(/\(\d+:\d+\)/, '')
-      error.line = (error.loc.line + lineno) - 1
-      throw error
+      throw new EdgeError(error.message.replace(/\(\d+:\d+\)/, ''), 'E_ACORN_ERROR', {
+        line: (error.loc.line + lineno) - 1,
+        col: error.loc.column,
+        filename: this.options.filename,
+      })
     }
   }
 
@@ -104,7 +115,7 @@ export class Parser {
    * Generates and returns AST tokens for a given template
    */
   public generateTokens (template: string): Contracts.INode[] {
-    const tokenizer = new Tokenizer(template, this.tags)
+    const tokenizer = new Tokenizer(template, this.tags, this.options)
     tokenizer.parse()
 
     return tokenizer.tokens
