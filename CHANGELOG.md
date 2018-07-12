@@ -1,3 +1,13 @@
+<a name="1.0.16"></a>
+## [1.0.16](https://github.com/poppinss/edge-parser/compare/v1.0.15...v1.0.16) (2018-07-12)
+
+
+### Features
+
+* **parser:** expose parseTokens method and make options public ([3a30ff4](https://github.com/poppinss/edge-parser/commit/3a30ff4))
+
+
+
 <a name="1.0.15"></a>
 ## [1.0.15](https://github.com/poppinss/edge-parser/compare/v1.0.14...v1.0.15) (2018-07-10)
 
