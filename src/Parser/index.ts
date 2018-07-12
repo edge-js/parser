@@ -33,7 +33,7 @@ export class Parser {
     ecmaVersion: 7,
   }
 
-  constructor (public tags: { [key: string]: ITag }, private options: parserOptions) {
+  constructor (public tags: { [key: string]: ITag }, public options: parserOptions) {
   }
 
   /**
@@ -107,9 +107,15 @@ export class Parser {
    * can be invoked using `new Function` keyword.
    */
   public parseTemplate (template: string, wrapAsFunction: boolean = true): string {
-    const buffer = new EdgeBuffer()
     const tokens = this.generateTokens(template)
+    return this.parseTokens(tokens)
+  }
 
+  /**
+   * Parses the lexer token to form a compiled template.
+   */
+  public parseTokens (tokens, wrapAsFunction: boolean = true): string {
+    const buffer = new EdgeBuffer()
     tokens.forEach((token) => (this.processToken(token, buffer)))
     return buffer.flush(wrapAsFunction)
   }
