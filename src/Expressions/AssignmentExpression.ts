@@ -3,7 +3,7 @@
  */
 
 export default {
-  toStatement (statement, parser) {
+  toStatement (statement) {
     return statement
   },
 }

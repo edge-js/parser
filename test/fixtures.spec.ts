@@ -7,14 +7,14 @@
 * file that was distributed with this source code.
 */
 
+import '../assert-extend'
+
 import * as test from 'japa'
 import { readdirSync, readFileSync, statSync } from 'fs'
 import { join } from 'path'
 import { EOL } from 'os'
 
 import { Parser } from '../src/Parser'
-import { EdgeBuffer } from '../src/EdgeBuffer'
-import { IBlockNode } from 'edge-lexer/build/src/Contracts'
 
 const basePath = join(__dirname, '../fixtures')
 
@@ -23,9 +23,13 @@ const tags = {
     public static block = true
     public static seekable = true
     public static selfclosed = false
-    public static compile (parser: Parser, buffer: EdgeBuffer, tag: IBlockNode) {
+    public static compile () {
     }
   },
+}
+
+function normalizeNewLines (value) {
+  return value.replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
 }
 
 test.group('Fixtures', () => {
@@ -38,7 +42,7 @@ test.group('Fixtures', () => {
 
     test(dir, (assert) => {
       const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
-      const out = readFileSync(join(dirBasePath, 'index.js'), 'utf-8').replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
+      const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 
       const parser = new Parser(tags, { filename: join(dirBasePath, 'index.edge') })
       const output = parser.parseTemplate(template)

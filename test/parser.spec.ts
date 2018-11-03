@@ -10,15 +10,14 @@
 import * as test from 'japa'
 import * as dedent from 'dedent'
 import { Parser } from '../src/Parser'
-import { EdgeBuffer } from '../src/EdgeBuffer'
-import { IBlockNode, IMustacheNode } from 'edge-lexer/build/src/Contracts'
+import { IMustacheNode } from 'edge-lexer/build/src/Contracts'
 
 const tags = {
   if: class If {
     public static block = true
     public static seekable = true
     public static selfclosed = false
-    public static compile (parser: Parser, buffer: EdgeBuffer, tag: IBlockNode) {
+    public static compile () {
     }
   },
 }
@@ -80,7 +79,10 @@ test.group('Parser', () => {
 
     const tokens = parser.generateTokens(template)
     const mustacheToken = tokens.find((token) => token.type === 'mustache')
-    const mustacheExpression = parser.parseJsArg((mustacheToken as IMustacheNode).properties.jsArg, (mustacheToken as IMustacheNode).lineno)
+    const mustacheExpression = parser.parseJsArg(
+      (mustacheToken as IMustacheNode).properties.jsArg,
+      (mustacheToken as IMustacheNode).lineno,
+    )
 
     assert.equal(mustacheExpression.loc.start.line, 4)
     assert.equal(mustacheExpression.callee.loc.start.line, 4)

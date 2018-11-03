@@ -106,7 +106,7 @@ export class Parser {
    * Parses the template string to a function string, which
    * can be invoked using `new Function` keyword.
    */
-  public parseTemplate (template: string, wrapAsFunction: boolean = true): string {
+  public parseTemplate (template: string): string {
     const tokens = this.generateTokens(template)
     return this.parseTokens(tokens)
   }
