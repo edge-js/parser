@@ -7,7 +7,7 @@
 * file that was distributed with this source code.
 */
 
-import '../assert-extend'
+import './assert-extend'
 
 import * as test from 'japa'
 import { readdirSync, readFileSync, statSync } from 'fs'
