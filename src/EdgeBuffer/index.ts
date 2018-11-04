@@ -13,6 +13,10 @@
 
 import { EOL } from 'os'
 
+/**
+ * Buffer class to store compiled template lines and form a
+ * callable function from it.
+ */
 export class EdgeBuffer {
   private lines: string = ''
   private indentSpaces: number = 2
@@ -30,8 +34,7 @@ export class EdgeBuffer {
   }
 
   /**
-   * Decrease upcoming line indentation by
-   * 2 spaces
+   * Decrease output by 2 spaces
    */
   public dedent () {
     this.indentSpaces -= 2
@@ -99,6 +102,7 @@ export class EdgeBuffer {
     this.prefixList.forEach((prefix) => {
       returnValue += `${EOL}${prefix}`
     })
+
     returnValue += wrapAsFunction ? `${EOL}})(template, ctx)` : ''
 
     this.lines = ''
