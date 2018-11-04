@@ -5,7 +5,6 @@
   "scripts": {
     "pretest": "npm run lint",
     "test": "nyc node japaFile.js",
-    "posttest": "npm run coverage",
     "build": "npm run compile",
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "commit": "git-cz",
