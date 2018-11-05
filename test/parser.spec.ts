@@ -14,6 +14,11 @@ import * as dedent from 'dedent-js'
 import { Parser } from '../src/Parser'
 import { IMustacheNode, IBlockNode } from 'edge-lexer/build/src/Contracts'
 import * as acorn from 'acorn'
+import { EOL } from 'os'
+
+function normalizeNewLines (value) {
+  return value.replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
+}
 
 const tags = {
   if: class If {
@@ -118,13 +123,13 @@ test.group('Parser', () => {
     const parser = new Parser(tags, { filename: 'foo.edge' })
     const fn = parser.parseTemplate('Hello {{ username }}')
 
-    assert.stringEqual(fn, dedent`(function (template, ctx) {
+    assert.stringEqual(fn, normalizeNewLines(dedent`(function (template, ctx) {
       let out = ''
       out += 'Hello '
       out += \`\${ctx.escape(ctx.resolve('username'))}\`
       out += '\\n'
       return out
-    })(template, ctx)`)
+    })(template, ctx)`))
   })
 
   test('process parser tokens and do not wrap them inside scoped function', (assert) => {
@@ -132,12 +137,12 @@ test.group('Parser', () => {
     const tokens = parser.generateTokens('Hello {{ username }}')
     const output = parser.processTokens(tokens, false)
 
-    assert.stringEqual(output, dedent`\n
+    assert.stringEqual(output, normalizeNewLines(dedent`\n
     ${'  '}let out = ''
     ${'  '}out += 'Hello '
     ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`
     ${'  '}out += '\\n'
-    ${'  '}return out`)
+    ${'  '}return out`))
   })
 
   test('pass tag details to tag implementation when exists', (assert) => {
