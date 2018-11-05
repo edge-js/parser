@@ -77,7 +77,7 @@ Following are examples of `UnaryExpression`.
 ```
 {{ typeof(username) }}
 
-{{ !!username }} 
+{{ !!username }}
 ```
 
 #### BinaryExpression
@@ -148,7 +148,7 @@ Context must have following methods to work with the core parser.
 class Context {
   // Resolve value for a key
   resolve(key: string): any
-  
+
   // make input HTML safe
   escape (input: string): string
 }
@@ -156,7 +156,7 @@ class Context {
 
 ## Change log
 
-The change log can be found in the [CHANGELOG.md](https://github.com/poppinss/edge-parser/CHANGELOG.md) file.
+The change log can be found in the [CHANGELOG.md](CHANGELOG.md) file.
 
 ## Contributing
 
@@ -167,18 +167,18 @@ Everyone is welcome to contribute. Please go through the following guides, befor
 
 
 ## Authors & License
-[thetutlage](https://github.com/thetutlage) and [contributors](https://github.com/poppinss/edge-parser/graphs/contributors).
+[thetutlage](https://github.com/thetutlage) and [contributors](https://github.com/edge-js/parser/graphs/contributors).
 
 MIT License, see the included [MIT](LICENSE.md) file.
 
-[travis-image]: https://img.shields.io/travis/poppinss/edge-parser/master.svg?style=flat-square&logo=travis
-[travis-url]: https://travis-ci.org/poppinss/edge-parser "travis"
+[travis-image]: https://img.shields.io/travis/edge-js/parser/master.svg?style=flat-square&logo=travis
+[travis-url]: https://travis-ci.org/edge-js/parser "travis"
 
-[appveyor-image]: https://img.shields.io/appveyor/ci/thetutlage/edge-parser/master.svg?style=flat-square&logo=appveyor
-[appveyor-url]: https://ci.appveyor.com/project/thetutlage/edge-parser "appveyor"
+[appveyor-image]: https://img.shields.io/appveyor/ci/thetutlage/parser/master.svg?style=flat-square&logo=appveyor
+[appveyor-url]: https://ci.appveyor.com/project/thetutlage/parser "appveyor"
 
-[coveralls-image]: https://img.shields.io/coveralls/poppinss/edge-parser/master.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/github/poppinss/edge-parser "coveralls"
+[coveralls-image]: https://img.shields.io/coveralls/edge-js/parser/master.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/github/edge-js/parser "coveralls"
 
 [npm-image]: https://img.shields.io/npm/v/edge-parser.svg?style=flat-square&logo=npm
 [npm-url]: https://npmjs.org/package/edge-parser "npm"

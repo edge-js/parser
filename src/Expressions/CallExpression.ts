@@ -20,8 +20,8 @@ export default {
       })
     }
 
-    statement.callee = parser.parseStatement(statement.callee)
-    statement.arguments = statement.arguments.map((node) => parser.parseStatement(node))
+    statement.callee = parser.acornToEdgeExpression(statement.callee)
+    statement.arguments = statement.arguments.map((node) => parser.acornToEdgeExpression(node))
     return statement
   },
 }
