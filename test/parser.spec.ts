@@ -7,10 +7,13 @@
  * file that was distributed with this source code.
 */
 
+import './assert-extend'
+
 import * as test from 'japa'
-import * as dedent from 'dedent'
+import * as dedent from 'dedent-js'
 import { Parser } from '../src/Parser'
 import { IMustacheNode } from 'edge-lexer/build/src/Contracts'
+import * as acorn from 'acorn'
 
 const tags = {
   if: class If {
@@ -79,7 +82,7 @@ test.group('Parser', () => {
 
     const tokens = parser.generateTokens(template)
     const mustacheToken = tokens.find((token) => token.type === 'mustache')
-    const mustacheExpression = parser.parseJsArg(
+    const mustacheExpression = parser.parseJsString(
       (mustacheToken as IMustacheNode).properties.jsArg,
       (mustacheToken as IMustacheNode).lineno,
     )
@@ -91,5 +94,49 @@ test.group('Parser', () => {
     assert.equal(mustacheExpression.arguments[0].body.body[0].argument.loc.start.line, 5)
     assert.equal(mustacheExpression.arguments[0].body.body[0].argument.object.loc.start.line, 5)
     assert.equal(mustacheExpression.arguments[0].body.body[0].argument.property.loc.start.line, 5)
+  })
+
+  test('parse acorn statement to edge statement', (assert) => {
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    const ast = acorn.parse('`Hello ${username}`', { locations: true }) as any
+
+    const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
+
+    assert.equal(parsedStatement.type, 'TemplateLiteral')
+  })
+
+  test('convert acorn expression to its string representation', (assert) => {
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    const ast = acorn.parse('`Hello ${username}`', { locations: true }) as any
+
+    const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
+
+    assert.equal(parser.statementToString(parsedStatement), '\`Hello ${ctx.resolve(\'username\')}\`')
+  })
+
+  test('parse template string to invokable function string', (assert) => {
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    const fn = parser.parseTemplate('Hello {{ username }}')
+
+    assert.stringEqual(fn, dedent`(function (template, ctx) {
+      let out = ''
+      out += 'Hello '
+      out += \`\${ctx.escape(ctx.resolve('username'))}\`
+      out += '\\n'
+      return out
+    })(template, ctx)`)
+  })
+
+  test('process parser tokens and do not wrap them inside scoped function', (assert) => {
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    const tokens = parser.generateTokens('Hello {{ username }}')
+    const output = parser.processTokens(tokens, false)
+
+    assert.stringEqual(output, dedent`\n
+    ${'  '}let out = ''
+    ${'  '}out += 'Hello '
+    ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`
+    ${'  '}out += '\\n'
+    ${'  '}return out`)
   })
 })

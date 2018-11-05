@@ -77,7 +77,7 @@ Following are examples of `UnaryExpression`.
 ```
 {{ typeof(username) }}
 
-{{ !!username }} 
+{{ !!username }}
 ```
 
 #### BinaryExpression
@@ -148,7 +148,7 @@ Context must have following methods to work with the core parser.
 class Context {
   // Resolve value for a key
   resolve(key: string): any
-  
+
   // make input HTML safe
   escape (input: string): string
 }

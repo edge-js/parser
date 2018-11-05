@@ -4,9 +4,9 @@
 
 export default {
   toStatement (statement, parser) {
-    statement.test = parser.parseStatement(statement.test)
-    statement.consequent = parser.parseStatement(statement.consequent)
-    statement.alternate = parser.parseStatement(statement.alternate)
+    statement.test = parser.acornToEdgeExpression(statement.test)
+    statement.consequent = parser.acornToEdgeExpression(statement.consequent)
+    statement.alternate = parser.acornToEdgeExpression(statement.alternate)
     return statement
   },
 }

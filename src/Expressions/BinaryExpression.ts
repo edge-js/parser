@@ -4,8 +4,8 @@
 
 export default {
   toStatement (statement, parser) {
-    statement.left = parser.parseStatement(statement.left)
-    statement.right = parser.parseStatement(statement.right)
+    statement.left = parser.acornToEdgeExpression(statement.left)
+    statement.right = parser.acornToEdgeExpression(statement.right)
     return statement
   },
 }

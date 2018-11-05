@@ -44,6 +44,7 @@
     "coveralls": "^3.0.2",
     "cz-conventional-changelog": "^2.1.0",
     "dedent": "^0.7.0",
+    "dedent-js": "^1.0.1",
     "del-cli": "^1.1.0",
     "japa": "^2.0.6",
     "japa-cli": "^1.0.1",

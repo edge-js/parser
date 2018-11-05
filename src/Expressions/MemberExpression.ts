@@ -4,7 +4,7 @@
 
 export default {
   toStatement (statement, parser) {
-    statement.object = parser.parseStatement(statement.object)
+    statement.object = parser.acornToEdgeExpression(statement.object)
     return statement
   },
 }

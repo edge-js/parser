@@ -14,9 +14,9 @@ export default {
       node.shorthand = false
 
       if (node.computed === true) {
-        node.key = parser.parseStatement(node.key)
+        node.key = parser.acornToEdgeExpression(node.key)
       }
-      node.value = parser.parseStatement(node.value)
+      node.value = parser.acornToEdgeExpression(node.value)
       return node
     })
 
