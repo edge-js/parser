@@ -12,7 +12,7 @@ import './assert-extend'
 import * as test from 'japa'
 import * as dedent from 'dedent-js'
 import { Parser } from '../src/Parser'
-import { IMustacheNode } from 'edge-lexer/build/src/Contracts'
+import { IMustacheNode, IBlockNode } from 'edge-lexer/build/src/Contracts'
 import * as acorn from 'acorn'
 
 const tags = {
@@ -138,5 +138,27 @@ test.group('Parser', () => {
     ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`
     ${'  '}out += '\\n'
     ${'  '}return out`)
+  })
+
+  test('pass tag details to tag implementation when exists', (assert) => {
+    assert.plan(2)
+
+    const customTags = {
+      if: class If {
+        public static block = true
+        public static seekable = true
+        public static selfclosed = false
+        public static compile (_parser, _buffer, token: IBlockNode) {
+          assert.equal(token.properties.jsArg, 'username')
+          assert.equal(token.properties.name, 'if')
+        }
+      },
+    }
+
+    const parser = new Parser(customTags, { filename: 'foo.edge' })
+    parser.parseTemplate(dedent`
+    @if(username)
+    @endif
+    `)
   })
 })
