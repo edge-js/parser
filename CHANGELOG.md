@@ -1,3 +1,8 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/edge-js/parser/compare/v1.0.16...v2.0.0) (2018-11-05)
+
+
+
 <a name="1.0.16"></a>
 ## [1.0.16](https://github.com/poppinss/edge-parser/compare/v1.0.15...v1.0.16) (2018-07-12)
 
