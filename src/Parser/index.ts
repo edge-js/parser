@@ -73,6 +73,7 @@ export class Parser {
    * ```
    */
   public acornToEdgeExpression (statement: any): any {
+    console.log(statement.type)
     if (Expressions[statement.type]) {
       return Expressions[statement.type].toStatement(statement, this)
     }
