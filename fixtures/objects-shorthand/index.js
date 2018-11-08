@@ -4,6 +4,5 @@
   username: ctx.resolve('username'),
   age: '22'
 }))}`
-  out += '\n'
   return out
 })(template, ctx)
