@@ -183,7 +183,11 @@ export class Parser {
      * A tag which is escaped, so we can write it as it is
      */
     if (token.type === TagTypes.ETAG) {
-      buffer.writeLine(`@{token.properties.name}(${token.properties.jsArg})`)
+      buffer.writeLine(`\`@${token.properties.name}(${token.properties.jsArg})\``)
+      token.children.forEach((child) => {
+        this.processToken(child, buffer)
+      })
+      buffer.writeLine(`\`@end${token.properties.name}\``)
       return
     }
 
