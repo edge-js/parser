@@ -4,6 +4,5 @@
   out += `${ctx.escape(ctx.resolve('users').map(user => {
   return user.username;
 }))}`
-  out += '\n'
   return out
 })(template, ctx)

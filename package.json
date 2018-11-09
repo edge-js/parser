@@ -34,11 +34,11 @@
     "acorn": "^6.0.4",
     "astring": "^1.3.1",
     "edge-error": "^1.0.1",
-    "edge-lexer": "^1.0.8"
+    "edge-lexer": "^2.0.1"
   },
   "devDependencies": {
     "@adonisjs/mrm-preset": "^1.0.14",
-    "@types/node": "^10.12.2",
+    "@types/node": "^10.12.3",
     "commitizen": "^3.0.4",
     "coveralls": "^3.0.2",
     "cz-conventional-changelog": "^2.1.0",

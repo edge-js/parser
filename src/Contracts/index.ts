@@ -11,15 +11,17 @@
 * file that was distributed with this source code.
 */
 
-import { ITagDefination, IBlockNode } from 'edge-lexer/build/src/Contracts'
+import { ITagToken } from 'edge-lexer/build/src/Contracts'
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
 
-export interface ITag extends ITagDefination {
-  compile (parser: Parser, buffer: EdgeBuffer, token: IBlockNode): void
+export type ITag = {
+  compile (parser: Parser, buffer: EdgeBuffer, token: ITagToken): void,
+  seekable: boolean,
+  block: boolean,
 }
 
-export type ILoc = {
+export type IAcornLoc = {
   start: {
     line: number
     column: number,
