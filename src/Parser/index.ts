@@ -15,13 +15,21 @@ import * as acorn from 'acorn'
 import { generate } from 'astring'
 import { EOL } from 'os'
 import { Tokenizer } from 'edge-lexer'
-import * as Contracts from 'edge-lexer/build/src/Contracts'
 import { EdgeError } from 'edge-error'
+
+import {
+  ILoc,
+  IMustacheToken,
+  ITagToken,
+  MustacheTypes,
+  TagTypes,
+  IToken,
+} from 'edge-lexer/build/src/Contracts'
 
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
-import { ITag, ILoc } from '../Contracts'
+import { ITag, IAcornLoc } from '../Contracts'
 
 type parserOptions = {
   filename: string,
@@ -92,9 +100,18 @@ export class Parser {
    *
    * However, we want to patch it to the it's origin line in the template body.
    */
-  public patchLoc (loc: ILoc, tokenLine: number): void {
-    loc.start.line = (loc.start.line + tokenLine) - 1
-    loc.end.line = (loc.end.line + tokenLine) - 1
+  public patchLoc (loc: IAcornLoc, lexerLoc: ILoc): void {
+    loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
+    loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
+
+    /**
+     * Patch the column also, when it's the first line. The reason we do this, since
+     * the first line in the actual edge file may contain the Javascript expression
+     * at a different column all together
+     */
+    if (loc.start.line === 1) {
+      loc.start.column = loc.start.column + lexerLoc.start.col
+    }
   }
 
   /**
@@ -157,17 +174,25 @@ export class Parser {
      * A block level token (AKA tag). The tag creator defines how to process the
      * tag contents and where to write it's output.
      */
-    if (token.type === 'block') {
-      this.tags[token.properties.name].compile(this, buffer, token as Contracts.IBlockNode)
+    if (token.type === TagTypes.TAG) {
+      this.tags[token.properties.name].compile(this, buffer, token as ITagToken)
       return
     }
 
-    const mustacheToken = token as Contracts.IMustacheNode
+    /**
+     * A tag which is escaped, so we can write it as it is
+     */
+    if (token.type === TagTypes.ETAG) {
+      buffer.writeLine(`@{token.properties.name}(${token.properties.jsArg})`)
+      return
+    }
+
+    const mustacheToken = token as IMustacheToken
 
     /**
      * Token is a mustache node, but is escaped
      */
-    if (mustacheToken.properties.name === Contracts.MustacheType.EMUSTACHE) {
+    if (mustacheToken.type === MustacheTypes.EMUSTACHE) {
       buffer.writeLine(`\`{{${mustacheToken.properties.jsArg}}}\``)
       return
     }
@@ -175,7 +200,7 @@ export class Parser {
     /**
      * Token is a safe mustache node, but is escaped
      */
-    if (mustacheToken.properties.name === Contracts.MustacheType.ESMUSTACHE) {
+    if (mustacheToken.type === MustacheTypes.ESMUSTACHE) {
       buffer.writeLine(`\`{{{${mustacheToken.properties.jsArg}}}}\``)
       return
     }
@@ -184,27 +209,23 @@ export class Parser {
      * Token is a mustache node and must be processed as a Javascript
      * expression
      */
-    if (mustacheToken.type === 'mustache') {
-      const node = this.parseJsString(mustacheToken.properties.jsArg, mustacheToken.lineno)
-
-      /**
-       * If not safe mustache node, then wrap it inside `escape` call
-       */
-      if (mustacheToken.properties.name === Contracts.MustacheType.MUSTACHE) {
-        buffer.writeInterpol(this.statementToString(getCallExpression([node], 'escape')))
-        return
-      }
+    if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(mustacheToken.type) > -1) {
+      const node = this.parseJsString(mustacheToken.properties.jsArg, mustacheToken.loc)
+      const expression = mustacheToken.type === MustacheTypes.MUSTACHE ? getCallExpression([node], 'escape') : node
 
       /**
        * Template literal, so there is no need to wrap it inside another
        * template string
        */
       if (node.type === 'TemplateLiteral') {
-        buffer.writeLine(this.statementToString(node))
+        buffer.writeLine(this.statementToString(expression))
         return
       }
 
-      buffer.writeInterpol(this.statementToString(node))
+      /**
+       * Write as interpolated string
+       */
+      buffer.writeInterpol(this.statementToString(expression))
     }
   }
 
@@ -221,19 +242,26 @@ export class Parser {
    * parse.generateAst('`Hello ${username}`', 1)
    * ```
    */
-  public generateAst (arg: string, lineno: number): any {
+  public generateAst (arg: string, lexerLoc: ILoc): any {
     try {
       const ast = acorn.parse(arg, Object.assign(this.acornArgs, {
         onToken: (token) => {
-          this.patchLoc(token.loc, lineno)
+          this.patchLoc(token.loc, lexerLoc)
         },
       }))
 
       return ast
     } catch (error) {
+      /**
+       * The error loc is not passed via `onToken` event, so need
+       * to patch is here seperately
+       */
+      const line = (error.loc.line + lexerLoc.start.line) - 1
+      const col = error.loc.line === 1 ? error.loc.column + lexerLoc.start.col : error.loc.column
+
       throw new EdgeError(error.message.replace(/\(\d+:\d+\)/, ''), 'E_ACORN_ERROR', {
-        line: (error.loc.line + lineno) - 1,
-        col: error.loc.column,
+        line,
+        col,
         filename: this.options.filename,
       })
     }
@@ -247,7 +275,7 @@ export class Parser {
    * parse.generateTokens('Hello {{ username }}')
    * ```
    */
-  public generateTokens (template: string): Contracts.INode[] {
+  public generateTokens (template: string): IToken[] {
     const tokenizer = new Tokenizer(template, this.tags, this.options)
     tokenizer.parse()
 
@@ -262,8 +290,8 @@ export class Parser {
    * you want todo use [[generateAst]] and [[acornToEdgeExpression]] seperately for some
    * advanced use cases.
    */
-  public parseJsString (arg: string, lineno: number): any {
-    const ast = this.generateAst(arg, lineno)
+  public parseJsString (jsArg: string, loc: ILoc): any {
+    const ast = this.generateAst(jsArg, loc)
     return this.acornToEdgeExpression(ast.body[0])
   }
 

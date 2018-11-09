@@ -1,6 +1,7 @@
 (function (template, ctx) {
   let out = ''
-  out += 'Hello '
+  out += 'This is '
   out += `${ctx.escape(ctx.resolve('username'))}`
+  out += '\'s `pet`.'
   return out
 })(template, ctx)

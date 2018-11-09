@@ -12,7 +12,7 @@ import './assert-extend'
 import * as test from 'japa'
 import * as dedent from 'dedent-js'
 import { Parser } from '../src/Parser'
-import { IMustacheNode, IBlockNode } from 'edge-lexer/build/src/Contracts'
+import { IMustacheToken, ITagToken } from 'edge-lexer/build/src/Contracts'
 import * as acorn from 'acorn'
 import { EOL } from 'os'
 
@@ -88,8 +88,8 @@ test.group('Parser', () => {
     const tokens = parser.generateTokens(template)
     const mustacheToken = tokens.find((token) => token.type === 'mustache')
     const mustacheExpression = parser.parseJsString(
-      (mustacheToken as IMustacheNode).properties.jsArg,
-      (mustacheToken as IMustacheNode).lineno,
+      (mustacheToken as IMustacheToken).properties.jsArg,
+      (mustacheToken as IMustacheToken).loc,
     )
 
     assert.equal(mustacheExpression.loc.start.line, 4)
@@ -127,7 +127,6 @@ test.group('Parser', () => {
       let out = ''
       out += 'Hello '
       out += \`\${ctx.escape(ctx.resolve('username'))}\`
-      out += '\\n'
       return out
     })(template, ctx)`))
   })
@@ -141,7 +140,6 @@ test.group('Parser', () => {
     ${'  '}let out = ''
     ${'  '}out += 'Hello '
     ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`
-    ${'  '}out += '\\n'
     ${'  '}return out`))
   })
 
@@ -153,7 +151,7 @@ test.group('Parser', () => {
         public static block = true
         public static seekable = true
         public static selfclosed = false
-        public static compile (_parser, _buffer, token: IBlockNode) {
+        public static compile (_parser, _buffer, token: ITagToken) {
           assert.equal(token.properties.jsArg, 'username')
           assert.equal(token.properties.name, 'if')
         }
@@ -165,5 +163,49 @@ test.group('Parser', () => {
     @if(username)
     @endif
     `)
+  })
+
+  test('report correct columns in errors inside mustache statement', (assert) => {
+    assert.plan(2)
+
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    try {
+      parser.parseTemplate(dedent`
+        Hello {{ user\ name }}
+      `)
+    } catch ({ message, line, col }) {
+      assert.equal(line, 1)
+      assert.equal(col, 14)
+    }
+  })
+
+  test('report correct columns in errors inside safe mustache statement', (assert) => {
+    assert.plan(2)
+
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    try {
+      parser.parseTemplate(dedent`
+        Hello {{{ user\ name }}}
+      `)
+    } catch ({ message, line, col }) {
+      assert.equal(line, 1)
+      assert.equal(col, 15)
+    }
+  })
+
+  test('report correct columns in errors in multiline mustache', (assert) => {
+    assert.plan(2)
+
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    try {
+      parser.parseTemplate(dedent`
+        Hello {{
+          user username
+        }}
+      `)
+    } catch ({ message, line, col }) {
+      assert.equal(line, 2)
+      assert.equal(col, 7)
+    }
   })
 })
