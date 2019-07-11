@@ -12,7 +12,7 @@ import './assert-extend'
 import * as test from 'japa'
 import * as dedent from 'dedent-js'
 import { Parser } from '../src/Parser'
-import { IMustacheToken, ITagToken } from 'edge-lexer/build/src/Contracts'
+import { MustacheToken, TagToken } from 'edge-lexer/build/src/Contracts'
 import * as acorn from 'acorn'
 import { EOL } from 'os'
 
@@ -88,8 +88,8 @@ test.group('Parser', () => {
     const tokens = parser.generateTokens(template)
     const mustacheToken = tokens.find((token) => token.type === 'mustache')
     const mustacheExpression = parser.parseJsString(
-      (mustacheToken as IMustacheToken).properties.jsArg,
-      (mustacheToken as IMustacheToken).loc,
+      (mustacheToken as MustacheToken).properties.jsArg,
+      (mustacheToken as MustacheToken).loc,
     )
 
     assert.equal(mustacheExpression.loc.start.line, 4)
@@ -151,7 +151,7 @@ test.group('Parser', () => {
         public static block = true
         public static seekable = true
         public static selfclosed = false
-        public static compile (_parser, _buffer, token: ITagToken) {
+        public static compile (_parser, _buffer, token: TagToken) {
           assert.equal(token.properties.jsArg, 'username')
           assert.equal(token.properties.name, 'if')
         }

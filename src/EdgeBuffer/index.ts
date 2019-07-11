@@ -1,9 +1,9 @@
 /**
- * @module Parser
+ * @module parser
  */
 
 /*
-* edge-lexer
+* edge-parser
 *
 * (c) Harminder Virk <virk@adonisjs.com>
 *

@@ -1,5 +1,5 @@
 /**
- * @module Parser
+ * @module parser
  */
 
 /*
@@ -11,12 +11,13 @@
 * file that was distributed with this source code.
 */
 
-import { ITagToken } from 'edge-lexer/build/src/Contracts'
+import { TagToken } from 'edge-lexer'
+
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
 
 export type ITag = {
-  compile (parser: Parser, buffer: EdgeBuffer, token: ITagToken): void,
+  compile (parser: Parser, buffer: EdgeBuffer, token: TagToken): void,
   seekable: boolean,
   block: boolean,
 }

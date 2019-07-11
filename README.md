@@ -1,3 +1,29 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Table of contents
+
+- [Edge Parser](#edge-parser)
+  - [Supported Expressions](#supported-expressions)
+      - [Identifier](#identifier)
+      - [Literal](#literal)
+      - [ArrayExpression](#arrayexpression)
+      - [ObjectExpression](#objectexpression)
+      - [UnaryExpression](#unaryexpression)
+      - [BinaryExpression](#binaryexpression)
+      - [LogicalExpression](#logicalexpression)
+      - [MemberExpression](#memberexpression)
+      - [ConditionalExpression](#conditionalexpression)
+      - [CallExpression](#callexpression)
+      - [SequenceExpression](#sequenceexpression)
+      - [TemplateLiteral](#templateliteral)
+      - [ArrowFunctionExpression](#arrowfunctionexpression)
+  - [Context expectations](#context-expectations)
+  - [Change log](#change-log)
+  - [Contributing](#contributing)
+  - [Authors & License](#authors--license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Edge Parser
 
 [![travis-image]][travis-url]

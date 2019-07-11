@@ -1,5 +1,5 @@
 /**
- * @module Parser
+ * @module parser
  */
 
 /*

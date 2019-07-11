@@ -1,5 +1,5 @@
 /**
- * @module Parser
+ * @module parser
  */
 
 /*
@@ -18,22 +18,18 @@ import { Tokenizer } from 'edge-lexer'
 import { EdgeError } from 'edge-error'
 
 import {
-  ILoc,
-  IMustacheToken,
-  ITagToken,
+  LexerLoc,
+  MustacheToken,
+  TagToken,
   MustacheTypes,
   TagTypes,
-  IToken,
+  Token,
 } from 'edge-lexer/build/src/Contracts'
 
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
 import { ITag, IAcornLoc } from '../Contracts'
-
-type parserOptions = {
-  filename: string,
-}
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -63,7 +59,7 @@ export class Parser {
     ecmaVersion: 7,
   }
 
-  constructor (public tags: { [key: string]: ITag }, public options: parserOptions) {
+  constructor (public tags: { [key: string]: ITag }, public options: { filename: string }) {
   }
 
   /**
@@ -100,7 +96,7 @@ export class Parser {
    *
    * However, we want to patch it to the it's origin line in the template body.
    */
-  public patchLoc (loc: IAcornLoc, lexerLoc: ILoc): void {
+  public patchLoc (loc: IAcornLoc, lexerLoc: LexerLoc): void {
     loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
     loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
 
@@ -175,7 +171,7 @@ export class Parser {
      * tag contents and where to write it's output.
      */
     if (token.type === TagTypes.TAG) {
-      this.tags[token.properties.name].compile(this, buffer, token as ITagToken)
+      this.tags[token.properties.name].compile(this, buffer, token as TagToken)
       return
     }
 
@@ -191,7 +187,7 @@ export class Parser {
       return
     }
 
-    const mustacheToken = token as IMustacheToken
+    const mustacheToken = token as MustacheToken
 
     /**
      * Token is a mustache node, but is escaped
@@ -246,7 +242,7 @@ export class Parser {
    * parse.generateAst('`Hello ${username}`', 1)
    * ```
    */
-  public generateAst (arg: string, lexerLoc: ILoc): any {
+  public generateAst (arg: string, lexerLoc: LexerLoc): any {
     try {
       const ast = acorn.parse(arg, Object.assign(this.acornArgs, {
         onToken: (token) => {
@@ -279,7 +275,7 @@ export class Parser {
    * parse.generateTokens('Hello {{ username }}')
    * ```
    */
-  public generateTokens (template: string): IToken[] {
+  public generateTokens (template: string): Token[] {
     const tokenizer = new Tokenizer(template, this.tags, this.options)
     tokenizer.parse()
 
@@ -294,7 +290,7 @@ export class Parser {
    * you want todo use [[generateAst]] and [[acornToEdgeExpression]] seperately for some
    * advanced use cases.
    */
-  public parseJsString (jsArg: string, loc: ILoc): any {
+  public parseJsString (jsArg: string, loc: LexerLoc): any {
     const ast = this.generateAst(jsArg, loc)
     return this.acornToEdgeExpression(ast.body[0])
   }
