@@ -8,4 +8,5 @@
 */
 
 export { Parser } from './src/Parser'
+export { EdgeBuffer } from './src/EdgeBuffer'
 export { ParseTagDefininationContract } from './src/Contracts'
