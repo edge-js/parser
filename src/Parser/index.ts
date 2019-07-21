@@ -184,7 +184,7 @@ export class Parser {
        * Since `jsArg` can span over multiple lines, we split it into multiple lines
        * and write one line at a time to maintain the original shape.
        */
-      const lines = `@${token.properties.name}(${token.properties.jsArg})`.split(EOL)
+      const lines = `@${token.properties.name}(${token.properties.jsArg})`.split('\n')
       lines.forEach((line) => buffer.writeRaw(line))
 
       /**
@@ -204,8 +204,8 @@ export class Parser {
      */
     if ([MustacheTypes.EMUSTACHE, MustacheTypes.ESMUSTACHE].indexOf(token.type) > -1) {
       const lines = token.type === MustacheTypes.EMUSTACHE
-        ? `{{${token.properties.jsArg}}}`.split(EOL)
-        : `{{{${token.properties.jsArg}}}}`.split(EOL)
+        ? `{{${token.properties.jsArg}}}`.split('\n')
+        : `{{{${token.properties.jsArg}}}}`.split('\n')
 
       console.log(lines)
       lines.forEach((line) => buffer.writeRaw(line))
