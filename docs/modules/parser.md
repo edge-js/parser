@@ -4,30 +4,27 @@
 
 # External module: parser
 
-### Index
+## Index
 
-#### Classes
+### Classes
 
 * [EdgeBuffer](../classes/parser.edgebuffer.md)
 * [Parser](../classes/parser.parser-1.md)
 
-#### Type aliases
+### Interfaces
 
-* [IAcornLoc](parser.md#iacornloc)
-* [ITag](parser.md#itag)
+* [ParseTagDefininationContract](../interfaces/parser.parsetagdefininationcontract.md)
+
+### Type aliases
+
+* [AcornLoc](parser.md#acornloc)
 
 ## Type aliases
 
-###  IAcornLoc
+###  AcornLoc
 
-Ƭ **IAcornLoc**: *object*
+Ƭ **AcornLoc**: *object*
 
-#### Type declaration:
-
-___
-
-###  ITag
-
-Ƭ **ITag**: *object*
+Loc node from Acorn
 
 #### Type declaration:

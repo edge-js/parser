@@ -2,8 +2,8 @@
 
 [Globals](README.md) /
 
-### Index
+## Index
 
-#### External modules
+### External modules
 
 * [parser](modules/parser.md)

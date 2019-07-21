@@ -29,18 +29,18 @@ console.log(fn)
 
 * **Parser**
 
-### Index
+## Index
 
-#### Constructors
+### Constructors
 
 * [constructor](parser.parser-1.md#constructor)
 
-#### Properties
+### Properties
 
 * [options](parser.parser-1.md#options)
 * [tags](parser.parser-1.md#tags)
 
-#### Methods
+### Methods
 
 * [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression)
 * [generateAst](parser.parser-1.md#generateast)
@@ -83,7 +83,7 @@ ___
 
 #### Type declaration:
 
-● \[▪ **key**: *string*\]: [ITag](../modules/parser.md#itag)
+● \[▪ **key**: *string*\]: [ParseTagDefininationContract](../interfaces/parser.parsetagdefininationcontract.md)
 
 ## Methods
 
@@ -212,7 +212,7 @@ ___
 
 ###  patchLoc
 
-▸ **patchLoc**(`loc`: [IAcornLoc](../modules/parser.md#iacornloc), `lexerLoc`: `LexerLoc`): *void*
+▸ **patchLoc**(`loc`: [AcornLoc](../modules/parser.md#acornloc), `lexerLoc`: `LexerLoc`): *void*
 
 Patch the loc node of acorn. Acorn generates loc from the expression passed
 to it, which means each expression passed to acorn will have lineno as `0`.
@@ -223,7 +223,7 @@ However, we want to patch it to the it's origin line in the template body.
 
 Name | Type |
 ------ | ------ |
-`loc` | [IAcornLoc](../modules/parser.md#iacornloc) |
+`loc` | [AcornLoc](../modules/parser.md#acornloc) |
 `lexerLoc` | `LexerLoc` |
 
 **Returns:** *void*

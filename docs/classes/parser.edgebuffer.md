@@ -11,13 +11,13 @@ callable function from it.
 
 * **EdgeBuffer**
 
-### Index
+## Index
 
-#### Constructors
+### Constructors
 
 * [constructor](parser.edgebuffer.md#constructor)
 
-#### Methods
+### Methods
 
 * [dedent](parser.edgebuffer.md#dedent)
 * [flush](parser.edgebuffer.md#flush)
