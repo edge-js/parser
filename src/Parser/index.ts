@@ -207,6 +207,7 @@ export class Parser {
         ? `{{${token.properties.jsArg}}}`.split(EOL)
         : `{{{${token.properties.jsArg}}}}`.split(EOL)
 
+      console.log(lines)
       lines.forEach((line) => buffer.writeRaw(line))
       return
     }
