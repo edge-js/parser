@@ -131,6 +131,21 @@ test.group('Parser', () => {
     })(template, ctx)`))
   })
 
+  test('parse multiline template string to invokable function string', (assert) => {
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    const fn = parser.parseTemplate(dedent `He'llo
+      {{ username }}
+    `)
+
+    assert.stringEqual(fn, normalizeNewLines(dedent`(function (template, ctx) {
+      let out = ''
+      out += 'He\\'llo'
+      out += '\\n'
+      out += \`\${ctx.escape(ctx.resolve('username'))}\`
+      return out
+    })(template, ctx)`))
+  })
+
   test('process parser tokens and do not wrap them inside scoped function', (assert) => {
     const parser = new Parser(tags, { filename: 'foo.edge' })
     const tokens = parser.generateTokens('Hello {{ username }}')

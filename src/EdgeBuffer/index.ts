@@ -45,7 +45,7 @@ export class EdgeBuffer {
    */
   public writeRaw (text: string): void {
     text = text.replace(/[']/g, '\\\'')
-    this.lines += `${EOL}${this.getSpace()}${this.outputVar} += '${text}'`
+    this.writeLine(`'${text}'`)
   }
 
   /**

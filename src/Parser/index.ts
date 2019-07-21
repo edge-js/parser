@@ -19,7 +19,6 @@ import { EdgeError } from 'edge-error'
 
 import {
   LexerLoc,
-  MustacheToken,
   TagToken,
   MustacheTypes,
   TagTypes,
@@ -29,7 +28,7 @@ import {
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
-import { ITag, IAcornLoc } from '../Contracts'
+import { ParseTagDefininationContract, AcornLoc } from '../Contracts'
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -59,8 +58,10 @@ export class Parser {
     ecmaVersion: 7,
   }
 
-  constructor (public tags: { [key: string]: ITag }, public options: { filename: string }) {
-  }
+  constructor (
+    public tags: { [key: string]: ParseTagDefininationContract },
+    public options: { filename: string },
+  ) {}
 
   /**
    * Parses an acorn statement further to make it work with Edge eco-system. Since
@@ -96,7 +97,7 @@ export class Parser {
    *
    * However, we want to patch it to the it's origin line in the template body.
    */
-  public patchLoc (loc: IAcornLoc, lexerLoc: LexerLoc): void {
+  public patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
     loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
     loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
 
@@ -179,29 +180,34 @@ export class Parser {
      * A tag which is escaped, so we can write it as it is
      */
     if (token.type === TagTypes.ETAG) {
-      buffer.writeLine(`\`@${token.properties.name}(${token.properties.jsArg})\``)
-      token.children.forEach((child) => {
-        this.processToken(child, buffer)
-      })
-      buffer.writeLine(`\`@end${token.properties.name}\``)
+      /**
+       * Since `jsArg` can span over multiple lines, we split it into multiple lines
+       * and write one line at a time to maintain the original shape.
+       */
+      const lines = `@${token.properties.name}(${token.properties.jsArg})`.split(EOL)
+      lines.forEach((line) => buffer.writeRaw(line))
+
+      /**
+       * Process all inner children of the tag
+       */
+      token.children.forEach((child) => this.processToken(child, buffer))
+
+      /**
+       * Close the tag
+       */
+      buffer.writeRaw(`@end${token.properties.name}`)
       return
     }
 
-    const mustacheToken = token as MustacheToken
-
     /**
-     * Token is a mustache node, but is escaped
+     * Re-write the escaped mustache statements without processing them
      */
-    if (mustacheToken.type === MustacheTypes.EMUSTACHE) {
-      buffer.writeLine(`\`{{${mustacheToken.properties.jsArg}}}\``)
-      return
-    }
+    if ([MustacheTypes.EMUSTACHE, MustacheTypes.ESMUSTACHE].indexOf(token.type) > -1) {
+      const lines = token.type === MustacheTypes.EMUSTACHE
+        ? `{{${token.properties.jsArg}}}`.split(EOL)
+        : `{{{${token.properties.jsArg}}}}`.split(EOL)
 
-    /**
-     * Token is a safe mustache node, but is escaped
-     */
-    if (mustacheToken.type === MustacheTypes.ESMUSTACHE) {
-      buffer.writeLine(`\`{{{${mustacheToken.properties.jsArg}}}}\``)
+      lines.forEach((line) => buffer.writeRaw(line))
       return
     }
 
@@ -209,9 +215,11 @@ export class Parser {
      * Token is a mustache node and must be processed as a Javascript
      * expression
      */
-    if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(mustacheToken.type) > -1) {
-      const node = this.parseJsString(mustacheToken.properties.jsArg, mustacheToken.loc)
-      const expression = mustacheToken.type === MustacheTypes.MUSTACHE ? getCallExpression([node], 'escape') : node
+    if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(token.type) > -1) {
+      const node = this.parseJsString(token.properties.jsArg, token.loc)
+      const expression = token.type === MustacheTypes.MUSTACHE
+        ? getCallExpression([node], 'escape')
+        : node
 
       /**
        * Template literal, so there is no need to wrap it inside another

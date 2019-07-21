@@ -1,8 +1,6 @@
 (function (template, ctx) {
   let out = ''
-  out += '@if('
-  out += '  2 + 2 === 4'
-  out += ')'
+  out += '@if(`i${username}` === \'ivirk\')'
   out += '@endif'
   return out
 })(template, ctx)

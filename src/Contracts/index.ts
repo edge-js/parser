@@ -11,18 +11,18 @@
 * file that was distributed with this source code.
 */
 
-import { TagToken } from 'edge-lexer'
-
+import { TagToken, LexerTagDefinitionContract } from 'edge-lexer'
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
 
-export type ITag = {
-  compile (parser: Parser, buffer: EdgeBuffer, token: TagToken): void,
-  seekable: boolean,
-  block: boolean,
+export interface ParseTagDefininationContract extends LexerTagDefinitionContract {
+  compile (parser: Parser, buffer: EdgeBuffer, token: TagToken): void
 }
 
-export type IAcornLoc = {
+/**
+ * Loc node from Acorn
+ */
+export type AcornLoc = {
   start: {
     line: number
     column: number,
