@@ -51,7 +51,11 @@ Notice of use of `ctx` in the function body. Parser doesn't provide the implemen
 
 ## Supported Expressions
 
-The following expressions are supported by the parser.
+The following expressions are supported by the parser. Can you also access the list of supported expressions as
+
+```js
+import { expressions } from 'edge-parser'
+```
 
 #### Identifier
 
