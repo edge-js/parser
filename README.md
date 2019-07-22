@@ -7,6 +7,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of contents
 
+- [Usage](#usage)
 - [Supported Expressions](#supported-expressions)
     - [Identifier](#identifier)
     - [Literal](#literal)
@@ -28,12 +29,25 @@
 
 This repo is the **parser to convert edge templates** to a self invoked Javascript function. Later you can invoke this function by providing a [context](#context-expectations).
 
-Example:
+## Usage
+Install the package from npm registry as follows:
 
-**Input**
+```sh
+npm i edge-parser
 
-```edge
-Hello {{ username }}
+# yarn
+yarn add edge-parser
+```
+
+and then use it as follows
+
+```js
+import { Parser } from 'edge-parser'
+
+const tagsIfAny = {}
+const parser = new Parser(tagsIfAny, { filename: 'foo.edge' })
+
+parser.parseTemplate(`Hello {{ username }}`)
 ```
 
 **Output**
@@ -44,7 +58,7 @@ Hello {{ username }}
   out += 'Hello '
   out += `${ctx.escape(ctx.resolve('username'))}`
   return out
-})(ctx)
+})(template, ctx)
 ```
 
 Notice of use of `ctx` in the function body. Parser doesn't provide the implementation of `ctx`, the runtime of template engine should provide it.
