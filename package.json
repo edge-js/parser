@@ -32,13 +32,13 @@
     "acorn": "^6.2.1",
     "astring": "^1.4.1",
     "edge-error": "^1.0.2",
-    "edge-lexer": "^2.0.7"
+    "edge-lexer": "^2.0.8"
   },
   "devDependencies": {
     "@adonisjs/mrm-preset": "^2.0.3",
     "@types/node": "^12.6.8",
     "commitizen": "^4.0.3",
-    "cz-conventional-changelog": "^3.0.1",
+    "cz-conventional-changelog": "^3.0.2",
     "dedent-js": "^1.0.1",
     "del-cli": "^2.0.0",
     "doctoc": "^1.4.0",
@@ -52,7 +52,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "typedoc": "^0.14.2",
     "typedoc-plugin-external-module-name": "^2.1.0",
-    "typedoc-plugin-markdown": "^2.0.10",
+    "typedoc-plugin-markdown": "^2.0.11",
     "typescript": "^3.5.3"
   },
   "config": {
