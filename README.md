@@ -8,6 +8,14 @@
 ## Table of contents
 
 - [Usage](#usage)
+- [Parser API](#parser-api)
+    - [generateEdgeExpression(template, lexerLoc)](#generateedgeexpressiontemplate-lexerloc)
+    - [generateAcornExpression(template, lexerLoc)](#generateacornexpressiontemplate-lexerloc)
+    - [generateLexerTokens (template)](#generatelexertokens-template)
+    - [acornToEdgeExpression(expression)](#acorntoedgeexpressionexpression)
+    - [stringifyExpression(expression)](#stringifyexpressionexpression)
+    - [parseTemplate(template)](#parsetemplatetemplate)
+    - [processLexerToken(token, buffer)](#processlexertokentoken-buffer)
 - [Supported Expressions](#supported-expressions)
     - [Identifier](#identifier)
     - [Literal](#literal)
@@ -61,7 +69,138 @@ parser.parseTemplate(`Hello {{ username }}`)
 })(template, ctx)
 ```
 
-Notice of use of `ctx` in the function body. Parser doesn't provide the implementation of `ctx`, the runtime of template engine should provide it.
+> Notice of use of `ctx` in the function body. Parser doesn't provide the implementation of `ctx`, the runtime of template engine should provide it.
+
+## Parser API
+Along with parsing the main template, the parser also exposes the API, that tags can use to selectively parse the content of a tag.
+
+#### generateEdgeExpression(template, lexerLoc)
+Parses a string as a Javascript expression. The output is a valid [Estree expression](https://github.com/estree/estree).
+
+The following example returns a [BinaryExpression](https://astexplorer.net/#/gist/0b6250a81804270a026fe39e3bc33fb6/latest)
+
+```ts
+parser.generateEdgeExpression('2 + 2', {
+  start: { line: 1, col: 1 },
+  end: { line: 1, col: 1 },
+})
+```
+
+#### generateAcornExpression(template, lexerLoc)
+The method is same as `generateEdgeExpression`, instead it will not transform the expression to be compatible with the Edge runtime environment.
+
+This method is helpful, when you want to parse a string to generate it's AST and then cherry pick nested expressions and then process them further.
+
+The following example returns a [BinaryExpression](https://astexplorer.net/#/gist/0b6250a81804270a026fe39e3bc33fb6/latest)
+
+```ts
+parser.generateAcornExpression('2 + 2', {
+  start: { line: 1, col: 1 },
+  end: { line: 1, col: 1 },
+})
+```
+
+#### generateLexerTokens (template)
+Returns an array of [lexer tokens](https://github.com/edge-js/lexer) for the given template. The method is a shortcut to self import the lexer module and then generating tokens.
+
+```ts
+const tokens = parser.generateLexerTokens('Hello {{ username }}')
+```
+
+**Output**
+
+```json
+[
+  {
+    "type": "raw",
+    "line": 1,
+    "value": "Hello "
+  },
+  {
+    "type": "mustache",
+    "loc": {
+      "start": {
+        "line": 1,
+        "col": 8
+      },
+      "end": {
+        "line": 1,
+        "col": 20
+      }
+    },
+    "properties": {
+      "jsArg": " username "
+    }
+  }
+]
+```
+
+#### acornToEdgeExpression(expression)
+Convert an acorn expression to be compatible with the Edge runtime. 
+
+```ts
+const expression = parser.generateAcornExpression('2 + 2', {
+  start: { line: 1, col: 1 },
+  end: { line: 1, col: 1 },
+})
+
+parser.acornToEdgeExpression(expression)
+```
+
+#### stringifyExpression(expression)
+Convert edge or acorn expression back to a string. This is helpful, when you mutate some nodes inside the expression and now want a valid Javascript string out of it.
+
+```ts
+const expression = parser.generateEdgeExpression('2 + 2', {
+  start: { line: 1, col: 1 },
+  end: { line: 1, col: 1 },
+})
+
+expression.left.value = 3
+
+stringifyExpression(expression) // returns 3 + 2
+```
+
+#### parseTemplate(template)
+Parse a template to an invokable function. This is what you will use most of the time.
+
+```ts
+parser.parseTemplate('Hello {{ username }}')
+```
+
+**Output**
+
+```ts
+(function (template, ctx) {
+  let out = ''
+  out += 'Hello '
+  out += `${ctx.escape(ctx.resolve('username'))}`
+  return out
+})(template, ctx)
+```
+
+#### processLexerToken(token, buffer)
+You will often find yourself using this method as a tag author, when you want to recursively process all children of your tag
+
+```ts
+const byPass = {
+  block: true,
+  seekable: false,
+  name: 'bypass',
+
+  compile (parser, buffer, token) {
+    token.children.forEach((child) => parser.processLexerToken(child, buffer))
+  }
+}
+```
+
+and then use it as
+
+```edge
+@bypass
+  Hello {{ username }}
+@endbypass
+```
 
 ## Supported Expressions
 

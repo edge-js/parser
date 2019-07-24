@@ -11,19 +11,12 @@
 * file that was distributed with this source code.
 */
 
+import { EOL } from 'os'
 import * as acorn from 'acorn'
 import { generate } from 'astring'
-import { EOL } from 'os'
-import { Tokenizer } from 'edge-lexer'
 import { EdgeError } from 'edge-error'
-
-import {
-  LexerLoc,
-  TagToken,
-  MustacheTypes,
-  TagTypes,
-  Token,
-} from 'edge-lexer/build/src/Contracts'
+import { LexerLoc } from 'edge-lexer/build/src/Contracts'
+import { Tokenizer, TagToken, MustacheTypes, TagTypes, Token } from 'edge-lexer'
 
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
@@ -53,7 +46,7 @@ import { ParseTagDefininationContract, AcornLoc } from '../Contracts'
  * ```
  */
 export class Parser {
-  private acornArgs: object = {
+  private _acornArgs = {
     locations: true,
     ecmaVersion: 7,
   }
@@ -64,40 +57,12 @@ export class Parser {
   ) {}
 
   /**
-   * Parses an acorn statement further to make it work with Edge eco-system. Since
-   * Acorn is a pure Javascript parser, we need to modify it's expressions to
-   * make them work properly with Edge.
-   *
-   * Also this method will raise an exception, if the expression is not one of
-   * the [whitelisted expressions](/README.md#supported-expressions).
-   *
-   * @example
-   * ```js
-   * const ast = acorn.parse('`Hello ${username}`', { locations: true })
-   * console.log(parser.acornToEdgeExpression(ast.body[0]))
-   * ```
-   */
-  public acornToEdgeExpression (statement: any): any {
-    if (Expressions[statement.type]) {
-      return Expressions[statement.type].toStatement(statement, this)
-    }
-
-    const { type, loc } = statement
-
-    throw new EdgeError(`${type} is not supported`, 'UNALLOWED_EXPRESSION', {
-      line: loc.start.line,
-      col: loc.start.column,
-      filename: this.options.filename,
-    })
-  }
-
-  /**
    * Patch the loc node of acorn. Acorn generates loc from the expression passed
    * to it, which means each expression passed to acorn will have lineno as `0`.
    *
    * However, we want to patch it to the it's origin line in the template body.
    */
-  public patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
+  private _patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
     loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
     loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
 
@@ -112,45 +77,10 @@ export class Parser {
   }
 
   /**
-   * Converts the acorn statement to it's string representation.
-   *
-   * @example
-   * ```js
-   * const ast = acorn.parse('`Hello ${username}`', { locations: true })
-   * const statement = parser.acornToEdgeExpression(ast.body[0])
-   *
-   * console.log(parser.statementToString(statement))
-   * ```
-   */
-  public statementToString (statement: any): string {
-    return generate(statement)
-  }
-
-  /**
-   * Process ast tokens and write them to the buffer as string. The `wrapAsFunction`
-   * defines, whether or not to wrap the output of template inside a scoped
-   * function.
-   *
-   * @example
-   * ```js
-   * const fs = require('fs')
-   * const template = fs.readFileSync('welcome.edge', 'utf-8')
-   *
-   * const tokens = parser.generateTokens(template)
-   * parser.processTokens(tokens, false)
-   * ```
-   */
-  public processTokens (tokens, wrapAsFunction: boolean = true): string {
-    const buffer = new EdgeBuffer()
-    tokens.forEach((token) => (this.processToken(token, buffer)))
-    return buffer.flush(wrapAsFunction)
-  }
-
-  /**
    * Process a given [edge-lexer](https://github.com/edge-js/lexer) token and
    * write it's output to the edge buffer.
    */
-  public processToken (token, buffer: EdgeBuffer): void {
+  public processLexerToken (token: Token, buffer: EdgeBuffer): void {
     /**
      * Raw node
      */
@@ -190,7 +120,7 @@ export class Parser {
       /**
        * Process all inner children of the tag
        */
-      token.children.forEach((child) => this.processToken(child, buffer))
+      token.children.forEach((child) => this.processLexerToken(child, buffer))
 
       /**
        * Close the tag
@@ -216,7 +146,7 @@ export class Parser {
      * expression
      */
     if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(token.type) > -1) {
-      const node = this.parseJsString(token.properties.jsArg, token.loc)
+      const node = this.generateEdgeExpression(token.properties.jsArg, token.loc)
       const expression = token.type === MustacheTypes.MUSTACHE
         ? getCallExpression([node], 'escape')
         : node
@@ -226,15 +156,73 @@ export class Parser {
        * template string
        */
       if (node.type === 'TemplateLiteral') {
-        buffer.writeLine(this.statementToString(expression))
+        buffer.writeLine(this.stringifyExpression(expression))
         return
       }
 
       /**
        * Write as interpolated string
        */
-      buffer.writeInterpol(this.statementToString(expression))
+      buffer.writeInterpol(this.stringifyExpression(expression))
     }
+  }
+
+  /**
+   * Generate lexer tokens for a given template string.
+   *
+   * @example
+   * ```js
+   * parse.generateLexerTokens('Hello {{ username }}')
+   * ```
+   */
+  public generateLexerTokens (template: string): Token[] {
+    const tokenizer = new Tokenizer(template, this.tags, this.options)
+    tokenizer.parse()
+
+    return tokenizer.tokens
+  }
+
+  /**
+   * Parses an acorn statement further to make it work with Edge eco-system. Since
+   * Acorn is a pure Javascript parser, we need to modify it's expressions to
+   * make them work properly with Edge.
+   *
+   * Also this method will raise an exception, if the expression is not one of
+   * the [whitelisted expressions](/README.md#supported-expressions).
+   *
+   * @example
+   * ```js
+   * const ast = acorn.parse('`Hello ${username}`', { locations: true })
+   * console.log(parser.acornToEdgeExpression(ast.body[0]))
+   * ```
+   */
+  public acornToEdgeExpression (expression: any): any {
+    if (Expressions[expression.type]) {
+      return Expressions[expression.type].toStatement(expression, this)
+    }
+
+    const { type, loc } = expression
+
+    throw new EdgeError(`${type} is not supported`, 'E_UNALLOWED_EXPRESSION', {
+      line: loc.start.line,
+      col: loc.start.column,
+      filename: this.options.filename,
+    })
+  }
+
+  /**
+   * Converts the acorn statement to it's string representation.
+   *
+   * @example
+   * ```js
+   * const ast = acorn.parse('`Hello ${username}`', { locations: true })
+   * const statement = parser.stringifyExpression(ast.body[0])
+   *
+   * console.log(parser.stringifyExpression(statement))
+   * ```
+   */
+  public stringifyExpression (expression: any): string {
+    return generate(expression)
   }
 
   /**
@@ -244,21 +232,23 @@ export class Parser {
    * 1. It will patch the `loc` node of acorn to match the lineno within the template
    *    body.
    * 2. Patches the `loc` in acorn exceptions.
+   * 3. Returns the first expression in the Node.body
    *
    * @example
    * ```
-   * parse.generateAst('`Hello ${username}`', 1)
+   * const expression = parse.generateAcornExpression('`Hello ${username}`', 1)
+   * console.log(expression.type)
    * ```
    */
-  public generateAst (arg: string, lexerLoc: LexerLoc): any {
+  public generateAcornExpression (arg: string, lexerLoc: LexerLoc): any {
     try {
-      const ast = acorn.parse(arg, Object.assign(this.acornArgs, {
+      const ast = acorn.parse(arg, Object.assign(this._acornArgs, {
         onToken: (token) => {
-          this.patchLoc(token.loc, lexerLoc)
+          this._patchLoc(token.loc, lexerLoc)
         },
       }))
 
-      return ast
+      return ast['body'][0]
     } catch (error) {
       /**
        * The error loc is not passed via `onToken` event, so need
@@ -276,31 +266,15 @@ export class Parser {
   }
 
   /**
-   * Generate lexer tokens for a given template string.
-   *
-   * @example
-   * ```js
-   * parse.generateTokens('Hello {{ username }}')
-   * ```
-   */
-  public generateTokens (template: string): Token[] {
-    const tokenizer = new Tokenizer(template, this.tags, this.options)
-    tokenizer.parse()
-
-    return tokenizer.tokens
-  }
-
-  /**
    * Parses a string by generating it's AST using `acorn` and then processing
    * the statement using [[acornToEdgeExpression]] method.
    *
    * As a **tag creator**, this is the method you will need most of the time, unless
-   * you want todo use [[generateAst]] and [[acornToEdgeExpression]] seperately for some
-   * advanced use cases.
+   * you want todo use [[generateAcornExpression]] and [[acornToEdgeExpression]] seperately
+   * for some advanced use cases.
    */
-  public parseJsString (jsArg: string, loc: LexerLoc): any {
-    const ast = this.generateAst(jsArg, loc)
-    return this.acornToEdgeExpression(ast.body[0])
+  public generateEdgeExpression (jsArg: string, loc: LexerLoc): any {
+    return this.acornToEdgeExpression(this.generateAcornExpression(jsArg, loc))
   }
 
   /**
@@ -316,8 +290,12 @@ export class Parser {
    * console.log(fn)
    * ```
    */
-  public parseTemplate (template: string): string {
-    const tokens = this.generateTokens(template)
-    return this.processTokens(tokens)
+  public parseTemplate (template: string, wrapAsFunction = false): string {
+    const buffer = new EdgeBuffer()
+
+    const tokens = this.generateLexerTokens(template)
+    tokens.forEach((token) => (this.processLexerToken(token, buffer)))
+
+    return buffer.flush(wrapAsFunction)
   }
 }

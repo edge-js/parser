@@ -4,6 +4,8 @@
 
 # Interface: ParseTagDefininationContract
 
+The parser needs the `compile` method on every tag
+
 ## Hierarchy
 
 * `LexerTagDefinitionContract`

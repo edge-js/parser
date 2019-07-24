@@ -85,9 +85,9 @@ test.group('Parser', () => {
     }}
     `
 
-    const tokens = parser.generateTokens(template)
+    const tokens = parser.generateLexerTokens(template)
     const mustacheToken = tokens.find((token) => token.type === 'mustache')
-    const mustacheExpression = parser.parseJsString(
+    const mustacheExpression = parser.generateEdgeExpression(
       (mustacheToken as MustacheToken).properties.jsArg,
       (mustacheToken as MustacheToken).loc,
     )
@@ -116,7 +116,7 @@ test.group('Parser', () => {
 
     const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
 
-    assert.equal(parser.statementToString(parsedStatement), '\`Hello ${ctx.resolve(\'username\')}\`')
+    assert.equal(parser.stringifyExpression(parsedStatement), '\`Hello ${ctx.resolve(\'username\')}\`')
   })
 
   test('parse template string to invokable function string', (assert) => {
@@ -148,8 +148,7 @@ test.group('Parser', () => {
 
   test('process parser tokens and do not wrap them inside scoped function', (assert) => {
     const parser = new Parser(tags, { filename: 'foo.edge' })
-    const tokens = parser.generateTokens('Hello {{ username }}')
-    const output = parser.processTokens(tokens, false)
+    const output = parser.parseTemplate('Hello {{ username }}', false)
 
     assert.stringEqual(output, normalizeNewLines(dedent`\n
     ${'  '}let out = '';

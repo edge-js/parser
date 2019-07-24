@@ -43,14 +43,12 @@ console.log(fn)
 ### Methods
 
 * [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression)
-* [generateAst](parser.parser-1.md#generateast)
-* [generateTokens](parser.parser-1.md#generatetokens)
-* [parseJsString](parser.parser-1.md#parsejsstring)
+* [generateAcornExpression](parser.parser-1.md#generateacornexpression)
+* [generateEdgeExpression](parser.parser-1.md#generateedgeexpression)
+* [generateLexerTokens](parser.parser-1.md#generatelexertokens)
 * [parseTemplate](parser.parser-1.md#parsetemplate)
-* [patchLoc](parser.parser-1.md#patchloc)
-* [processToken](parser.parser-1.md#processtoken)
-* [processTokens](parser.parser-1.md#processtokens)
-* [statementToString](parser.parser-1.md#statementtostring)
+* [processLexerToken](parser.parser-1.md#processlexertoken)
+* [stringifyExpression](parser.parser-1.md#stringifyexpression)
 
 ## Constructors
 
@@ -89,7 +87,7 @@ ___
 
 ###  acornToEdgeExpression
 
-▸ **acornToEdgeExpression**(`statement`: any): *any*
+▸ **acornToEdgeExpression**(`expression`: any): *any*
 
 Parses an acorn statement further to make it work with Edge eco-system. Since
 Acorn is a pure Javascript parser, we need to modify it's expressions to
@@ -108,15 +106,15 @@ console.log(parser.acornToEdgeExpression(ast.body[0]))
 
 Name | Type |
 ------ | ------ |
-`statement` | any |
+`expression` | any |
 
 **Returns:** *any*
 
 ___
 
-###  generateAst
+###  generateAcornExpression
 
-▸ **generateAst**(`arg`: string, `lexerLoc`: `LexerLoc`): *any*
+▸ **generateAcornExpression**(`arg`: string, `lexerLoc`: `LexerLoc`): *any*
 
 Generates the ast of a string using Acorn. This method has handful of
 conveniences over using `acorn.parse` directly.
@@ -124,10 +122,12 @@ conveniences over using `acorn.parse` directly.
 1. It will patch the `loc` node of acorn to match the lineno within the template
    body.
 2. Patches the `loc` in acorn exceptions.
+3. Returns the first expression in the Node.body
 
 **`example`** 
 ```
-parse.generateAst('`Hello ${username}`', 1)
+const expression = parse.generateAcornExpression('`Hello ${username}`', 1)
+console.log(expression.type)
 ```
 
 **Parameters:**
@@ -141,37 +141,16 @@ Name | Type |
 
 ___
 
-###  generateTokens
+###  generateEdgeExpression
 
-▸ **generateTokens**(`template`: string): *`Token`[]*
-
-Generate lexer tokens for a given template string.
-
-**`example`** 
-```js
-parse.generateTokens('Hello {{ username }}')
-```
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`template` | string |
-
-**Returns:** *`Token`[]*
-
-___
-
-###  parseJsString
-
-▸ **parseJsString**(`jsArg`: string, `loc`: `LexerLoc`): *any*
+▸ **generateEdgeExpression**(`jsArg`: string, `loc`: `LexerLoc`): *any*
 
 Parses a string by generating it's AST using `acorn` and then processing
 the statement using [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression) method.
 
 As a **tag creator**, this is the method you will need most of the time, unless
-you want todo use [generateAst](parser.parser-1.md#generateast) and [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression) seperately for some
-advanced use cases.
+you want todo use [generateAcornExpression](parser.parser-1.md#generateacornexpression) and [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression) seperately
+for some advanced use cases.
 
 **Parameters:**
 
@@ -184,9 +163,30 @@ Name | Type |
 
 ___
 
+###  generateLexerTokens
+
+▸ **generateLexerTokens**(`template`: string): *`Token`[]*
+
+Generate lexer tokens for a given template string.
+
+**`example`** 
+```js
+parse.generateLexerTokens('Hello {{ username }}')
+```
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`template` | string |
+
+**Returns:** *`Token`[]*
+
+___
+
 ###  parseTemplate
 
-▸ **parseTemplate**(`template`: string): *string*
+▸ **parseTemplate**(`template`: string, `wrapAsFunction`: boolean): *string*
 
 Parse the entire template to a top-level invokable function string.
 
@@ -202,37 +202,18 @@ console.log(fn)
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`template` | string |
+Name | Type | Default |
+------ | ------ | ------ |
+`template` | string | - |
+`wrapAsFunction` | boolean | false |
 
 **Returns:** *string*
 
 ___
 
-###  patchLoc
+###  processLexerToken
 
-▸ **patchLoc**(`loc`: [AcornLoc](../modules/parser.md#acornloc), `lexerLoc`: `LexerLoc`): *void*
-
-Patch the loc node of acorn. Acorn generates loc from the expression passed
-to it, which means each expression passed to acorn will have lineno as `0`.
-
-However, we want to patch it to the it's origin line in the template body.
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`loc` | [AcornLoc](../modules/parser.md#acornloc) |
-`lexerLoc` | `LexerLoc` |
-
-**Returns:** *void*
-
-___
-
-###  processToken
-
-▸ **processToken**(`token`: any, `buffer`: [EdgeBuffer](parser.edgebuffer.md)): *void*
+▸ **processLexerToken**(`token`: `Token`, `buffer`: [EdgeBuffer](parser.edgebuffer.md)): *void*
 
 Process a given [edge-lexer](https://github.com/edge-js/lexer) token and
 write it's output to the edge buffer.
@@ -241,59 +222,31 @@ write it's output to the edge buffer.
 
 Name | Type |
 ------ | ------ |
-`token` | any |
+`token` | `Token` |
 `buffer` | [EdgeBuffer](parser.edgebuffer.md) |
 
 **Returns:** *void*
 
 ___
 
-###  processTokens
+###  stringifyExpression
 
-▸ **processTokens**(`tokens`: any, `wrapAsFunction`: boolean): *string*
-
-Process ast tokens and write them to the buffer as string. The `wrapAsFunction`
-defines, whether or not to wrap the output of template inside a scoped
-function.
-
-**`example`** 
-```js
-const fs = require('fs')
-const template = fs.readFileSync('welcome.edge', 'utf-8')
-
-const tokens = parser.generateTokens(template)
-parser.processTokens(tokens, false)
-```
-
-**Parameters:**
-
-Name | Type | Default |
------- | ------ | ------ |
-`tokens` | any | - |
-`wrapAsFunction` | boolean | true |
-
-**Returns:** *string*
-
-___
-
-###  statementToString
-
-▸ **statementToString**(`statement`: any): *string*
+▸ **stringifyExpression**(`expression`: any): *string*
 
 Converts the acorn statement to it's string representation.
 
 **`example`** 
 ```js
 const ast = acorn.parse('`Hello ${username}`', { locations: true })
-const statement = parser.acornToEdgeExpression(ast.body[0])
+const statement = parser.stringifyExpression(ast.body[0])
 
-console.log(parser.statementToString(statement))
+console.log(parser.stringifyExpression(statement))
 ```
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`statement` | any |
+`expression` | any |
 
 **Returns:** *string*

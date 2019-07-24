@@ -83,7 +83,7 @@ ___
 
 ###  wrap
 
-▸ **wrap**(`suffix`: string, `prefix`: string): *void*
+▸ **wrap**(`prefix`: string, `suffix`: string): *void*
 
 Wrap the final output with a suffix and prefix
 
@@ -91,8 +91,8 @@ Wrap the final output with a suffix and prefix
 
 Name | Type |
 ------ | ------ |
-`suffix` | string |
 `prefix` | string |
+`suffix` | string |
 
 **Returns:** *void*
 
