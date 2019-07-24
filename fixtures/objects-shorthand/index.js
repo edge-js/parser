@@ -1,8 +1,8 @@
 (function (template, ctx) {
-  let out = ''
+  let out = '';
   out += `${ctx.escape(ctx.resolve('toJSON')(ctx, {
   username: ctx.resolve('username'),
   age: '22'
-}))}`
-  return out
+}))}`;
+  return out;
 })(template, ctx)

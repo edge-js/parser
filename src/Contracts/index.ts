@@ -15,6 +15,9 @@ import { TagToken, LexerTagDefinitionContract } from 'edge-lexer'
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
 
+/**
+ * The parser needs the `compile` method on every tag
+ */
 export interface ParseTagDefininationContract extends LexerTagDefinitionContract {
   compile (parser: Parser, buffer: EdgeBuffer, token: TagToken): void
 }

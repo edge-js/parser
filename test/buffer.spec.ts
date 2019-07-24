@@ -17,9 +17,9 @@ test.group('Buffer', () => {
     buff.writeLine(`'hello world'`)
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = ''
-  out += 'hello world'
-  return out
+  let out = '';
+  out += 'hello world';
+  return out;
 })(template, ctx)`)
   })
 
@@ -28,9 +28,9 @@ test.group('Buffer', () => {
     buff.writeRaw('hello world')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = ''
-  out += 'hello world'
-  return out
+  let out = '';
+  out += 'hello world';
+  return out;
 })(template, ctx)`)
   })
 
@@ -39,9 +39,9 @@ test.group('Buffer', () => {
     buff.writeRaw(`'hello world'`)
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = ''
-  out += '\\'hello world\\''
-  return out
+  let out = '';
+  out += '\\'hello world\\'';
+  return out;
 })(template, ctx)`)
   })
 
@@ -50,9 +50,9 @@ test.group('Buffer', () => {
     buff.writeStatement('if (username) {')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = ''
+  let out = '';
   if (username) {
-  return out
+  return out;
 })(template, ctx)`)
   })
 
@@ -65,11 +65,11 @@ test.group('Buffer', () => {
     buff.writeStatement('}')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = ''
+  let out = '';
   if (username) {
-    out += 'hello world'
+    out += 'hello world';
   }
-  return out
+  return out;
 })(template, ctx)`)
   })
 
@@ -78,9 +78,9 @@ test.group('Buffer', () => {
     buff.writeLine(`'hello world'`)
 
     assert.stringEqual(buff.flush(false), `
-  let out = ''
-  out += 'hello world'
-  return out`)
+  let out = '';
+  out += 'hello world';
+  return out;`)
   })
 
   test('wrap inside custom function', (assert) => {
@@ -90,9 +90,9 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(false), `
 return function () {
-  let out = ''
-  out += 'hello world'
-  return out
+  let out = '';
+  out += 'hello world';
+  return out;
 }`)
   })
 })

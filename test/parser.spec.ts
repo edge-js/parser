@@ -124,10 +124,10 @@ test.group('Parser', () => {
     const fn = parser.parseTemplate('Hello {{ username }}')
 
     assert.stringEqual(fn, normalizeNewLines(dedent`(function (template, ctx) {
-      let out = ''
-      out += 'Hello '
-      out += \`\${ctx.escape(ctx.resolve('username'))}\`
-      return out
+      let out = '';
+      out += 'Hello ';
+      out += \`\${ctx.escape(ctx.resolve('username'))}\`;
+      return out;
     })(template, ctx)`))
   })
 
@@ -138,11 +138,11 @@ test.group('Parser', () => {
     `)
 
     assert.stringEqual(fn, normalizeNewLines(dedent`(function (template, ctx) {
-      let out = ''
-      out += 'He\\'llo'
-      out += '\\n'
-      out += \`\${ctx.escape(ctx.resolve('username'))}\`
-      return out
+      let out = '';
+      out += 'He\\'llo';
+      out += '\\n';
+      out += \`\${ctx.escape(ctx.resolve('username'))}\`;
+      return out;
     })(template, ctx)`))
   })
 
@@ -152,10 +152,10 @@ test.group('Parser', () => {
     const output = parser.processTokens(tokens, false)
 
     assert.stringEqual(output, normalizeNewLines(dedent`\n
-    ${'  '}let out = ''
-    ${'  '}out += 'Hello '
-    ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`
-    ${'  '}return out`))
+    ${'  '}let out = '';
+    ${'  '}out += 'Hello ';
+    ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`;
+    ${'  '}return out;`))
   })
 
   test('pass tag details to tag implementation when exists', (assert) => {

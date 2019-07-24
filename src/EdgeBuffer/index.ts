@@ -18,26 +18,34 @@ import { EOL } from 'os'
  * callable function from it.
  */
 export class EdgeBuffer {
-  private lines: string = ''
-  private indentSpaces: number = 2
-  private suffixList: string[] = []
-  private prefixList: string[] = []
+  private _lines: string = ''
+  private _indentSpaces: number = 2
+  private _suffixList: string[] = []
+  private _prefixList: string[] = []
 
   constructor (private outputVar: string = 'out') {
+  }
+
+  /**
+   * Returns the number of spaces to the added to the current line for
+   * pretty identation.
+   */
+  private _getSpaces (): string {
+    return new Array(this._indentSpaces + 1).join(' ')
   }
 
   /**
    * Indent output by 2 spaces
    */
   public indent () {
-    this.indentSpaces += 2
+    this._indentSpaces += 2
   }
 
   /**
    * Decrease output by 2 spaces
    */
   public dedent () {
-    this.indentSpaces -= 2
+    this._indentSpaces -= 2
   }
 
   /**
@@ -52,7 +60,7 @@ export class EdgeBuffer {
    * Write a new line to the output
    */
   public writeLine (text: string): void {
-    this.lines += `${EOL}${this.getSpace()}${this.outputVar} += ${text}`
+    this._lines += `${EOL}${this._getSpaces()}${this.outputVar} += ${text};`
   }
 
   /**
@@ -60,22 +68,22 @@ export class EdgeBuffer {
    * output. `if (something) {` is a statement.
    */
   public writeStatement (text: string): void {
-    this.lines += `${EOL}${this.getSpace()}${text}`
+    this._lines += `${EOL}${this._getSpaces()}${text}`
   }
 
   /**
    * Write string as interpolation to the output
    */
   public writeInterpol (text: string): void {
-    this.lines += `${EOL}${this.getSpace()}${this.outputVar} += \`\${${text}}\``
+    this._lines += `${EOL}${this._getSpaces()}${this.outputVar} += \`\${${text}}\`;`
   }
 
   /**
    * Wrap the final output with a suffix and prefix
    */
-  public wrap (suffix: string, prefix: string): void {
-    this.suffixList.push(suffix)
-    this.prefixList.push(prefix)
+  public wrap (prefix: string, suffix: string): void {
+    this._prefixList.push(prefix)
+    this._suffixList.push(suffix)
   }
 
   /**
@@ -88,38 +96,32 @@ export class EdgeBuffer {
      */
     let returnValue = wrapAsFunction ? '(function (template, ctx) {' : ''
 
-    this.suffixList.forEach((suffix) => {
-      returnValue += `${EOL}${suffix}`
+    /**
+     * Add prefix to the start of the template
+     */
+    this._prefixList.forEach((prefix) => {
+      returnValue += `${EOL}${prefix}`
     })
 
-    returnValue += `${EOL}  let ${this.outputVar} = ''`
-    returnValue += `${this.lines}`
-    returnValue += `${EOL}  return ${this.outputVar}`
+    returnValue += `${EOL}  let ${this.outputVar} = '';`
+    returnValue += `${this._lines}`
+    returnValue += `${EOL}  return ${this.outputVar};`
+
+    /**
+     * Adding suffix before closing the template function
+     */
+    this._suffixList.forEach((suffix) => {
+      returnValue += `${EOL}${suffix}`
+    })
 
     /**
      * Conditional, when needs to be wrapped inside a function
      */
-    this.prefixList.forEach((prefix) => {
-      returnValue += `${EOL}${prefix}`
-    })
-
     returnValue += wrapAsFunction ? `${EOL}})(template, ctx)` : ''
 
-    this.lines = ''
-    this.indentSpaces = 2
+    this._lines = ''
+    this._indentSpaces = 2
 
     return returnValue
-  }
-
-  /**
-   * Returns the number of spaces to the added to the current line for
-   * pretty identation.
-   */
-  private getSpace (): string {
-    let spaces = ''
-    for (let i = 0; i < this.indentSpaces; i++) {
-      spaces += ' '
-    }
-    return spaces
   }
 }

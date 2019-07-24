@@ -1,7 +1,7 @@
 (function (template, ctx) {
-  let out = ''
+  let out = '';
   out += `${ctx.escape(Object.keys({
   username: 'virk'
-}).join(','))}`
-  return out
+}).join(','))}`;
+  return out;
 })(template, ctx)
