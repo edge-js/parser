@@ -205,7 +205,7 @@ console.log(fn)
 Name | Type | Default |
 ------ | ------ | ------ |
 `template` | string | - |
-`wrapAsFunction` | boolean | false |
+`wrapAsFunction` | boolean | true |
 
 **Returns:** *string*
 
