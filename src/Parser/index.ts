@@ -290,7 +290,7 @@ export class Parser {
    * console.log(fn)
    * ```
    */
-  public parseTemplate (template: string, wrapAsFunction = false): string {
+  public parseTemplate (template: string, wrapAsFunction = true): string {
     const buffer = new EdgeBuffer()
 
     const tokens = this.generateLexerTokens(template)
