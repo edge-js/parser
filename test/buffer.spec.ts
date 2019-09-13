@@ -8,7 +8,7 @@
 */
 
 import './assert-extend'
-import * as test from 'japa'
+import test from 'japa'
 import { EdgeBuffer } from '../src/EdgeBuffer'
 
 test.group('Buffer', () => {

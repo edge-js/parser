@@ -9,12 +9,13 @@
 
 import './assert-extend'
 
-import * as test from 'japa'
-import * as dedent from 'dedent-js'
+import test from 'japa'
+import { EOL } from 'os'
+import { parse as acornParse } from 'acorn'
+import dedent from 'dedent-js'
+
 import { Parser } from '../src/Parser'
 import { MustacheToken, TagToken } from 'edge-lexer/build/src/Contracts'
-import * as acorn from 'acorn'
-import { EOL } from 'os'
 
 function normalizeNewLines (value) {
   return value.replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
@@ -103,7 +104,7 @@ test.group('Parser', () => {
 
   test('parse acorn statement to edge statement', (assert) => {
     const parser = new Parser(tags, { filename: 'foo.edge' })
-    const ast = acorn.parse('`Hello ${username}`', { locations: true }) as any
+    const ast = acornParse('`Hello ${username}`', { locations: true }) as any
 
     const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
 
@@ -112,7 +113,7 @@ test.group('Parser', () => {
 
   test('convert acorn expression to its string representation', (assert) => {
     const parser = new Parser(tags, { filename: 'foo.edge' })
-    const ast = acorn.parse('`Hello ${username}`', { locations: true }) as any
+    const ast = acornParse('`Hello ${username}`', { locations: true }) as any
 
     const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
 

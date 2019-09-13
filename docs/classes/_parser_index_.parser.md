@@ -1,8 +1,7 @@
-> **[edge-parser](../README.md)**
-
-[Globals](../README.md) / [parser](../modules/parser.md) / [Parser](parser.parser-1.md) /
+[edge-parser](../README.md) › ["Parser/index"](../modules/_parser_index_.md) › [Parser](_parser_index_.parser.md)
 
 # Class: Parser
+
 
 Edge parser converts template strings to an invokable function. This module
 uses [edge-lexer](https://github.com/edge-js/lexer) to generate a list
@@ -33,28 +32,28 @@ console.log(fn)
 
 ### Constructors
 
-* [constructor](parser.parser-1.md#constructor)
+* [constructor](_parser_index_.parser.md#constructor)
 
 ### Properties
 
-* [options](parser.parser-1.md#options)
-* [tags](parser.parser-1.md#tags)
+* [options](_parser_index_.parser.md#options)
+* [tags](_parser_index_.parser.md#tags)
 
 ### Methods
 
-* [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression)
-* [generateAcornExpression](parser.parser-1.md#generateacornexpression)
-* [generateEdgeExpression](parser.parser-1.md#generateedgeexpression)
-* [generateLexerTokens](parser.parser-1.md#generatelexertokens)
-* [parseTemplate](parser.parser-1.md#parsetemplate)
-* [processLexerToken](parser.parser-1.md#processlexertoken)
-* [stringifyExpression](parser.parser-1.md#stringifyexpression)
+* [acornToEdgeExpression](_parser_index_.parser.md#acorntoedgeexpression)
+* [generateAcornExpression](_parser_index_.parser.md#generateacornexpression)
+* [generateEdgeExpression](_parser_index_.parser.md#generateedgeexpression)
+* [generateLexerTokens](_parser_index_.parser.md#generatelexertokens)
+* [parseTemplate](_parser_index_.parser.md#parsetemplate)
+* [processLexerToken](_parser_index_.parser.md#processlexertoken)
+* [stringifyExpression](_parser_index_.parser.md#stringifyexpression)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new Parser**(`tags`: object, `options`: object): *[Parser](parser.parser-1.md)*
+\+ **new Parser**(`tags`: object, `options`: object): *[Parser](_parser_index_.parser.md)*
 
 **Parameters:**
 
@@ -63,7 +62,7 @@ Name | Type |
 `tags` | object |
 `options` | object |
 
-**Returns:** *[Parser](parser.parser-1.md)*
+**Returns:** *[Parser](_parser_index_.parser.md)*
 
 ## Properties
 
@@ -81,7 +80,7 @@ ___
 
 #### Type declaration:
 
-● \[▪ **key**: *string*\]: [ParseTagDefininationContract](../interfaces/parser.parsetagdefininationcontract.md)
+* \[ **key**: *string*\]: [ParseTagDefininationContract](../interfaces/_contracts_index_.parsetagdefininationcontract.md)
 
 ## Methods
 
@@ -114,7 +113,7 @@ ___
 
 ###  generateAcornExpression
 
-▸ **generateAcornExpression**(`arg`: string, `lexerLoc`: `LexerLoc`): *any*
+▸ **generateAcornExpression**(`arg`: string, `lexerLoc`: LexerLoc): *any*
 
 Generates the ast of a string using Acorn. This method has handful of
 conveniences over using `acorn.parse` directly.
@@ -135,7 +134,7 @@ console.log(expression.type)
 Name | Type |
 ------ | ------ |
 `arg` | string |
-`lexerLoc` | `LexerLoc` |
+`lexerLoc` | LexerLoc |
 
 **Returns:** *any*
 
@@ -143,13 +142,13 @@ ___
 
 ###  generateEdgeExpression
 
-▸ **generateEdgeExpression**(`jsArg`: string, `loc`: `LexerLoc`): *any*
+▸ **generateEdgeExpression**(`jsArg`: string, `loc`: LexerLoc): *any*
 
 Parses a string by generating it's AST using `acorn` and then processing
-the statement using [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression) method.
+the statement using [acornToEdgeExpression](_parser_index_.parser.md#acorntoedgeexpression) method.
 
 As a **tag creator**, this is the method you will need most of the time, unless
-you want todo use [generateAcornExpression](parser.parser-1.md#generateacornexpression) and [acornToEdgeExpression](parser.parser-1.md#acorntoedgeexpression) seperately
+you want todo use [generateAcornExpression](_parser_index_.parser.md#generateacornexpression) and [acornToEdgeExpression](_parser_index_.parser.md#acorntoedgeexpression) seperately
 for some advanced use cases.
 
 **Parameters:**
@@ -157,7 +156,7 @@ for some advanced use cases.
 Name | Type |
 ------ | ------ |
 `jsArg` | string |
-`loc` | `LexerLoc` |
+`loc` | LexerLoc |
 
 **Returns:** *any*
 
@@ -165,7 +164,7 @@ ___
 
 ###  generateLexerTokens
 
-▸ **generateLexerTokens**(`template`: string): *`Token`[]*
+▸ **generateLexerTokens**(`template`: string): *Token[]*
 
 Generate lexer tokens for a given template string.
 
@@ -180,7 +179,7 @@ Name | Type |
 ------ | ------ |
 `template` | string |
 
-**Returns:** *`Token`[]*
+**Returns:** *Token[]*
 
 ___
 
@@ -213,7 +212,7 @@ ___
 
 ###  processLexerToken
 
-▸ **processLexerToken**(`token`: `Token`, `buffer`: [EdgeBuffer](parser.edgebuffer.md)): *void*
+▸ **processLexerToken**(`token`: Token, `buffer`: [EdgeBuffer](_edgebuffer_index_.edgebuffer.md)): *void*
 
 Process a given [edge-lexer](https://github.com/edge-js/lexer) token and
 write it's output to the edge buffer.
@@ -222,8 +221,8 @@ write it's output to the edge buffer.
 
 Name | Type |
 ------ | ------ |
-`token` | `Token` |
-`buffer` | [EdgeBuffer](parser.edgebuffer.md) |
+`token` | Token |
+`buffer` | [EdgeBuffer](_edgebuffer_index_.edgebuffer.md) |
 
 **Returns:** *void*
 

@@ -9,10 +9,10 @@
 
 import './assert-extend'
 
-import * as test from 'japa'
-import { readdirSync, readFileSync, statSync } from 'fs'
-import { join } from 'path'
+import test from 'japa'
 import { EOL } from 'os'
+import { join } from 'path'
+import { readdirSync, readFileSync, statSync } from 'fs'
 
 import { Parser } from '../src/Parser'
 

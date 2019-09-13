@@ -12,7 +12,7 @@
 */
 
 import { EOL } from 'os'
-import * as acorn from 'acorn'
+import { parse as acornParse } from 'acorn'
 import { generate } from 'astring'
 import { EdgeError } from 'edge-error'
 import { LexerLoc } from 'edge-lexer/build/src/Contracts'
@@ -242,7 +242,7 @@ export class Parser {
    */
   public generateAcornExpression (arg: string, lexerLoc: LexerLoc): any {
     try {
-      const ast = acorn.parse(arg, Object.assign(this._acornArgs, {
+      const ast = acornParse(arg, Object.assign(this._acornArgs, {
         onToken: (token) => {
           this._patchLoc(token.loc, lexerLoc)
         },

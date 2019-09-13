@@ -11,7 +11,7 @@
   "scripts": {
     "pretest": "npm run lint",
     "test": "node japaFile.js",
-    "build": "npm run compile && typedoc --theme markdown --excludePrivate --mdHideSources && git add docs",
+    "build": "npm run compile && typedoc --theme markdown --excludePrivate --hideSources && git add docs",
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "commit": "git-cz",
     "test:win": "node ./node_modules/japa-cli/index.js",
@@ -29,31 +29,31 @@
   "author": "virk",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^6.2.1",
+    "acorn": "^7.0.0",
     "astring": "^1.4.1",
-    "edge-error": "^1.0.2",
-    "edge-lexer": "^2.0.8"
+    "edge-error": "^1.0.3",
+    "edge-lexer": "^2.0.9"
   },
   "devDependencies": {
-    "@adonisjs/mrm-preset": "^2.0.3",
-    "@types/node": "^12.6.8",
+    "@adonisjs/mrm-preset": "^2.1.0",
+    "@types/node": "^12.7.5",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^3.0.2",
     "dedent-js": "^1.0.1",
-    "del-cli": "^2.0.0",
+    "del-cli": "^3.0.0",
     "doctoc": "^1.4.0",
-    "husky": "^3.0.1",
-    "japa": "^2.0.10",
+    "husky": "^3.0.5",
+    "japa": "^3.0.1",
     "japa-cli": "^1.0.1",
     "mrm": "^1.2.2",
     "np": "^5.0.3",
     "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
+    "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15.0",
     "typedoc-plugin-external-module-name": "^2.1.0",
-    "typedoc-plugin-markdown": "^2.0.11",
-    "typescript": "^3.5.3"
+    "typedoc-plugin-markdown": "^2.2.1",
+    "typescript": "^3.6.3"
   },
   "config": {
     "commitizen": {

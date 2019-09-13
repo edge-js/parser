@@ -1,8 +1,7 @@
-> **[edge-parser](../README.md)**
-
-[Globals](../README.md) / [parser](../modules/parser.md) / [EdgeBuffer](parser.edgebuffer.md) /
+[edge-parser](../README.md) › ["EdgeBuffer/index"](../modules/_edgebuffer_index_.md) › [EdgeBuffer](_edgebuffer_index_.edgebuffer.md)
 
 # Class: EdgeBuffer
+
 
 Buffer class to store compiled template lines and form a
 callable function from it.
@@ -15,24 +14,24 @@ callable function from it.
 
 ### Constructors
 
-* [constructor](parser.edgebuffer.md#constructor)
+* [constructor](_edgebuffer_index_.edgebuffer.md#constructor)
 
 ### Methods
 
-* [dedent](parser.edgebuffer.md#dedent)
-* [flush](parser.edgebuffer.md#flush)
-* [indent](parser.edgebuffer.md#indent)
-* [wrap](parser.edgebuffer.md#wrap)
-* [writeInterpol](parser.edgebuffer.md#writeinterpol)
-* [writeLine](parser.edgebuffer.md#writeline)
-* [writeRaw](parser.edgebuffer.md#writeraw)
-* [writeStatement](parser.edgebuffer.md#writestatement)
+* [dedent](_edgebuffer_index_.edgebuffer.md#dedent)
+* [flush](_edgebuffer_index_.edgebuffer.md#flush)
+* [indent](_edgebuffer_index_.edgebuffer.md#indent)
+* [wrap](_edgebuffer_index_.edgebuffer.md#wrap)
+* [writeInterpol](_edgebuffer_index_.edgebuffer.md#writeinterpol)
+* [writeLine](_edgebuffer_index_.edgebuffer.md#writeline)
+* [writeRaw](_edgebuffer_index_.edgebuffer.md#writeraw)
+* [writeStatement](_edgebuffer_index_.edgebuffer.md#writestatement)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new EdgeBuffer**(`outputVar`: string): *[EdgeBuffer](parser.edgebuffer.md)*
+\+ **new EdgeBuffer**(`outputVar`: string): *[EdgeBuffer](_edgebuffer_index_.edgebuffer.md)*
 
 **Parameters:**
 
@@ -40,7 +39,7 @@ Name | Type | Default |
 ------ | ------ | ------ |
 `outputVar` | string | "out" |
 
-**Returns:** *[EdgeBuffer](parser.edgebuffer.md)*
+**Returns:** *[EdgeBuffer](_edgebuffer_index_.edgebuffer.md)*
 
 ## Methods
 
