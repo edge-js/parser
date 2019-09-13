@@ -12,7 +12,8 @@
 */
 
 export default {
-  toStatement (statement) {
+  toStatement (statement, parser) {
+    statement.right = parser.acornToEdgeExpression(statement.right)
     return statement
   },
 }
