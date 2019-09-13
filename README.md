@@ -158,7 +158,7 @@ const expression = parser.generateEdgeExpression('2 + 2', {
 
 expression.left.value = 3
 
-stringifyExpression(expression) // returns 3 + 2
+parser.stringifyExpression(expression) // returns 3 + 2
 ```
 
 #### parseTemplate(template)
