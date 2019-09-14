@@ -16,12 +16,12 @@ import { parse as acornParse } from 'acorn'
 import { generate } from 'astring'
 import { EdgeError } from 'edge-error'
 import { LexerLoc } from 'edge-lexer/build/src/Contracts'
-import { Tokenizer, TagToken, MustacheTypes, TagTypes, Token } from 'edge-lexer'
+import { Tokenizer, TagToken, MustacheTypes, TagTypes } from 'edge-lexer'
 
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
-import { ParseTagDefininationContract, AcornLoc } from '../Contracts'
+import { ParseTagDefininationContract, AcornLoc, ExtendedToken } from '../Contracts'
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -51,10 +51,35 @@ export class Parser {
     ecmaVersion: 7,
   }
 
+  /**
+   * Each token that is processed by the parser can also define it's own
+   * filename. This takes it possible to merge tokens of multiple source
+   * files and have the filename as a context on the token.
+   *
+   * Once we find a custom filename on a token, then we will add that filename
+   * to the stack and once we are done processing the token, we will remove
+   * it from stack.
+   */
+  private _tokenFilesStack: string[] = []
+
   constructor (
     public tags: { [key: string]: ParseTagDefininationContract },
     public options: { filename: string },
   ) {}
+
+  private _addFileNameToStack (filename?: string) {
+    if (filename) {
+      this._tokenFilesStack.push(filename)
+    }
+  }
+
+  private _removeFromStack () {
+    this._tokenFilesStack.pop()
+  }
+
+  private _getFileName () {
+    return this._tokenFilesStack[this._tokenFilesStack.length - 1] || this.options.filename
+  }
 
   /**
    * Patch the loc node of acorn. Acorn generates loc from the expression passed
@@ -80,7 +105,7 @@ export class Parser {
    * Process a given [edge-lexer](https://github.com/edge-js/lexer) token and
    * write it's output to the edge buffer.
    */
-  public processLexerToken (token: Token, buffer: EdgeBuffer): void {
+  public processLexerToken (token: ExtendedToken, buffer: EdgeBuffer): void {
     /**
      * Raw node
      */
@@ -102,7 +127,9 @@ export class Parser {
      * tag contents and where to write it's output.
      */
     if (token.type === TagTypes.TAG) {
+      this._addFileNameToStack(token.filename)
       this.tags[token.properties.name].compile(this, buffer, token as TagToken)
+      this._removeFromStack()
       return
     }
 
@@ -110,6 +137,8 @@ export class Parser {
      * A tag which is escaped, so we can write it as it is
      */
     if (token.type === TagTypes.ETAG) {
+      this._addFileNameToStack(token.filename)
+
       /**
        * Since `jsArg` can span over multiple lines, we split it into multiple lines
        * and write one line at a time to maintain the original shape.
@@ -126,6 +155,7 @@ export class Parser {
        * Close the tag
        */
       buffer.writeRaw(`@end${token.properties.name}`)
+      this._removeFromStack()
       return
     }
 
@@ -146,6 +176,8 @@ export class Parser {
      * expression
      */
     if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(token.type) > -1) {
+      this._addFileNameToStack(token.filename)
+
       const node = this.generateEdgeExpression(token.properties.jsArg, token.loc)
       const expression = token.type === MustacheTypes.MUSTACHE
         ? getCallExpression([node], 'escape')
@@ -157,13 +189,11 @@ export class Parser {
        */
       if (node.type === 'TemplateLiteral') {
         buffer.writeLine(this.stringifyExpression(expression))
-        return
+      } else {
+        buffer.writeInterpol(this.stringifyExpression(expression))
       }
 
-      /**
-       * Write as interpolated string
-       */
-      buffer.writeInterpol(this.stringifyExpression(expression))
+      this._removeFromStack()
     }
   }
 
@@ -175,7 +205,7 @@ export class Parser {
    * parse.generateLexerTokens('Hello {{ username }}')
    * ```
    */
-  public generateLexerTokens (template: string): Token[] {
+  public generateLexerTokens (template: string): ExtendedToken[] {
     const tokenizer = new Tokenizer(template, this.tags, this.options)
     tokenizer.parse()
 
@@ -206,7 +236,7 @@ export class Parser {
     throw new EdgeError(`${type} is not supported`, 'E_UNALLOWED_EXPRESSION', {
       line: loc.start.line,
       col: loc.start.column,
-      filename: this.options.filename,
+      filename: this._getFileName(),
     })
   }
 
@@ -260,7 +290,7 @@ export class Parser {
       throw new EdgeError(error.message.replace(/\(\d+:\d+\)/, ''), 'E_ACORN_ERROR', {
         line,
         col,
-        filename: this.options.filename,
+        filename: this._getFileName(),
       })
     }
   }

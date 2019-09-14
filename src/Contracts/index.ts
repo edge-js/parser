@@ -11,7 +11,14 @@
 * file that was distributed with this source code.
 */
 
-import { TagToken, LexerTagDefinitionContract } from 'edge-lexer'
+import {
+  TagToken,
+  LexerTagDefinitionContract,
+  RawToken,
+  NewLineToken,
+  MustacheToken,
+} from 'edge-lexer'
+
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
 
@@ -35,3 +42,30 @@ export type AcornLoc = {
     column: number,
   },
 }
+
+/**
+ * Extended tokens allows a custom filename for each token. This is helpful
+ * when tokens of multiple files are merged together before they are
+ * passed to parser.
+ */
+export type ExtendedNewLineToken = NewLineToken & {
+  filename?: string,
+}
+
+export type ExtendRawToken = RawToken & {
+  filename?: string,
+}
+
+export type ExtendedTagToken = TagToken & {
+  filename?: string,
+  children: ExtendedToken[];
+}
+
+export type ExtendedMustacheToken = MustacheToken & {
+  filename?: string,
+}
+
+export type ExtendedToken = ExtendedNewLineToken |
+  ExtendRawToken |
+  ExtendedTagToken |
+  ExtendedMustacheToken

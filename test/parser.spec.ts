@@ -15,6 +15,8 @@ import { parse as acornParse } from 'acorn'
 import dedent from 'dedent-js'
 
 import { Parser } from '../src/Parser'
+import { EdgeBuffer } from '../src/EdgeBuffer'
+import { ExtendedTagToken } from '../src/Contracts'
 import { MustacheToken, TagToken } from 'edge-lexer/build/src/Contracts'
 
 function normalizeNewLines (value) {
@@ -219,6 +221,87 @@ test.group('Parser', () => {
         }}
       `)
     } catch ({ message, line, col }) {
+      assert.equal(line, 2)
+      assert.equal(col, 7)
+    }
+  })
+
+  test('report filename mentioned on token for mustache', (assert) => {
+    assert.plan(3)
+
+    const parser = new Parser(tags, { filename: 'foo.edge' })
+    try {
+      const tokens = parser.generateLexerTokens(dedent`
+        Hello {{ a..b }}
+      `)
+      tokens[1].filename = 'bar.edge'
+
+      parser.processLexerToken(tokens[1], new EdgeBuffer())
+    } catch ({ stack, line, col }) {
+      assert.equal(stack.split('\n')[1].trim(), 'at (bar.edge:1:11)')
+      assert.equal(line, 1)
+      assert.equal(col, 11)
+    }
+  })
+
+  test('use parent token filename when processing it\'s children', (assert) => {
+    assert.plan(3)
+    const customTags = {
+      if: class If {
+        public static block = true
+        public static seekable = true
+        public static selfclosed = false
+        public static compile (parser: Parser, buffer: EdgeBuffer, token: TagToken) {
+          token.children.forEach((child) => parser.processLexerToken(child, buffer))
+        }
+      },
+    }
+
+    const parser = new Parser(customTags, { filename: 'foo.edge' })
+    try {
+      const tokens = parser.generateLexerTokens(dedent`
+        @if(username)
+          {{ a..b }}
+        @endif
+      `)
+
+      tokens[0].filename = 'bar.edge'
+
+      parser.processLexerToken(tokens[0], new EdgeBuffer())
+    } catch ({ stack, line, col }) {
+      assert.equal(stack.split('\n')[1].trim(), 'at (bar.edge:2:7)')
+      assert.equal(line, 2)
+      assert.equal(col, 7)
+    }
+  })
+
+  test('use children token filename when it\'s explicitly defined', (assert) => {
+    assert.plan(3)
+    const customTags = {
+      if: class If {
+        public static block = true
+        public static seekable = true
+        public static selfclosed = false
+        public static compile (parser: Parser, buffer: EdgeBuffer, token: TagToken) {
+          token.children.forEach((child) => parser.processLexerToken(child, buffer))
+        }
+      },
+    }
+
+    const parser = new Parser(customTags, { filename: 'foo.edge' })
+    try {
+      const tokens = parser.generateLexerTokens(dedent`
+        @if(username)
+          {{ a..b }}
+        @endif
+      `)
+
+      tokens[0].filename = 'bar.edge';
+      (tokens[0] as ExtendedTagToken).children[1].filename = 'baz.edge'
+
+      parser.processLexerToken(tokens[0], new EdgeBuffer())
+    } catch ({ stack, line, col }) {
+      assert.equal(stack.split('\n')[1].trim(), 'at (baz.edge:2:7)')
       assert.equal(line, 2)
       assert.equal(col, 7)
     }
