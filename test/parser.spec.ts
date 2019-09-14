@@ -50,7 +50,7 @@ test.group('Parser', () => {
       parser.parseTemplate(template)
     } catch ({ message, stack }) {
       assert.equal(message, 'ClassDeclaration is not supported')
-      assert.equal(stack.split('\n')[1], '    at (foo.edge:4:2)')
+      assert.equal(stack.split('\n')[1], '    at anonymous (foo.edge:4:2)')
     }
   })
 
@@ -72,7 +72,7 @@ test.group('Parser', () => {
       parser.parseTemplate(template)
     } catch ({ message, stack }) {
       assert.equal(message, 'Unexpected token ')
-      assert.equal(stack.split('\n')[1], '    at (foo.edge:5:16)')
+      assert.equal(stack.split('\n')[1], '    at anonymous (foo.edge:5:16)')
     }
   })
 
@@ -238,7 +238,7 @@ test.group('Parser', () => {
 
       parser.processLexerToken(tokens[1], new EdgeBuffer())
     } catch ({ stack, line, col }) {
-      assert.equal(stack.split('\n')[1].trim(), 'at (bar.edge:1:11)')
+      assert.equal(stack.split('\n')[1].trim(), 'at anonymous (bar.edge:1:11)')
       assert.equal(line, 1)
       assert.equal(col, 11)
     }
@@ -269,7 +269,7 @@ test.group('Parser', () => {
 
       parser.processLexerToken(tokens[0], new EdgeBuffer())
     } catch ({ stack, line, col }) {
-      assert.equal(stack.split('\n')[1].trim(), 'at (bar.edge:2:7)')
+      assert.equal(stack.split('\n')[1].trim(), 'at anonymous (bar.edge:2:7)')
       assert.equal(line, 2)
       assert.equal(col, 7)
     }
@@ -301,7 +301,7 @@ test.group('Parser', () => {
 
       parser.processLexerToken(tokens[0], new EdgeBuffer())
     } catch ({ stack, line, col }) {
-      assert.equal(stack.split('\n')[1].trim(), 'at (baz.edge:2:7)')
+      assert.equal(stack.split('\n')[1].trim(), 'at anonymous (baz.edge:2:7)')
       assert.equal(line, 2)
       assert.equal(col, 7)
     }
