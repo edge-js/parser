@@ -16,7 +16,7 @@ import dedent from 'dedent-js'
 
 import { Parser } from '../src/Parser'
 import { EdgeBuffer } from '../src/EdgeBuffer'
-import { ExtendedTagToken } from '../src/Contracts'
+import { ParserTagToken } from '../src/Contracts'
 import { MustacheToken, TagToken } from 'edge-lexer/build/src/Contracts'
 
 function normalizeNewLines (value) {
@@ -297,7 +297,7 @@ test.group('Parser', () => {
       `)
 
       tokens[0].filename = 'bar.edge';
-      (tokens[0] as ExtendedTagToken).children[1].filename = 'baz.edge'
+      (tokens[0] as ParserTagToken).children[1].filename = 'baz.edge'
 
       parser.processLexerToken(tokens[0], new EdgeBuffer())
     } catch ({ stack, line, col }) {

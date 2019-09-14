@@ -21,7 +21,7 @@ import { Tokenizer, TagToken, MustacheTypes, TagTypes } from 'edge-lexer'
 import { EdgeBuffer } from '../EdgeBuffer'
 import { getCallExpression } from '../utils'
 import * as Expressions from '../Expressions'
-import { ParseTagDefininationContract, AcornLoc, ExtendedToken } from '../Contracts'
+import { ParseTagDefininationContract, AcornLoc, ParserToken } from '../Contracts'
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -105,7 +105,7 @@ export class Parser {
    * Process a given [edge-lexer](https://github.com/edge-js/lexer) token and
    * write it's output to the edge buffer.
    */
-  public processLexerToken (token: ExtendedToken, buffer: EdgeBuffer): void {
+  public processLexerToken (token: ParserToken, buffer: EdgeBuffer): void {
     /**
      * Raw node
      */
@@ -205,7 +205,7 @@ export class Parser {
    * parse.generateLexerTokens('Hello {{ username }}')
    * ```
    */
-  public generateLexerTokens (template: string): ExtendedToken[] {
+  public generateLexerTokens (template: string): ParserToken[] {
     const tokenizer = new Tokenizer(template, this.tags, this.options)
     tokenizer.parse()
 

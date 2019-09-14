@@ -9,7 +9,14 @@
 
 export { Parser } from './src/Parser'
 export { EdgeBuffer } from './src/EdgeBuffer'
-export { ParseTagDefininationContract } from './src/Contracts'
+export {
+  ParserToken,
+  ParserTagToken,
+  ParserRawToken,
+  ParserMustacheToken,
+  ParserNewLineToken,
+  ParseTagDefininationContract,
+} from './src/Contracts'
 import * as ExpressionsList from './src/Expressions'
 
 /**

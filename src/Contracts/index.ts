@@ -44,28 +44,27 @@ export type AcornLoc = {
 }
 
 /**
- * Extended tokens allows a custom filename for each token. This is helpful
+ * ------------------------------------------------------------------------
+ * Parser tokens allows a custom filename for each token. This is helpful
  * when tokens of multiple files are merged together before they are
  * passed to parser.
+ * ------------------------------------------------------------------------
  */
-export type ExtendedNewLineToken = NewLineToken & {
+export type ParserNewLineToken = NewLineToken & {
   filename?: string,
 }
 
-export type ExtendRawToken = RawToken & {
+export type ParserRawToken = RawToken & {
   filename?: string,
 }
 
-export type ExtendedTagToken = TagToken & {
+export type ParserTagToken = TagToken & {
   filename?: string,
-  children: ExtendedToken[];
+  children: ParserToken[];
 }
 
-export type ExtendedMustacheToken = MustacheToken & {
+export type ParserMustacheToken = MustacheToken & {
   filename?: string,
 }
 
-export type ExtendedToken = ExtendedNewLineToken |
-  ExtendRawToken |
-  ExtendedTagToken |
-  ExtendedMustacheToken
+export type ParserToken = ParserNewLineToken | ParserRawToken | ParserTagToken | ParserMustacheToken
