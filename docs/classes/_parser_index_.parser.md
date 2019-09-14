@@ -164,7 +164,7 @@ ___
 
 ###  generateLexerTokens
 
-▸ **generateLexerTokens**(`template`: string): *Token[]*
+▸ **generateLexerTokens**(`template`: string): *[ParserToken](../modules/_contracts_index_.md#parsertoken)[]*
 
 Generate lexer tokens for a given template string.
 
@@ -179,7 +179,7 @@ Name | Type |
 ------ | ------ |
 `template` | string |
 
-**Returns:** *Token[]*
+**Returns:** *[ParserToken](../modules/_contracts_index_.md#parsertoken)[]*
 
 ___
 
@@ -212,7 +212,7 @@ ___
 
 ###  processLexerToken
 
-▸ **processLexerToken**(`token`: Token, `buffer`: [EdgeBuffer](_edgebuffer_index_.edgebuffer.md)): *void*
+▸ **processLexerToken**(`token`: [ParserToken](../modules/_contracts_index_.md#parsertoken), `buffer`: [EdgeBuffer](_edgebuffer_index_.edgebuffer.md)): *void*
 
 Process a given [edge-lexer](https://github.com/edge-js/lexer) token and
 write it's output to the edge buffer.
@@ -221,7 +221,7 @@ write it's output to the edge buffer.
 
 Name | Type |
 ------ | ------ |
-`token` | Token |
+`token` | [ParserToken](../modules/_contracts_index_.md#parsertoken) |
 `buffer` | [EdgeBuffer](_edgebuffer_index_.edgebuffer.md) |
 
 **Returns:** *void*
