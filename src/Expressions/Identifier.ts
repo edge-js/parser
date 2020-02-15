@@ -13,7 +13,6 @@
 
 import { getCallExpression } from '../utils'
 
-/** @hidden */
 const WHITE_LISTED = ['Object', 'ctx']
 
 export default {

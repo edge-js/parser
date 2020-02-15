@@ -46,7 +46,7 @@ import { ParseTagDefininationContract, AcornLoc, ParserToken } from '../Contract
  * ```
  */
 export class Parser {
-  private _acornArgs = {
+  private acornArgs = {
     locations: true,
     ecmaVersion: 7,
   }
@@ -60,25 +60,25 @@ export class Parser {
    * to the stack and once we are done processing the token, we will remove
    * it from stack.
    */
-  private _tokenFilesStack: string[] = []
+  private tokenFilesStack: string[] = []
 
   constructor (
     public tags: { [key: string]: ParseTagDefininationContract },
     public options: { filename: string },
   ) {}
 
-  private _addFileNameToStack (filename?: string) {
+  private addFileNameToStack (filename?: string) {
     if (filename) {
-      this._tokenFilesStack.push(filename)
+      this.tokenFilesStack.push(filename)
     }
   }
 
-  private _removeFromStack () {
-    this._tokenFilesStack.pop()
+  private removeFromStack () {
+    this.tokenFilesStack.pop()
   }
 
-  private _getFileName () {
-    return this._tokenFilesStack[this._tokenFilesStack.length - 1] || this.options.filename
+  private getFileName () {
+    return this.tokenFilesStack[this.tokenFilesStack.length - 1] || this.options.filename
   }
 
   /**
@@ -87,7 +87,7 @@ export class Parser {
    *
    * However, we want to patch it to the it's origin line in the template body.
    */
-  private _patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
+  private patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
     loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
     loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
 
@@ -127,9 +127,9 @@ export class Parser {
      * tag contents and where to write it's output.
      */
     if (token.type === TagTypes.TAG) {
-      this._addFileNameToStack(token.filename)
+      this.addFileNameToStack(token.filename)
       this.tags[token.properties.name].compile(this, buffer, token as TagToken)
-      this._removeFromStack()
+      this.removeFromStack()
       return
     }
 
@@ -137,7 +137,7 @@ export class Parser {
      * A tag which is escaped, so we can write it as it is
      */
     if (token.type === TagTypes.ETAG) {
-      this._addFileNameToStack(token.filename)
+      this.addFileNameToStack(token.filename)
 
       /**
        * Since `jsArg` can span over multiple lines, we split it into multiple lines
@@ -155,7 +155,7 @@ export class Parser {
        * Close the tag
        */
       buffer.writeRaw(`@end${token.properties.name}`)
-      this._removeFromStack()
+      this.removeFromStack()
       return
     }
 
@@ -176,7 +176,7 @@ export class Parser {
      * expression
      */
     if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(token.type) > -1) {
-      this._addFileNameToStack(token.filename)
+      this.addFileNameToStack(token.filename)
 
       const node = this.generateEdgeExpression(token.properties.jsArg, token.loc)
       const expression = token.type === MustacheTypes.MUSTACHE
@@ -193,7 +193,7 @@ export class Parser {
         buffer.writeInterpol(this.stringifyExpression(expression))
       }
 
-      this._removeFromStack()
+      this.removeFromStack()
     }
   }
 
@@ -236,7 +236,7 @@ export class Parser {
     throw new EdgeError(`${type} is not supported`, 'E_UNALLOWED_EXPRESSION', {
       line: loc.start.line,
       col: loc.start.column,
-      filename: this._getFileName(),
+      filename: this.getFileName(),
     })
   }
 
@@ -272,9 +272,9 @@ export class Parser {
    */
   public generateAcornExpression (arg: string, lexerLoc: LexerLoc): any {
     try {
-      const ast = acornParse(arg, Object.assign(this._acornArgs, {
+      const ast = acornParse(arg, Object.assign(this.acornArgs, {
         onToken: (token) => {
-          this._patchLoc(token.loc, lexerLoc)
+          this.patchLoc(token.loc, lexerLoc)
         },
       }))
 
@@ -290,7 +290,7 @@ export class Parser {
       throw new EdgeError(error.message.replace(/\(\d+:\d+\)/, ''), 'E_ACORN_ERROR', {
         line,
         col,
-        filename: this._getFileName(),
+        filename: this.getFileName(),
       })
     }
   }
