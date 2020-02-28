@@ -2,7 +2,6 @@
 
 # Class: Parser
 
-
 Edge parser converts template strings to an invokable function. This module
 uses [edge-lexer](https://github.com/edge-js/lexer) to generate a list
 of tokens and process them against [acorn](https://npm.im/acorn).
@@ -57,10 +56,13 @@ console.log(fn)
 
 **Parameters:**
 
+▪ **tags**: *object*
+
+▪ **options**: *object*
+
 Name | Type |
 ------ | ------ |
-`tags` | object |
-`options` | object |
+`filename` | string |
 
 **Returns:** *[Parser](_parser_index_.parser.md)*
 
@@ -71,6 +73,8 @@ Name | Type |
 • **options**: *object*
 
 #### Type declaration:
+
+* **filename**: *string*
 
 ___
 

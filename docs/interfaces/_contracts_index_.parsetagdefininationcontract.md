@@ -2,7 +2,6 @@
 
 # Interface: ParseTagDefininationContract
 
-
 The parser needs the `compile` method on every tag
 
 ## Hierarchy
@@ -28,7 +27,7 @@ The parser needs the `compile` method on every tag
 
 • **block**: *boolean*
 
-*Inherited from void*
+*Inherited from [ParseTagDefininationContract](_contracts_index_.parsetagdefininationcontract.md).[block](_contracts_index_.parsetagdefininationcontract.md#block)*
 
 ___
 
@@ -36,7 +35,7 @@ ___
 
 • **seekable**: *boolean*
 
-*Inherited from void*
+*Inherited from [ParseTagDefininationContract](_contracts_index_.parsetagdefininationcontract.md).[seekable](_contracts_index_.parsetagdefininationcontract.md#seekable)*
 
 ## Methods
 

@@ -2,7 +2,6 @@
 
 # Class: EdgeBuffer
 
-
 Buffer class to store compiled template lines and form a
 callable function from it.
 

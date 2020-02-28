@@ -2,7 +2,6 @@
 
 # edge-parser
 
-
 ## Index
 
 ### External modules

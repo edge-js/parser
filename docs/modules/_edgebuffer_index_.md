@@ -2,7 +2,6 @@
 
 # External module: "EdgeBuffer/index"
 
-
 ## Index
 
 ### Classes

@@ -2,7 +2,6 @@
 
 # External module: "Contracts/index"
 
-
 ## Index
 
 ### Interfaces
@@ -27,6 +26,18 @@
 Loc node from Acorn
 
 #### Type declaration:
+
+* **end**(): *object*
+
+  * **column**: *number*
+
+  * **line**: *number*
+
+* **start**(): *object*
+
+  * **column**: *number*
+
+  * **line**: *number*
 
 ___
 
