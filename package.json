@@ -29,31 +29,31 @@
   "author": "virk",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^7.0.0",
-    "astring": "^1.4.1",
+    "acorn": "^7.1.0",
+    "astring": "^1.4.3",
     "edge-error": "^1.0.4",
-    "edge-lexer": "^2.0.10"
+    "edge-lexer": "^2.0.11"
   },
   "devDependencies": {
-    "@adonisjs/mrm-preset": "^2.1.0",
-    "@types/node": "^12.7.5",
+    "@adonisjs/mrm-preset": "^2.2.4",
+    "@types/node": "^13.7.6",
     "commitizen": "^4.0.3",
-    "cz-conventional-changelog": "^3.0.2",
+    "cz-conventional-changelog": "^3.1.0",
     "dedent-js": "^1.0.1",
     "del-cli": "^3.0.0",
     "doctoc": "^1.4.0",
-    "husky": "^3.0.5",
+    "husky": "^4.2.3",
     "japa": "^3.0.1",
     "japa-cli": "^1.0.1",
-    "mrm": "^1.2.2",
-    "np": "^5.1.0",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.20.0",
+    "mrm": "^2.1.0",
+    "np": "^5.2.1",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typedoc": "^0.15.0",
-    "typedoc-plugin-external-module-name": "^2.1.0",
-    "typedoc-plugin-markdown": "^2.2.1",
-    "typescript": "^3.6.3"
+    "typedoc": "^0.16.10",
+    "typedoc-plugin-external-module-name": "^3.0.0",
+    "typedoc-plugin-markdown": "^2.2.17",
+    "typescript": "^3.8.2"
   },
   "config": {
     "commitizen": {
