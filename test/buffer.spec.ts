@@ -14,7 +14,7 @@ import { EdgeBuffer } from '../src/EdgeBuffer'
 test.group('Buffer', () => {
   test('write line to the output', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeLine('\'hello world\'')
+    buff.writeStatement('\'hello world\'')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
   let out = '';
@@ -47,7 +47,7 @@ test.group('Buffer', () => {
 
   test('write statement', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeStatement('if (username) {')
+    buff.writeExpression('if (username) {')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
   let out = '';
@@ -58,11 +58,11 @@ test.group('Buffer', () => {
 
   test('indent output', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeStatement('if (username) {')
+    buff.writeExpression('if (username) {')
     buff.indent()
     buff.writeRaw('hello world')
     buff.dedent()
-    buff.writeStatement('}')
+    buff.writeExpression('}')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
   let out = '';
@@ -75,7 +75,7 @@ test.group('Buffer', () => {
 
   test('flush lines without wrapping inside fuction', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeLine('\'hello world\'')
+    buff.writeStatement('\'hello world\'')
 
     assert.stringEqual(buff.flush(false), `
   let out = '';
@@ -85,7 +85,7 @@ test.group('Buffer', () => {
 
   test('wrap inside custom function', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeLine('\'hello world\'')
+    buff.writeStatement('\'hello world\'')
     buff.wrap('return function () {', '}')
 
     assert.stringEqual(buff.flush(false), `

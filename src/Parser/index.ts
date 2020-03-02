@@ -8,9 +8,9 @@
 */
 
 import { EOL } from 'os'
-import { parse as acornParse } from 'acorn'
 import { generate } from 'astring'
 import { EdgeError } from 'edge-error'
+import { parse as acornParse } from 'acorn'
 import { LexerLoc } from 'edge-lexer/build/src/Contracts'
 import { Tokenizer, TagToken, MustacheTypes, TagTypes } from 'edge-lexer'
 
@@ -63,17 +63,26 @@ export class Parser {
     public options: { filename: string },
   ) {}
 
-  private addFileNameToStack (filename?: string) {
+  /**
+   * Pushes a new filename to the stack
+   */
+  private pushFileNameToStack (filename?: string) {
     if (filename) {
       this.tokenFilesStack.push(filename)
     }
   }
 
-  private removeFromStack () {
+  /**
+   * Pops the file name from the filename stack
+   */
+  private popFileNameFromStack () {
     this.tokenFilesStack.pop()
   }
 
-  private getFileName () {
+  /**
+   * Returns the current file name from the file names stack
+   */
+  private getFileNameFromStack () {
     return this.tokenFilesStack[this.tokenFilesStack.length - 1] || this.options.filename
   }
 
@@ -123,17 +132,18 @@ export class Parser {
      * tag contents and where to write it's output.
      */
     if (token.type === TagTypes.TAG) {
-      this.addFileNameToStack(token.filename)
+      this.pushFileNameToStack(token.filename)
       this.tags[token.properties.name].compile(this, buffer, token as TagToken)
-      this.removeFromStack()
+      this.popFileNameFromStack()
       return
     }
 
     /**
-     * A tag which is escaped, so we can write it as it is
+     * A tag which is escaped, so we can write it as it is. Do note the children
+     * inside escaped tags are processed.
      */
     if (token.type === TagTypes.ETAG) {
-      this.addFileNameToStack(token.filename)
+      this.pushFileNameToStack(token.filename)
 
       /**
        * Since `jsArg` can span over multiple lines, we split it into multiple lines
@@ -151,7 +161,7 @@ export class Parser {
        * Close the tag
        */
       buffer.writeRaw(`@end${token.properties.name}`)
-      this.removeFromStack()
+      this.popFileNameFromStack()
       return
     }
 
@@ -172,7 +182,7 @@ export class Parser {
      * expression
      */
     if ([MustacheTypes.SMUSTACHE, MustacheTypes.MUSTACHE].indexOf(token.type) > -1) {
-      this.addFileNameToStack(token.filename)
+      this.pushFileNameToStack(token.filename)
 
       const node = this.generateEdgeExpression(token.properties.jsArg, token.loc)
       const expression = token.type === MustacheTypes.MUSTACHE
@@ -184,12 +194,12 @@ export class Parser {
        * template string
        */
       if (node.type === 'TemplateLiteral') {
-        buffer.writeLine(this.stringifyExpression(expression))
+        buffer.writeStatement(this.stringifyExpression(expression))
       } else {
-        buffer.writeInterpol(this.stringifyExpression(expression))
+        buffer.writeLiteralStatement(this.stringifyExpression(expression))
       }
 
-      this.removeFromStack()
+      this.popFileNameFromStack()
     }
   }
 
@@ -232,7 +242,7 @@ export class Parser {
     throw new EdgeError(`${type} is not supported`, 'E_UNALLOWED_EXPRESSION', {
       line: loc.start.line,
       col: loc.start.column,
-      filename: this.getFileName(),
+      filename: this.getFileNameFromStack(),
     })
   }
 
@@ -286,7 +296,7 @@ export class Parser {
       throw new EdgeError(error.message.replace(/\(\d+:\d+\)/, ''), 'E_ACORN_ERROR', {
         line,
         col,
-        filename: this.getFileName(),
+        filename: this.getFileNameFromStack(),
       })
     }
   }

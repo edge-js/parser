@@ -45,17 +45,17 @@ export class EdgeBuffer {
   }
 
   /**
-   * Writes raw text to the output
+   * Writes raw text to the output variable
    */
   public writeRaw (text: string): void {
     text = text.replace(/[']/g, '\\\'')
-    this.writeLine(`'${text}'`)
+    this.writeStatement(`'${text}'`)
   }
 
   /**
    * Write a new line to the output
    */
-  public writeLine (text: string): void {
+  public writeStatement (text: string): void {
     this.lines += `${EOL}${this.getSpaces()}${this.outputVar} += ${text};`
   }
 
@@ -63,14 +63,14 @@ export class EdgeBuffer {
    * Write a new statement. Statements are not written to the
    * output. `if (something) {` is a statement.
    */
-  public writeStatement (text: string): void {
+  public writeExpression (text: string): void {
     this.lines += `${EOL}${this.getSpaces()}${text}`
   }
 
   /**
-   * Write string as interpolation to the output
+   * Write
    */
-  public writeInterpol (text: string): void {
+  public writeLiteralStatement (text: string): void {
     this.lines += `${EOL}${this.getSpaces()}${this.outputVar} += \`\${${text}}\`;`
   }
 
