@@ -15,14 +15,6 @@ export default {
         node.end += 3
         return node
       })
-
-      const argStart = statement.arguments.length ? statement.arguments[0].start : 0
-      statement.arguments.unshift({
-        type: 'Identifier',
-        start: argStart,
-        end: argStart + 3,
-        name: 'ctx',
-      })
     }
 
     statement.callee = parser.acornToEdgeExpression(statement.callee)
