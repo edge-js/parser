@@ -14,7 +14,7 @@ import { EdgeBuffer } from '../src/EdgeBuffer'
 test.group('Buffer', () => {
   test('write line to the output', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeLine(`'hello world'`)
+    buff.writeLine('\'hello world\'')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
   let out = '';
@@ -36,7 +36,7 @@ test.group('Buffer', () => {
 
   test('escape quotes in raw line', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeRaw(`'hello world'`)
+    buff.writeRaw('\'hello world\'')
 
     assert.stringEqual(buff.flush(), `(function (template, ctx) {
   let out = '';
@@ -75,7 +75,7 @@ test.group('Buffer', () => {
 
   test('flush lines without wrapping inside fuction', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeLine(`'hello world'`)
+    buff.writeLine('\'hello world\'')
 
     assert.stringEqual(buff.flush(false), `
   let out = '';
@@ -85,7 +85,7 @@ test.group('Buffer', () => {
 
   test('wrap inside custom function', (assert) => {
     const buff = new EdgeBuffer()
-    buff.writeLine(`'hello world'`)
+    buff.writeLine('\'hello world\'')
     buff.wrap('return function () {', '}')
 
     assert.stringEqual(buff.flush(false), `

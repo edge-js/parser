@@ -28,7 +28,8 @@ const tags = {
   },
 }
 
-function normalizeNewLines (value) {
+function normalizeNewLines (value: string) {
+  // eslint-disable-next-line @typescript-eslint/quotes
   return value.replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
 }
 

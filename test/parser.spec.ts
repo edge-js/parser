@@ -19,7 +19,8 @@ import { EdgeBuffer } from '../src/EdgeBuffer'
 import { ParserTagToken } from '../src/Contracts'
 import { MustacheToken, TagToken } from 'edge-lexer/build/src/Contracts'
 
-function normalizeNewLines (value) {
+function normalizeNewLines (value: string) {
+  // eslint-disable-next-line @typescript-eslint/quotes
   return value.replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
 }
 
