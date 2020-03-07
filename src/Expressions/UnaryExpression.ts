@@ -7,9 +7,11 @@
 * file that was distributed with this source code.
 */
 
+import { transformAst } from '../Parser/transformAst'
+
 export default {
-  toStatement (statement, parser) {
-    statement.argument = parser.acornToEdgeExpression(statement.argument)
+  toStatement (statement: any, filename: string) {
+    statement.argument = transformAst(statement.argument, filename)
     return statement
   },
 }

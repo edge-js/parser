@@ -11,7 +11,7 @@ import './assert-extend'
 
 import test from 'japa'
 import { EOL } from 'os'
-import { join } from 'path'
+import { join, sep } from 'path'
 import { readdirSync, readFileSync, statSync } from 'fs'
 
 import { Parser } from '../src/Parser'
@@ -46,8 +46,11 @@ test.group('Fixtures', () => {
       const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 
       const parser = new Parser(tags, { filename: join(dirBasePath, 'index.edge') })
-      const output = parser.parseTemplate(template)
-      assert.stringEqual(output, out)
+      const output = parser.parse(template)
+
+      assert.stringEqual(output, out.split('\n').map((line) => {
+        return line.replace('{{ __dirname }}', `${dirBasePath}${sep}`)
+      }).join('\n'))
     })
   })
 })

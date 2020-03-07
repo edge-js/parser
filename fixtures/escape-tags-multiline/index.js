@@ -1,8 +1,14 @@
 (function (template, ctx) {
   let out = '';
-  out += '@if(';
-  out += '  2 + 2 === 4';
-  out += ')';
-  out += '@endif';
+  let edge_debug_line = 1;
+  let edge_filename = '{{ __dirname }}index.edge';
+  try {
+    out += '@if(';
+    out += '  2 + 2 === 4';
+    out += ')';
+    out += '@endif';
+  } catch (error) {
+    ctx.reThrow(error, edge_filename, edge_debug_line);
+  }
   return out;
 })(template, ctx)

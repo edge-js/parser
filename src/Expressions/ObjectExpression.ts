@@ -7,20 +7,22 @@
 * file that was distributed with this source code.
 */
 
+import { transformAst } from '../Parser/transformAst'
+
 export default {
-  toStatement (statement, parser) {
-    statement.properties = statement.properties.map((node) => {
+  toStatement (statement: any, filename: string) {
+    statement.properties = statement.properties.map((node: any) => {
       /**
        * Since we change the structure of node.value, we have to
-       * turn of shorthand objects, so that the astring outputs
+       * turnoff shorthand objects, so that the astring outputs
        * the key name explicitly
        */
       node.shorthand = false
 
       if (node.computed === true) {
-        node.key = parser.acornToEdgeExpression(node.key)
+        node.key = transformAst(node.key, filename)
       }
-      node.value = parser.acornToEdgeExpression(node.value)
+      node.value = transformAst(node.value, filename)
       return node
     })
 

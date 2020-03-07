@@ -7,18 +7,12 @@
 * file that was distributed with this source code.
 */
 
-export default {
-  toStatement (statement, parser) {
-    if (statement.callee.type !== 'MemberExpression') {
-      statement.arguments = statement.arguments.map((node) => {
-        node.start += 3
-        node.end += 3
-        return node
-      })
-    }
+import { transformAst } from '../Parser/transformAst'
 
-    statement.callee = parser.acornToEdgeExpression(statement.callee)
-    statement.arguments = statement.arguments.map((node) => parser.acornToEdgeExpression(node))
+export default {
+  toStatement (statement: any, filename: string) {
+    statement.callee = transformAst(statement.callee, filename)
+    statement.arguments = statement.arguments.map((node: any) => transformAst(node, filename))
     return statement
   },
 }

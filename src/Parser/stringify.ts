@@ -7,10 +7,11 @@
 * file that was distributed with this source code.
 */
 
-import { transformAst } from '../Parser/transformAst'
+import { generate } from 'astring'
 
-export default {
-  toStatement (statement: any, filename: string) {
-    return transformAst(statement.expression, filename)
-  },
+/**
+ * Convert the acorn AST to a Javascript expression string
+ */
+export function stringify (astExpression: any): string {
+  return generate(astExpression)
 }

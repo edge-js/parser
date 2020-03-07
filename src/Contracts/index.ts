@@ -7,13 +7,7 @@
 * file that was distributed with this source code.
 */
 
-import {
-  TagToken,
-  LexerTagDefinitionContract,
-  RawToken,
-  NewLineToken,
-  MustacheToken,
-} from 'edge-lexer'
+import { TagToken, LexerTagDefinitionContract } from 'edge-lexer'
 
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
@@ -21,7 +15,7 @@ import { EdgeBuffer } from '../EdgeBuffer'
 /**
  * The parser needs the `compile` method on every tag
  */
-export interface ParseTagDefininationContract extends LexerTagDefinitionContract {
+export interface ParserTagDefininationContract extends LexerTagDefinitionContract {
   compile (parser: Parser, buffer: EdgeBuffer, token: TagToken): void
 }
 
@@ -38,29 +32,3 @@ export type AcornLoc = {
     column: number,
   },
 }
-
-/**
- * ------------------------------------------------------------------------
- * Parser tokens allows a custom filename for each token. This is helpful
- * when tokens of multiple files are merged together before they are
- * passed to parser.
- * ------------------------------------------------------------------------
- */
-export type ParserNewLineToken = NewLineToken & {
-  filename?: string,
-}
-
-export type ParserRawToken = RawToken & {
-  filename?: string,
-}
-
-export type ParserTagToken = TagToken & {
-  filename?: string,
-  children: ParserToken[];
-}
-
-export type ParserMustacheToken = MustacheToken & {
-  filename?: string,
-}
-
-export type ParserToken = ParserNewLineToken | ParserRawToken | ParserTagToken | ParserMustacheToken

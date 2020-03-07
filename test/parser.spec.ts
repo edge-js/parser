@@ -10,19 +10,11 @@
 import './assert-extend'
 
 import test from 'japa'
-import { EOL } from 'os'
-import { parse as acornParse } from 'acorn'
+import Youch from 'youch'
 import dedent from 'dedent-js'
-
 import { Parser } from '../src/Parser'
 import { EdgeBuffer } from '../src/EdgeBuffer'
-import { ParserTagToken } from '../src/Contracts'
-import { MustacheToken, TagToken } from 'edge-lexer/build/src/Contracts'
-
-function normalizeNewLines (value: string) {
-  // eslint-disable-next-line @typescript-eslint/quotes
-  return value.replace(/out\s\+=\s'\\n'/, `out += ${EOL === '\n' ? `'\\n'` : `'\\r\\n'`}`)
-}
+import { MustacheToken } from 'edge-lexer/build/src/Contracts'
 
 const tags = {
   if: class If {
@@ -35,8 +27,8 @@ const tags = {
 }
 
 test.group('Parser', () => {
-  test('report correct line number when expression is not allowed', (assert) => {
-    assert.plan(2)
+  test('report correct line number when expression is not allowed', async (assert) => {
+    assert.plan(3)
 
     const parser = new Parser(tags, { filename: 'foo.edge' })
     const template = dedent`
@@ -48,15 +40,17 @@ test.group('Parser', () => {
     `
 
     try {
-      parser.parseTemplate(template)
-    } catch ({ message, stack }) {
-      assert.equal(message, 'ClassDeclaration is not supported')
-      assert.equal(stack.split('\n')[1], '    at anonymous (foo.edge:4:2)')
+      parser.parse(template)
+    } catch (error) {
+      const json = await new Youch(error, {}).toJSON()
+      assert.equal(json.error.frames[0].file, 'foo.edge')
+      assert.equal(json.error.frames[0].line, 4)
+      assert.equal(json.error.frames[0].column, 2)
     }
   })
 
-  test('report syntax errors with correct line number', (assert) => {
-    assert.plan(2)
+  test('report compile time syntax errors with correct line number', async (assert) => {
+    assert.plan(3)
 
     const parser = new Parser(tags, { filename: 'foo.edge' })
     const template = dedent`
@@ -70,95 +64,36 @@ test.group('Parser', () => {
     `
 
     try {
-      parser.parseTemplate(template)
-    } catch ({ message, stack }) {
-      assert.equal(message, 'Unexpected token ')
-      assert.equal(stack.split('\n')[1], '    at anonymous (foo.edge:5:16)')
+      parser.parse(template)
+    } catch (error) {
+      const json = await new Youch(error, {}).toJSON()
+      assert.equal(json.error.frames[0].file, 'foo.edge')
+      assert.equal(json.error.frames[0].line, 5)
+      assert.equal(json.error.frames[0].column, 16)
     }
   })
 
-  test('patch line number of all the tokens inside the top level expressions', (assert) => {
-    const parser = new Parser(tags, { filename: 'foo.edge' })
-    const template = dedent`
-    Hello world!
+  test('report runtime errors with correct line number', (assert) => {
+    assert.plan(3)
 
-    The list of friends are {{
-      users.map((user) => {
-        return user.username
-      })
-    }}
+    const parser = new Parser(tags, { filename: 'eval.edge' })
+    const template = dedent`
+      Hello
+      {{ getUser() }}!
     `
 
-    const tokens = parser.generateLexerTokens(template)
-    const mustacheToken = tokens.find((token) => token.type === 'mustache')
-    const mustacheExpression = parser.generateEdgeExpression(
-      (mustacheToken as MustacheToken).properties.jsArg,
-      (mustacheToken as MustacheToken).loc,
-    )
+    const fn = new Function('template', 'ctx', parser.parse(template))
 
-    assert.equal(mustacheExpression.loc.start.line, 4)
-    assert.equal(mustacheExpression.callee.loc.start.line, 4)
-    assert.equal(mustacheExpression.arguments[0].loc.start.line, 4)
-    assert.equal(mustacheExpression.arguments[0].body.body[0].loc.start.line, 5)
-    assert.equal(mustacheExpression.arguments[0].body.body[0].argument.loc.start.line, 5)
-    assert.equal(mustacheExpression.arguments[0].body.body[0].argument.object.loc.start.line, 5)
-    assert.equal(mustacheExpression.arguments[0].body.body[0].argument.property.loc.start.line, 5)
-  })
-
-  test('parse acorn statement to edge statement', (assert) => {
-    const parser = new Parser(tags, { filename: 'foo.edge' })
-    const ast = acornParse('`Hello ${username}`', { locations: true }) as any
-
-    const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
-
-    assert.equal(parsedStatement.type, 'TemplateLiteral')
-  })
-
-  test('convert acorn expression to its string representation', (assert) => {
-    const parser = new Parser(tags, { filename: 'foo.edge' })
-    const ast = acornParse('`Hello ${username}`', { locations: true }) as any
-
-    const parsedStatement = parser.acornToEdgeExpression(ast.body[0])
-
-    assert.equal(parser.stringifyExpression(parsedStatement), '\`Hello ${ctx.resolve(\'username\')}\`')
-  })
-
-  test('parse template string to invokable function string', (assert) => {
-    const parser = new Parser(tags, { filename: 'foo.edge' })
-    const fn = parser.parseTemplate('Hello {{ username }}')
-
-    assert.stringEqual(fn, normalizeNewLines(dedent`(function (template, ctx) {
-      let out = '';
-      out += 'Hello ';
-      out += \`\${ctx.escape(ctx.resolve('username'))}\`;
-      return out;
-    })(template, ctx)`))
-  })
-
-  test('parse multiline template string to invokable function string', (assert) => {
-    const parser = new Parser(tags, { filename: 'foo.edge' })
-    const fn = parser.parseTemplate(dedent `He'llo
-      {{ username }}
-    `)
-
-    assert.stringEqual(fn, normalizeNewLines(dedent`(function (template, ctx) {
-      let out = '';
-      out += 'He\\'llo';
-      out += '\\n';
-      out += \`\${ctx.escape(ctx.resolve('username'))}\`;
-      return out;
-    })(template, ctx)`))
-  })
-
-  test('process parser tokens and do not wrap them inside scoped function', (assert) => {
-    const parser = new Parser(tags, { filename: 'foo.edge' })
-    const output = parser.parseTemplate('Hello {{ username }}', false)
-
-    assert.stringEqual(output, normalizeNewLines(dedent`\n
-    ${'  '}let out = '';
-    ${'  '}out += 'Hello ';
-    ${'  '}out += \`\${ctx.escape(ctx.resolve('username'))}\`;
-    ${'  '}return out;`))
+    fn({}, {
+      resolve () {
+        return undefined
+      },
+      reThrow (error, filename: string, lineNumber: number) {
+        assert.match(error.message, /ctx.resolve\(...\)/)
+        assert.equal(filename, 'eval.edge')
+        assert.equal(lineNumber, 2)
+      },
+    })
   })
 
   test('pass tag details to tag implementation when exists', (assert) => {
@@ -169,7 +104,7 @@ test.group('Parser', () => {
         public static block = true
         public static seekable = true
         public static selfclosed = false
-        public static compile (_parser, _buffer, token: TagToken) {
+        public static compile (_, __, token) {
           assert.equal(token.properties.jsArg, 'username')
           assert.equal(token.properties.name, 'if')
         }
@@ -177,23 +112,25 @@ test.group('Parser', () => {
     }
 
     const parser = new Parser(customTags, { filename: 'foo.edge' })
-    parser.parseTemplate(dedent`
+    parser.parse(dedent`
     @if(username)
     @endif
     `)
   })
 
-  test('report correct columns in errors inside mustache statement', (assert) => {
-    assert.plan(2)
+  test('report correct columns in errors inside mustache statement', async (assert) => {
+    assert.plan(3)
 
     const parser = new Parser(tags, { filename: 'foo.edge' })
     try {
-      parser.parseTemplate(dedent`
+      parser.parse(dedent`
         Hello {{ user\ name }}
       `)
-    } catch ({ message, line, col }) {
-      assert.equal(line, 1)
-      assert.equal(col, 14)
+    } catch (error) {
+      const json = await new Youch(error, {}).toJSON()
+      assert.equal(json.error.frames[0].file, 'foo.edge')
+      assert.equal(json.error.frames[0].line, 1)
+      assert.equal(json.error.frames[0].column, 14)
     }
   })
 
@@ -202,7 +139,7 @@ test.group('Parser', () => {
 
     const parser = new Parser(tags, { filename: 'foo.edge' })
     try {
-      parser.parseTemplate(dedent`
+      parser.parse(dedent`
         Hello {{{ user\ name }}}
       `)
     } catch ({ message, line, col }) {
@@ -211,100 +148,42 @@ test.group('Parser', () => {
     }
   })
 
-  test('report correct columns in errors in multiline mustache', (assert) => {
-    assert.plan(2)
+  test('report correct columns in errors in multiline mustache', async (assert) => {
+    assert.plan(3)
 
     const parser = new Parser(tags, { filename: 'foo.edge' })
     try {
-      parser.parseTemplate(dedent`
+      parser.parse(dedent`
         Hello {{
           user username
         }}
       `)
-    } catch ({ message, line, col }) {
-      assert.equal(line, 2)
-      assert.equal(col, 7)
+    } catch (error) {
+      const json = await new Youch(error, {}).toJSON()
+      assert.equal(json.error.frames[0].file, 'foo.edge')
+      assert.equal(json.error.frames[0].line, 2)
+      assert.equal(json.error.frames[0].column, 7)
     }
   })
 
-  test('report filename mentioned on token for mustache', (assert) => {
+  test('report filename mentioned on token for mustache', async (assert) => {
     assert.plan(3)
 
     const parser = new Parser(tags, { filename: 'foo.edge' })
     try {
-      const tokens = parser.generateLexerTokens(dedent`
+      const tokens = parser.tokenize(dedent`
         Hello {{ a..b }}
       `)
-      tokens[1].filename = 'bar.edge'
 
-      parser.processLexerToken(tokens[1], new EdgeBuffer())
-    } catch ({ stack, line, col }) {
-      assert.equal(stack.split('\n')[1].trim(), 'at anonymous (bar.edge:1:11)')
-      assert.equal(line, 1)
-      assert.equal(col, 11)
-    }
-  })
+      const mustacheToken = (tokens[1] as MustacheToken)
+      mustacheToken.filename = 'bar.edge'
 
-  test('use parent token filename when processing it\'s children', (assert) => {
-    assert.plan(3)
-    const customTags = {
-      if: class If {
-        public static block = true
-        public static seekable = true
-        public static selfclosed = false
-        public static compile (parser: Parser, buffer: EdgeBuffer, token: TagToken) {
-          token.children.forEach((child) => parser.processLexerToken(child, buffer))
-        }
-      },
-    }
-
-    const parser = new Parser(customTags, { filename: 'foo.edge' })
-    try {
-      const tokens = parser.generateLexerTokens(dedent`
-        @if(username)
-          {{ a..b }}
-        @endif
-      `)
-
-      tokens[0].filename = 'bar.edge'
-
-      parser.processLexerToken(tokens[0], new EdgeBuffer())
-    } catch ({ stack, line, col }) {
-      assert.equal(stack.split('\n')[1].trim(), 'at anonymous (bar.edge:2:7)')
-      assert.equal(line, 2)
-      assert.equal(col, 7)
-    }
-  })
-
-  test('use children token filename when it\'s explicitly defined', (assert) => {
-    assert.plan(3)
-    const customTags = {
-      if: class If {
-        public static block = true
-        public static seekable = true
-        public static selfclosed = false
-        public static compile (parser: Parser, buffer: EdgeBuffer, token: TagToken) {
-          token.children.forEach((child) => parser.processLexerToken(child, buffer))
-        }
-      },
-    }
-
-    const parser = new Parser(customTags, { filename: 'foo.edge' })
-    try {
-      const tokens = parser.generateLexerTokens(dedent`
-        @if(username)
-          {{ a..b }}
-        @endif
-      `)
-
-      tokens[0].filename = 'bar.edge';
-      (tokens[0] as ParserTagToken).children[1].filename = 'baz.edge'
-
-      parser.processLexerToken(tokens[0], new EdgeBuffer())
-    } catch ({ stack, line, col }) {
-      assert.equal(stack.split('\n')[1].trim(), 'at anonymous (baz.edge:2:7)')
-      assert.equal(line, 2)
-      assert.equal(col, 7)
+      parser.processToken(tokens[1], new EdgeBuffer('foo.edge', false))
+    } catch (error) {
+      const json = await new Youch(error, {}).toJSON()
+      assert.equal(json.error.frames[0].file, 'bar.edge')
+      assert.equal(json.error.frames[0].line, 1)
+      assert.equal(json.error.frames[0].column, 11)
     }
   })
 })

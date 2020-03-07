@@ -7,7 +7,7 @@
 * file that was distributed with this source code.
 */
 
-import { getCallExpression } from '../utils'
+import { makeCallableExpression } from '../Parser/makeCallableExpression'
 
 const WHITE_LISTED = ['Object', 'ctx']
 
@@ -17,12 +17,12 @@ export default {
       return statement
     }
 
-    return getCallExpression([
+    return makeCallableExpression('resolve', [
       Object.assign({}, statement, {
         type: 'Literal',
         value: statement.name,
         raw: `'${statement.name}'`,
       }),
-    ], 'resolve')
+    ])
   },
 }

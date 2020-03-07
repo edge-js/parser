@@ -7,8 +7,10 @@
 * file that was distributed with this source code.
 */
 
-/** @hidden */
-export function getCallExpression (args: object[], fnName: string): any {
+/**
+ * Returns Acorn complaint AST for a collable expression
+ */
+export function makeCallableExpression (fnName: string, args: object[]): any {
   return {
     type: 'CallExpression',
     callee: {

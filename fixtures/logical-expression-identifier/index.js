@@ -1,5 +1,11 @@
 (function (template, ctx) {
   let out = '';
-  out += `${ctx.escape(ctx.resolve('username') || ctx.resolve('admin').username)}`;
+  let edge_debug_line = 1;
+  let edge_filename = '{{ __dirname }}index.edge';
+  try {
+    out += `${ctx.escape(ctx.resolve('username') || ctx.resolve('admin').username)}`;
+  } catch (error) {
+    ctx.reThrow(error, edge_filename, edge_debug_line);
+  }
   return out;
 })(template, ctx)

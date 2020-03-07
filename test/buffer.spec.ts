@@ -8,91 +8,119 @@
 */
 
 import './assert-extend'
+
 import test from 'japa'
+import dedent from 'dedent-js'
+
 import { EdgeBuffer } from '../src/EdgeBuffer'
+import { normalizeNewLines } from '../test-helpers'
 
 test.group('Buffer', () => {
   test('write line to the output', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeStatement('\'hello world\'')
+    const buff = new EdgeBuffer('eval.edge', true)
+    buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
 
-    assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = '';
-  out += 'hello world';
-  return out;
-})(template, ctx)`)
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
+      let out = '';
+      let edge_debug_line = 1;
+      let edge_filename = 'eval.edge';
+      try {
+        out += 'hello world';
+      } catch (error) {
+        ctx.reThrow(error, edge_filename, edge_debug_line);
+      }
+      return out;
+    })(template, ctx)`))
   })
 
   test('write raw line to the output', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeRaw('hello world')
+    const buff = new EdgeBuffer('eval.edge', true)
+    buff.outputRaw('hello world')
 
-    assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = '';
-  out += 'hello world';
-  return out;
-})(template, ctx)`)
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
+      let out = '';
+      let edge_debug_line = 1;
+      let edge_filename = 'eval.edge';
+      try {
+        out += 'hello world';
+      } catch (error) {
+        ctx.reThrow(error, edge_filename, edge_debug_line);
+      }
+      return out;
+    })(template, ctx)`))
   })
 
   test('escape quotes in raw line', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeRaw('\'hello world\'')
+    const buff = new EdgeBuffer('eval.edge', true)
+    buff.outputRaw('\'hello world\'')
 
-    assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = '';
-  out += '\\'hello world\\'';
-  return out;
-})(template, ctx)`)
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
+      let out = '';
+      let edge_debug_line = 1;
+      let edge_filename = 'eval.edge';
+      try {
+        out += '\\'hello world\\'';
+      } catch (error) {
+        ctx.reThrow(error, edge_filename, edge_debug_line);
+      }
+      return out;
+    })(template, ctx)`))
   })
 
-  test('write statement', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeExpression('if (username) {')
+  test('write expression', (assert) => {
+    const buff = new EdgeBuffer('eval.edge', true)
+    buff.writeStatement('if (username) {', 'eval.edge', 1)
 
-    assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = '';
-  if (username) {
-  return out;
-})(template, ctx)`)
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
+      let out = '';
+      let edge_debug_line = 1;
+      let edge_filename = 'eval.edge';
+      try {
+        if (username) {
+      } catch (error) {
+        ctx.reThrow(error, edge_filename, edge_debug_line);
+      }
+      return out;
+    })(template, ctx)`))
   })
 
   test('indent output', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeExpression('if (username) {')
+    const buff = new EdgeBuffer('eval.edge', true)
+    buff.writeStatement('if (username) {', 'eval.edge', 1)
     buff.indent()
-    buff.writeRaw('hello world')
+    buff.outputRaw('hello world')
     buff.dedent()
-    buff.writeExpression('}')
+    buff.writeStatement('}', 'eval.edge', 3)
 
-    assert.stringEqual(buff.flush(), `(function (template, ctx) {
-  let out = '';
-  if (username) {
-    out += 'hello world';
-  }
-  return out;
-})(template, ctx)`)
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
+      let out = '';
+      let edge_debug_line = 1;
+      let edge_filename = 'eval.edge';
+      try {
+        if (username) {
+          out += 'hello world';
+        edge_debug_line = 3;
+        }
+      } catch (error) {
+        ctx.reThrow(error, edge_filename, edge_debug_line);
+      }
+      return out;
+    })(template, ctx)`))
   })
 
   test('flush lines without wrapping inside fuction', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeStatement('\'hello world\'')
+    const buff = new EdgeBuffer('eval.edge', false)
+    buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
 
-    assert.stringEqual(buff.flush(false), `
-  let out = '';
-  out += 'hello world';
-  return out;`)
-  })
-
-  test('wrap inside custom function', (assert) => {
-    const buff = new EdgeBuffer()
-    buff.writeStatement('\'hello world\'')
-    buff.wrap('return function () {', '}')
-
-    assert.stringEqual(buff.flush(false), `
-return function () {
-  let out = '';
-  out += 'hello world';
-  return out;
-}`)
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
+    let out = '';
+    let edge_debug_line = 1;
+    let edge_filename = 'eval.edge';
+    try {
+      out += 'hello world';
+    } catch (error) {
+      ctx.reThrow(error, edge_filename, edge_debug_line);
+    }
+    return out;`))
   })
 })

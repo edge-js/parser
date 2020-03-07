@@ -1,123 +1,220 @@
 /*
-* edge-parser
-*
-* (c) Harminder Virk <virk@adonisjs.com>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
+ * edge-parser
+ *
+ * (c) Harminder Virk <virk@adonisjs.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
 */
 
 import { EOL } from 'os'
 
 /**
- * Buffer class to store compiled template lines and form a
- * callable function from it.
+ * Buffer class to construct template
  */
 export class EdgeBuffer {
-  private lines: string = ''
-  private indentSpaces: number = 2
-  private suffixList: string[] = []
-  private prefixList: string[] = []
-
-  constructor (private outputVar: string = 'out') {
+  private options = {
+    outputVar: 'out',
+    fileNameVar: 'edge_filename',
+    lineVar: 'edge_debug_line',
   }
 
   /**
-   * Returns the number of spaces to the added to the current line for
-   * pretty identation.
+   * Indentation level
    */
-  private getSpaces (): string {
-    return new Array(this.indentSpaces + 1).join(' ')
+  private indentation = 0
+
+  /**
+   * Collected lines
+   */
+  private buffer: string[] = []
+
+  /**
+   * Current runtime line number
+   */
+  private currentLineNumber = 1
+
+  /**
+   * Current runtime filename
+   */
+  private currentFileName = this.filename
+
+  /**
+   * A boolean to track if teardown has been performed or
+   * not. This is done to ensure that multiple calls to
+   * `flush` method doesn't change the outpt
+   */
+  private teardownPerformed = false
+
+  constructor (
+    private filename: string,
+    private wrapInsideFunction: boolean,
+    options?: { outputVar?: string, fileNameVar?: string, lineVar?: string }
+  ) {
+    Object.assign(this.options, options)
+    this.setup()
   }
 
   /**
-   * Indent output by 2 spaces
+   * Setup template with initial set of lines
+   */
+  private setup () {
+    /**
+     * Output closure function when [[wrapInsideFunction]] is true
+     */
+    if (this.wrapInsideFunction) {
+      this.buffer.push(`${this.getWhitespace()}(function (template, ctx) {`)
+      this.indent()
+    }
+
+    /**
+     * Define output variable
+     */
+    this.buffer.push(`${this.getWhitespace()}let ${this.options.outputVar} = '';`)
+
+    /**
+     * Define line number variable
+     */
+    this.buffer.push(`${this.getWhitespace()}let ${this.options.lineVar} = ${this.currentLineNumber};`)
+
+    /**
+     * Define filename variable
+     */
+    this.buffer.push(`${this.getWhitespace()}let ${this.options.fileNameVar} = '${this.currentFileName}';`)
+
+    /**
+     * Write try block
+     */
+    this.buffer.push(`${this.getWhitespace()}try {`)
+    this.indent()
+  }
+
+  /**
+   * Tear down template by writing final set of lines
+   */
+  private teardown () {
+    if (this.teardownPerformed) {
+      return
+    }
+
+    this.teardownPerformed = true
+
+    /**
+     * Close try and catch block
+     */
+    this.dedent()
+    this.buffer.push(`${this.getWhitespace()}} catch (error) {`)
+
+    /**
+     * Write catch block
+     */
+    this.indent()
+    this.buffer.push(`${this.getWhitespace()}ctx.reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`)
+
+    /**
+     * End catch block
+     */
+    this.dedent()
+    this.buffer.push(`${this.getWhitespace()}}`)
+
+    /**
+     * Return output variable
+     */
+    this.buffer.push(`${this.getWhitespace()}return ${this.options.outputVar};`)
+
+    /**
+     * End closure function when [[wrapInsideFunction]] is true
+     */
+    if (this.wrapInsideFunction) {
+      this.dedent()
+      this.buffer.push(`${this.getWhitespace()}})(template, ctx)`)
+    }
+  }
+
+  /**
+   * Returns whitespace for given indentation number
+   */
+  private getWhitespace (indentation: number = this.indentation) {
+    indentation = indentation < 0 ? 0 : indentation
+    return new Array(indentation + 1).join(' ')
+  }
+
+  /**
+   * Update the filename at runtime
+   */
+  private updateFileName (filename: string) {
+    if (this.currentFileName !== filename) {
+      this.currentFileName = filename
+      this.buffer.push(`${this.getWhitespace()}${this.options.fileNameVar} = '${filename}';`)
+    }
+  }
+
+  /**
+   * Update the line number at runtime
+   */
+  private updateLineNumber (lineNumber: number) {
+    if (this.currentLineNumber !== lineNumber) {
+      this.currentLineNumber = lineNumber
+      this.buffer.push(`${this.getWhitespace()}${this.options.lineVar} = ${lineNumber};`)
+    }
+  }
+
+  /**
+   * Indent upcoming lines by two spaces
    */
   public indent () {
-    this.indentSpaces += 2
+    this.indentation += 2
   }
 
   /**
-   * Decrease output by 2 spaces
+   * Dedent upcoming lines by two spaces
    */
   public dedent () {
-    this.indentSpaces -= 2
+    this.indentation -= 2
   }
 
   /**
-   * Writes raw text to the output variable
+   * Write raw text to the output variable
    */
-  public writeRaw (text: string): void {
+  public outputRaw (text: string) {
     text = text.replace(/[']/g, '\\\'')
-    this.writeStatement(`'${text}'`)
+    this.buffer.push(`${this.getWhitespace()}${this.options.outputVar} += '${text}';`)
   }
 
   /**
-   * Write a new line to the output
+   * Write JS expression to the output variable
    */
-  public writeStatement (text: string): void {
-    this.lines += `${EOL}${this.getSpaces()}${this.outputVar} += ${text};`
+  public outputExpression (text: string, filename: string, lineNumber: number, wrapInsideBackTicks: boolean) {
+    this.updateFileName(filename)
+    this.updateLineNumber(lineNumber)
+    text = wrapInsideBackTicks ? `\`\${${text}}\`` : text
+    this.buffer.push(`${this.getWhitespace()}${this.options.outputVar} += ${text};`)
   }
 
   /**
-   * Write a new statement. Statements are not written to the
-   * output. `if (something) {` is a statement.
+   * Write JS expression
    */
-  public writeExpression (text: string): void {
-    this.lines += `${EOL}${this.getSpaces()}${text}`
+  public writeExpression (text: string, filename: string, lineNumber: number) {
+    this.updateFileName(filename)
+    this.updateLineNumber(lineNumber)
+    this.buffer.push(`${this.getWhitespace()}${text};`)
   }
 
   /**
-   * Write
+   * Write JS statement. Statements are not suffixed with a semi-colon. It
+   * means, they can be used for writing `if/else` statements.
    */
-  public writeLiteralStatement (text: string): void {
-    this.lines += `${EOL}${this.getSpaces()}${this.outputVar} += \`\${${text}}\`;`
+  public writeStatement (text: string, filename: string, lineNumber: number) {
+    this.updateFileName(filename)
+    this.updateLineNumber(lineNumber)
+    this.buffer.push(`${this.getWhitespace()}${text}`)
   }
 
   /**
-   * Wrap the final output with a suffix and prefix
+   * Return template as a string
    */
-  public wrap (prefix: string, suffix: string): void {
-    this.prefixList.push(prefix)
-    this.suffixList.push(suffix)
-  }
-
-  /**
-   * Return all the lines from the buffer wrapped inside a self
-   * invoked function.
-   */
-  public flush (wrapAsFunction: boolean = true) {
-    /**
-     * Conditional, when needs to be wrapped inside a function
-     */
-    let returnValue = wrapAsFunction ? '(function (template, ctx) {' : ''
-
-    /**
-     * Add prefix to the start of the template
-     */
-    this.prefixList.forEach((prefix) => {
-      returnValue += `${EOL}${prefix}`
-    })
-
-    returnValue += `${EOL}  let ${this.outputVar} = '';`
-    returnValue += `${this.lines}`
-    returnValue += `${EOL}  return ${this.outputVar};`
-
-    /**
-     * Adding suffix before closing the template function
-     */
-    this.suffixList.forEach((suffix) => {
-      returnValue += `${EOL}${suffix}`
-    })
-
-    /**
-     * Conditional, when needs to be wrapped inside a function
-     */
-    returnValue += wrapAsFunction ? `${EOL}})(template, ctx)` : ''
-
-    this.lines = ''
-    this.indentSpaces = 2
-
-    return returnValue
+  public flush (): string {
+    this.teardown()
+    return this.buffer.join(EOL)
   }
 }
