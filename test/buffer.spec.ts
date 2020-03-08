@@ -21,12 +21,12 @@ test.group('Buffer', () => {
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
       let out = '';
-      let edge_debug_line = 1;
-      let edge_filename = 'eval.edge';
+      ctx.$lineNumber = 1;
+      ctx.$filename = 'eval.edge';
       try {
         out += 'hello world';
       } catch (error) {
-        ctx.reThrow(error, edge_filename, edge_debug_line);
+        ctx.reThrow(error);
       }
       return out;
     })(template, ctx)`))
@@ -38,12 +38,12 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
       let out = '';
-      let edge_debug_line = 1;
-      let edge_filename = 'eval.edge';
+      ctx.$lineNumber = 1;
+      ctx.$filename = 'eval.edge';
       try {
         out += 'hello world';
       } catch (error) {
-        ctx.reThrow(error, edge_filename, edge_debug_line);
+        ctx.reThrow(error);
       }
       return out;
     })(template, ctx)`))
@@ -55,12 +55,12 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
       let out = '';
-      let edge_debug_line = 1;
-      let edge_filename = 'eval.edge';
+      ctx.$lineNumber = 1;
+      ctx.$filename = 'eval.edge';
       try {
         out += '\\'hello world\\'';
       } catch (error) {
-        ctx.reThrow(error, edge_filename, edge_debug_line);
+        ctx.reThrow(error);
       }
       return out;
     })(template, ctx)`))
@@ -72,12 +72,12 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
       let out = '';
-      let edge_debug_line = 1;
-      let edge_filename = 'eval.edge';
+      ctx.$lineNumber = 1;
+      ctx.$filename = 'eval.edge';
       try {
         if (username) {
       } catch (error) {
-        ctx.reThrow(error, edge_filename, edge_debug_line);
+        ctx.reThrow(error);
       }
       return out;
     })(template, ctx)`))
@@ -93,15 +93,15 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
       let out = '';
-      let edge_debug_line = 1;
-      let edge_filename = 'eval.edge';
+      ctx.$lineNumber = 1;
+      ctx.$filename = 'eval.edge';
       try {
         if (username) {
           out += 'hello world';
-        edge_debug_line = 3;
+        ctx.$lineNumber = 3;
         }
       } catch (error) {
-        ctx.reThrow(error, edge_filename, edge_debug_line);
+        ctx.reThrow(error);
       }
       return out;
     })(template, ctx)`))
@@ -113,12 +113,12 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
     let out = '';
-    let edge_debug_line = 1;
-    let edge_filename = 'eval.edge';
+    ctx.$lineNumber = 1;
+    ctx.$filename = 'eval.edge';
     try {
       out += 'hello world';
     } catch (error) {
-      ctx.reThrow(error, edge_filename, edge_debug_line);
+      ctx.reThrow(error);
     }
     return out;`))
   })
@@ -131,12 +131,12 @@ test.group('Buffer', () => {
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
     return function () {
       let out = '';
-      let edge_debug_line = 1;
-      let edge_filename = 'eval.edge';
+      ctx.$lineNumber = 1;
+      ctx.$filename = 'eval.edge';
       try {
         out += 'hello world';
       } catch (error) {
-        ctx.reThrow(error, edge_filename, edge_debug_line);
+        ctx.reThrow(error);
       }
       return out;
     }`))

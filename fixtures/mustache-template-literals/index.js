@@ -1,12 +1,12 @@
 (function (template, ctx) {
   let out = '';
-  let edge_debug_line = 1;
-  let edge_filename = '{{ __dirname }}index.edge';
+  ctx.$lineNumber = 1;
+  ctx.$filename = '{{ __dirname }}index.edge';
   try {
     out += 'Hello ';
     out += ctx.escape(`${ctx.resolve('username')} - ${ctx.resolve('age')}`);
   } catch (error) {
-    ctx.reThrow(error, edge_filename, edge_debug_line);
+    ctx.reThrow(error);
   }
   return out;
 })(template, ctx)

@@ -15,8 +15,8 @@ import { EOL } from 'os'
 export class EdgeBuffer {
   private options = {
     outputVar: 'out',
-    fileNameVar: 'edge_filename',
-    lineVar: 'edge_debug_line',
+    fileNameVar: 'ctx.$filename',
+    lineVar: 'ctx.$lineNumber',
   }
 
   private prefix: string[] = []
@@ -78,12 +78,12 @@ export class EdgeBuffer {
     /**
      * Define line number variable
      */
-    buffer.push(`${this.getWhitespace(indentation)}let ${this.options.lineVar} = 1;`)
+    buffer.push(`${this.getWhitespace(indentation)}${this.options.lineVar} = 1;`)
 
     /**
      * Define filename variable
      */
-    buffer.push(`${this.getWhitespace(indentation)}let ${this.options.fileNameVar} = '${this.filename}';`)
+    buffer.push(`${this.getWhitespace(indentation)}${this.options.fileNameVar} = '${this.filename}';`)
 
     /**
      * Write try block
@@ -108,7 +108,7 @@ export class EdgeBuffer {
      */
     indentation += 2
     buffer.push(
-      `${this.getWhitespace(indentation)}ctx.reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`,
+      `${this.getWhitespace(indentation)}ctx.reThrow(error);`,
     )
 
     /**

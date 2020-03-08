@@ -88,10 +88,10 @@ test.group('Parser', () => {
       resolve () {
         return undefined
       },
-      reThrow (error, filename: string, lineNumber: number) {
+      reThrow (error) {
         assert.match(error.message, /ctx.resolve\(...\)/)
-        assert.equal(filename, 'eval.edge')
-        assert.equal(lineNumber, 2)
+        assert.equal(this.$filename, 'eval.edge')
+        assert.equal(this.$lineNumber, 2)
       },
     })
   })
