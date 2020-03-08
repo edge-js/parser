@@ -21,6 +21,7 @@ Buffer class to construct template
 * [indent](_src_edgebuffer_index_.edgebuffer.md#indent)
 * [outputExpression](_src_edgebuffer_index_.edgebuffer.md#outputexpression)
 * [outputRaw](_src_edgebuffer_index_.edgebuffer.md#outputraw)
+* [wrap](_src_edgebuffer_index_.edgebuffer.md#wrap)
 * [writeExpression](_src_edgebuffer_index_.edgebuffer.md#writeexpression)
 * [writeStatement](_src_edgebuffer_index_.edgebuffer.md#writestatement)
 
@@ -102,6 +103,23 @@ Write raw text to the output variable
 Name | Type |
 ------ | ------ |
 `text` | string |
+
+**Returns:** *void*
+
+___
+
+###  wrap
+
+▸ **wrap**(`prefix`: string, `suffix`: string): *void*
+
+Wrap template with a custom prefix and suffix
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`prefix` | string |
+`suffix` | string |
 
 **Returns:** *void*
 
