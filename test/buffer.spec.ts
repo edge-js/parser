@@ -19,7 +19,6 @@ test.group('Buffer', () => {
   test('write line to the output', (assert) => {
     const buff = new EdgeBuffer('eval.edge', true)
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
-
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`(function (template, ctx) {
       let out = '';
       let edge_debug_line = 1;
@@ -122,5 +121,24 @@ test.group('Buffer', () => {
       ctx.reThrow(error, edge_filename, edge_debug_line);
     }
     return out;`))
+  })
+
+  test('define wrapping code', (assert) => {
+    const buff = new EdgeBuffer('eval.edge', false)
+    buff.wrap('return function () {', '}')
+    buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
+
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
+    return function () {
+      let out = '';
+      let edge_debug_line = 1;
+      let edge_filename = 'eval.edge';
+      try {
+        out += 'hello world';
+      } catch (error) {
+        ctx.reThrow(error, edge_filename, edge_debug_line);
+      }
+      return out;
+    }`))
   })
 })

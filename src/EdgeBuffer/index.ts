@@ -19,10 +19,13 @@ export class EdgeBuffer {
     lineVar: 'edge_debug_line',
   }
 
+  private prefix: string[] = []
+  private suffix: string[] = []
+
   /**
    * Indentation level
    */
-  private indentation = 0
+  private indentation = this.wrapInsideFunction ? 4 : 2
 
   /**
    * Collected lines
@@ -40,11 +43,10 @@ export class EdgeBuffer {
   private currentFileName = this.filename
 
   /**
-   * A boolean to track if teardown has been performed or
-   * not. This is done to ensure that multiple calls to
-   * `flush` method doesn't change the outpt
+   * Cached compiled output. Once this value is set, the `flush`
+   * method will become a noop
    */
-  private teardownPerformed = false
+  private compiledOutput: string | undefined
 
   constructor (
     private filename: string,
@@ -52,82 +54,80 @@ export class EdgeBuffer {
     options?: { outputVar?: string, fileNameVar?: string, lineVar?: string }
   ) {
     Object.assign(this.options, options)
-    this.setup()
   }
 
   /**
    * Setup template with initial set of lines
    */
-  private setup () {
+  private setup (buffer: string[]) {
+    let indentation = this.prefix.length * 2
+
     /**
      * Output closure function when [[wrapInsideFunction]] is true
      */
     if (this.wrapInsideFunction) {
-      this.buffer.push(`${this.getWhitespace()}(function (template, ctx) {`)
-      this.indent()
+      buffer.push(`${this.getWhitespace(indentation)}(function (template, ctx) {`)
+      indentation += 2
     }
 
     /**
      * Define output variable
      */
-    this.buffer.push(`${this.getWhitespace()}let ${this.options.outputVar} = '';`)
+    buffer.push(`${this.getWhitespace(indentation)}let ${this.options.outputVar} = '';`)
 
     /**
      * Define line number variable
      */
-    this.buffer.push(`${this.getWhitespace()}let ${this.options.lineVar} = ${this.currentLineNumber};`)
+    buffer.push(`${this.getWhitespace(indentation)}let ${this.options.lineVar} = 1;`)
 
     /**
      * Define filename variable
      */
-    this.buffer.push(`${this.getWhitespace()}let ${this.options.fileNameVar} = '${this.currentFileName}';`)
+    buffer.push(`${this.getWhitespace(indentation)}let ${this.options.fileNameVar} = '${this.filename}';`)
 
     /**
      * Write try block
      */
-    this.buffer.push(`${this.getWhitespace()}try {`)
-    this.indent()
+    buffer.push(`${this.getWhitespace(indentation)}try {`)
   }
 
   /**
    * Tear down template by writing final set of lines
    */
-  private teardown () {
-    if (this.teardownPerformed) {
-      return
-    }
-
-    this.teardownPerformed = true
+  private teardown (buffer: string[]) {
+    let indentation = this.prefix.length * 2
+    indentation += this.wrapInsideFunction ? 2 : 0
 
     /**
      * Close try and catch block
      */
-    this.dedent()
-    this.buffer.push(`${this.getWhitespace()}} catch (error) {`)
+    buffer.push(`${this.getWhitespace(indentation)}} catch (error) {`)
 
     /**
      * Write catch block
      */
-    this.indent()
-    this.buffer.push(`${this.getWhitespace()}ctx.reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`)
+    indentation += 2
+    buffer.push(
+      `${this.getWhitespace(indentation)}ctx.reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`,
+    )
 
     /**
      * End catch block
      */
-    this.dedent()
-    this.buffer.push(`${this.getWhitespace()}}`)
+    indentation -= 2
+    buffer.push(`${this.getWhitespace(indentation)}}`)
 
     /**
      * Return output variable
      */
-    this.buffer.push(`${this.getWhitespace()}return ${this.options.outputVar};`)
+    buffer.push(`${this.getWhitespace(indentation)}return ${this.options.outputVar};`)
 
     /**
      * End closure function when [[wrapInsideFunction]] is true
      */
     if (this.wrapInsideFunction) {
-      this.dedent()
-      this.buffer.push(`${this.getWhitespace()}})(template, ctx)`)
+      indentation -= 2
+      buffer.push(`${this.getWhitespace(indentation)}})(template, ctx)`)
     }
   }
 
@@ -184,7 +184,12 @@ export class EdgeBuffer {
   /**
    * Write JS expression to the output variable
    */
-  public outputExpression (text: string, filename: string, lineNumber: number, wrapInsideBackTicks: boolean) {
+  public outputExpression (
+    text: string,
+    filename: string,
+    lineNumber: number,
+    wrapInsideBackTicks: boolean,
+  ) {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
     text = wrapInsideBackTicks ? `\`\${${text}}\`` : text
@@ -211,10 +216,44 @@ export class EdgeBuffer {
   }
 
   /**
+   * Wrap template with a custom prefix and suffix
+   */
+  public wrap (prefix: string, suffix: string): void {
+    this.indent()
+    this.prefix.push(prefix)
+    this.suffix.push(suffix)
+  }
+
+  /**
    * Return template as a string
    */
   public flush (): string {
-    this.teardown()
-    return this.buffer.join(EOL)
+    if (this.compiledOutput !== undefined) {
+      return this.compiledOutput
+    }
+
+    let indentation = 0
+    let buffer: string[] = []
+
+    this.prefix.forEach((text) => {
+      text.split(EOL).forEach((line) => {
+        buffer.push(`${this.getWhitespace(indentation)}${line}`)
+      })
+      indentation += 2
+    })
+
+    this.setup(buffer)
+    buffer = buffer.concat(this.buffer)
+    this.teardown(buffer)
+
+    this.suffix.forEach((text) => {
+      indentation -= 2
+      text.split(EOL).forEach((line) => {
+        buffer.push(`${this.getWhitespace(indentation)}${line}`)
+      })
+    })
+
+    this.compiledOutput = buffer.join(EOL)
+    return this.compiledOutput
   }
 }
