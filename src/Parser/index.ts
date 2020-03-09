@@ -122,8 +122,8 @@ export class Parser {
   /**
    * Convert template to tokens
    */
-  public tokenize (template: string) {
-    const tokenizer = new Tokenizer(template, this.tags, { filename: this.options.filename })
+  public tokenize (template: string, filename?: string) {
+    const tokenizer = new Tokenizer(template, this.tags, { filename: filename || this.options.filename })
     tokenizer.parse()
     return tokenizer.tokens
   }
