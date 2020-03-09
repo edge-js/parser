@@ -23,11 +23,6 @@ export class EdgeBuffer {
   private suffix: string[] = []
 
   /**
-   * Indentation level
-   */
-  private indentation = this.wrapInsideFunction ? 4 : 2
-
-  /**
    * Collected lines
    */
   private buffer: string[] = []
@@ -60,83 +55,64 @@ export class EdgeBuffer {
    * Setup template with initial set of lines
    */
   private setup (buffer: string[]) {
-    let indentation = this.prefix.length * 2
-
     /**
      * Output closure function when [[wrapInsideFunction]] is true
      */
     if (this.wrapInsideFunction) {
-      buffer.push(`${this.getWhitespace(indentation)}(function (template, ctx) {`)
-      indentation += 2
+      buffer.push('return (function (template, ctx) {')
     }
 
     /**
      * Define output variable
      */
-    buffer.push(`${this.getWhitespace(indentation)}let ${this.options.outputVar} = '';`)
+    buffer.push(`let ${this.options.outputVar} = '';`)
 
     /**
      * Define line number variable
      */
-    buffer.push(`${this.getWhitespace(indentation)}${this.options.lineVar} = 1;`)
+    buffer.push(`${this.options.lineVar} = 1;`)
 
     /**
      * Define filename variable
      */
-    buffer.push(`${this.getWhitespace(indentation)}${this.options.fileNameVar} = '${this.filename}';`)
+    buffer.push(`${this.options.fileNameVar} = '${this.filename}';`)
 
     /**
      * Write try block
      */
-    buffer.push(`${this.getWhitespace(indentation)}try {`)
+    buffer.push('try {')
   }
 
   /**
    * Tear down template by writing final set of lines
    */
   private teardown (buffer: string[]) {
-    let indentation = this.prefix.length * 2
-    indentation += this.wrapInsideFunction ? 2 : 0
-
     /**
      * Close try and catch block
      */
-    buffer.push(`${this.getWhitespace(indentation)}} catch (error) {`)
+    buffer.push('} catch (error) {')
 
     /**
      * Write catch block
      */
-    indentation += 2
-    buffer.push(
-      `${this.getWhitespace(indentation)}ctx.reThrow(error);`,
-    )
+    buffer.push('ctx.reThrow(error);')
 
     /**
      * End catch block
      */
-    indentation -= 2
-    buffer.push(`${this.getWhitespace(indentation)}}`)
+    buffer.push('}')
 
     /**
      * Return output variable
      */
-    buffer.push(`${this.getWhitespace(indentation)}return ${this.options.outputVar};`)
+    buffer.push(`return ${this.options.outputVar};`)
 
     /**
      * End closure function when [[wrapInsideFunction]] is true
      */
     if (this.wrapInsideFunction) {
-      indentation -= 2
-      buffer.push(`${this.getWhitespace(indentation)}})(template, ctx)`)
+      buffer.push('})(template, ctx)')
     }
-  }
-
-  /**
-   * Returns whitespace for given indentation number
-   */
-  private getWhitespace (indentation: number = this.indentation) {
-    indentation = indentation < 0 ? 0 : indentation
-    return new Array(indentation + 1).join(' ')
   }
 
   /**
@@ -145,7 +121,7 @@ export class EdgeBuffer {
   private updateFileName (filename: string) {
     if (this.currentFileName !== filename) {
       this.currentFileName = filename
-      this.buffer.push(`${this.getWhitespace()}${this.options.fileNameVar} = '${filename}';`)
+      this.buffer.push(`${this.options.fileNameVar} = '${filename}';`)
     }
   }
 
@@ -155,22 +131,8 @@ export class EdgeBuffer {
   private updateLineNumber (lineNumber: number) {
     if (this.currentLineNumber !== lineNumber) {
       this.currentLineNumber = lineNumber
-      this.buffer.push(`${this.getWhitespace()}${this.options.lineVar} = ${lineNumber};`)
+      this.buffer.push(`${this.options.lineVar} = ${lineNumber};`)
     }
-  }
-
-  /**
-   * Indent upcoming lines by two spaces
-   */
-  public indent () {
-    this.indentation += 2
-  }
-
-  /**
-   * Dedent upcoming lines by two spaces
-   */
-  public dedent () {
-    this.indentation -= 2
   }
 
   /**
@@ -178,7 +140,7 @@ export class EdgeBuffer {
    */
   public outputRaw (text: string) {
     text = text.replace(/[']/g, '\\\'')
-    this.buffer.push(`${this.getWhitespace()}${this.options.outputVar} += '${text}';`)
+    this.buffer.push(`${this.options.outputVar} += '${text}';`)
   }
 
   /**
@@ -193,7 +155,7 @@ export class EdgeBuffer {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
     text = wrapInsideBackTicks ? `\`\${${text}}\`` : text
-    this.buffer.push(`${this.getWhitespace()}${this.options.outputVar} += ${text};`)
+    this.buffer.push(`${this.options.outputVar} += ${text};`)
   }
 
   /**
@@ -202,7 +164,7 @@ export class EdgeBuffer {
   public writeExpression (text: string, filename: string, lineNumber: number) {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
-    this.buffer.push(`${this.getWhitespace()}${text};`)
+    this.buffer.push(`${text};`)
   }
 
   /**
@@ -212,14 +174,13 @@ export class EdgeBuffer {
   public writeStatement (text: string, filename: string, lineNumber: number) {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
-    this.buffer.push(`${this.getWhitespace()}${text}`)
+    this.buffer.push(`${text}`)
   }
 
   /**
    * Wrap template with a custom prefix and suffix
    */
   public wrap (prefix: string, suffix: string): void {
-    this.indent()
     this.prefix.push(prefix)
     this.suffix.push(suffix)
   }
@@ -232,14 +193,10 @@ export class EdgeBuffer {
       return this.compiledOutput
     }
 
-    let indentation = 0
     let buffer: string[] = []
 
     this.prefix.forEach((text) => {
-      text.split(EOL).forEach((line) => {
-        buffer.push(`${this.getWhitespace(indentation)}${line}`)
-      })
-      indentation += 2
+      text.split(EOL).forEach((line) => (buffer.push(`${line}`)))
     })
 
     this.setup(buffer)
@@ -247,10 +204,7 @@ export class EdgeBuffer {
     this.teardown(buffer)
 
     this.suffix.forEach((text) => {
-      indentation -= 2
-      text.split(EOL).forEach((line) => {
-        buffer.push(`${this.getWhitespace(indentation)}${line}`)
-      })
+      text.split(EOL).forEach((line) => buffer.push(`${line}`))
     })
 
     this.compiledOutput = buffer.join(EOL)
