@@ -16,9 +16,7 @@ Buffer class to construct template
 
 ### Methods
 
-* [dedent](_src_edgebuffer_index_.edgebuffer.md#dedent)
 * [flush](_src_edgebuffer_index_.edgebuffer.md#flush)
-* [indent](_src_edgebuffer_index_.edgebuffer.md#indent)
 * [outputExpression](_src_edgebuffer_index_.edgebuffer.md#outputexpression)
 * [outputRaw](_src_edgebuffer_index_.edgebuffer.md#outputraw)
 * [wrap](_src_edgebuffer_index_.edgebuffer.md#wrap)
@@ -43,16 +41,6 @@ Name | Type |
 
 ## Methods
 
-###  dedent
-
-▸ **dedent**(): *void*
-
-Dedent upcoming lines by two spaces
-
-**Returns:** *void*
-
-___
-
 ###  flush
 
 ▸ **flush**(): *string*
@@ -60,16 +48,6 @@ ___
 Return template as a string
 
 **Returns:** *string*
-
-___
-
-###  indent
-
-▸ **indent**(): *void*
-
-Indent upcoming lines by two spaces
-
-**Returns:** *void*
 
 ___
 
