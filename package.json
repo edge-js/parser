@@ -1,6 +1,6 @@
 {
   "name": "edge-parser",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Parser for edge template engine",
   "main": "build/index.js",
   "files": [

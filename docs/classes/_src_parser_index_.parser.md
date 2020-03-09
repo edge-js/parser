@@ -123,7 +123,7 @@ ___
 
 ###  tokenize
 
-▸ **tokenize**(`template`: string): *object | object | object | object[]*
+▸ **tokenize**(`template`: string, `filename?`: undefined | string): *object | object | object | object[]*
 
 Convert template to tokens
 
@@ -132,6 +132,7 @@ Convert template to tokens
 Name | Type |
 ------ | ------ |
 `template` | string |
+`filename?` | undefined &#124; string |
 
 **Returns:** *object | object | object | object[]*
 
