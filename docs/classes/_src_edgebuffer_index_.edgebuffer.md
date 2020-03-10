@@ -14,6 +14,10 @@ Buffer class to construct template
 
 * [constructor](_src_edgebuffer_index_.edgebuffer.md#constructor)
 
+### Accessors
+
+* [size](_src_edgebuffer_index_.edgebuffer.md#size)
+
 ### Methods
 
 * [flush](_src_edgebuffer_index_.edgebuffer.md#flush)
@@ -38,6 +42,16 @@ Name | Type |
 `options?` | undefined &#124; object |
 
 **Returns:** *[EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)*
+
+## Accessors
+
+###  size
+
+• **get size**(): *number*
+
+Returns the size of buffer text
+
+**Returns:** *number*
 
 ## Methods
 
