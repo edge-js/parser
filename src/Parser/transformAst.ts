@@ -20,7 +20,7 @@ export function transformAst (astExpression: any, filename: string): any {
   }
 
   const { type, loc } = astExpression
-  throw new EdgeError(`${type} is not supported`, 'E_UNALLOWED_EXPRESSION', {
+  throw new EdgeError(`"${type}" is not supported`, 'E_UNALLOWED_EXPRESSION', {
     line: loc.start.line,
     col: loc.start.column,
     filename: filename,

@@ -7,9 +7,9 @@
 * file that was distributed with this source code.
 */
 
+import { LexerLoc } from 'edge-lexer'
 import { EdgeError } from 'edge-error'
 import { parse as acornParse, Token } from 'acorn'
-import { LexerLoc } from 'edge-lexer/build/src/Contracts'
 
 import { AcornLoc } from '../Contracts'
 
