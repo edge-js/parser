@@ -138,7 +138,7 @@ export class EdgeBuffer {
    * Update the line number at runtime
    */
   private updateLineNumber (lineNumber: number) {
-    if (this.currentLineNumber !== lineNumber) {
+    if (lineNumber > 0 && this.currentLineNumber !== lineNumber) {
       this.currentLineNumber = lineNumber
       this.buffer.push(`${this.options.lineVar} = ${lineNumber};`)
     }
