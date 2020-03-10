@@ -111,8 +111,6 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
     let out = '';
-    ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
     try {
     out += 'hello world';
     } catch (error) {
@@ -129,8 +127,6 @@ test.group('Buffer', () => {
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
     return function () {
     let out = '';
-    ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
     try {
     out += 'hello world';
     } catch (error) {

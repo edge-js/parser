@@ -46,7 +46,7 @@ export class EdgeBuffer {
   constructor (
     private filename: string,
     private wrapInsideFunction: boolean,
-    options?: { outputVar?: string, fileNameVar?: string, lineVar?: string }
+    options?: { outputVar?: string }
   ) {
     Object.assign(this.options, options)
   }
@@ -74,15 +74,17 @@ export class EdgeBuffer {
      */
     buffer.push(`let ${this.options.outputVar} = '';`)
 
-    /**
-     * Define line number variable
-     */
-    buffer.push(`${this.options.lineVar} = 1;`)
+    if (this.wrapInsideFunction) {
+      /**
+       * Define line number variable
+       */
+      buffer.push(`${this.options.lineVar} = 1;`)
 
-    /**
-     * Define filename variable
-     */
-    buffer.push(`${this.options.fileNameVar} = '${this.filename}';`)
+      /**
+       * Define filename variable
+       */
+      buffer.push(`${this.options.fileNameVar} = '${this.filename}';`)
+    }
 
     /**
      * Write try block
