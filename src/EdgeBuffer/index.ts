@@ -52,6 +52,13 @@ export class EdgeBuffer {
   }
 
   /**
+   * Returns the size of buffer text
+   */
+  public get size () {
+    return this.buffer.length
+  }
+
+  /**
    * Setup template with initial set of lines
    */
   private setup (buffer: string[]) {
