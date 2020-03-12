@@ -137,7 +137,7 @@ export class Parser {
         buffer.outputRaw(token.value)
         break
       case 'newline':
-        buffer.outputRaw(EOL === '\n' ? '\\n' : '\\r\\n')
+        buffer.outputRaw(EOL === '\n' ? '\n' : '\r\n')
         break
       case TagTypes.TAG:
         this.tags[token.properties.name].compile(this, buffer, token as TagToken)

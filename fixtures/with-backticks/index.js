@@ -3,9 +3,9 @@ let out = '';
 ctx.$lineNumber = 1;
 ctx.$filename = '{{ __dirname }}index.edge';
 try {
-out += 'This is ';
+out += "This is ";
 out += `${ctx.escape(ctx.resolve('username'))}`;
-out += '\'s `pet`.';
+out += "'s `pet`.";
 } catch (error) {
 ctx.reThrow(error);
 }

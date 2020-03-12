@@ -3,7 +3,7 @@ let out = '';
 ctx.$lineNumber = 1;
 ctx.$filename = '{{ __dirname }}index.edge';
 try {
-out += 'Your friends are ';
+out += "Your friends are ";
 out += `${ctx.escape(ctx.resolve('users').map(user => {
   return user.username;
 }))}`;

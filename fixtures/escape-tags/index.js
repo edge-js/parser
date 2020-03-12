@@ -3,8 +3,8 @@ let out = '';
 ctx.$lineNumber = 1;
 ctx.$filename = '{{ __dirname }}index.edge';
 try {
-out += '@if(username)';
-out += '@endif';
+out += "@if(username)";
+out += "@endif";
 } catch (error) {
 ctx.reThrow(error);
 }

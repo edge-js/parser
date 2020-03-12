@@ -8,6 +8,7 @@
 */
 
 import { EOL } from 'os'
+import stringify from 'js-stringify'
 
 /**
  * Buffer class to construct template
@@ -148,8 +149,7 @@ export class EdgeBuffer {
    * Write raw text to the output variable
    */
   public outputRaw (text: string) {
-    text = text.replace(/[']/g, '\\\'')
-    this.buffer.push(`${this.options.outputVar} += '${text}';`)
+    this.buffer.push(`${this.options.outputVar} += ${stringify(text)};`)
   }
 
   /**

@@ -41,7 +41,7 @@ test.group('Buffer', () => {
     ctx.$lineNumber = 1;
     ctx.$filename = 'eval.edge';
     try {
-    out += 'hello world';
+    out += "hello world";
     } catch (error) {
     ctx.reThrow(error);
     }
@@ -58,7 +58,7 @@ test.group('Buffer', () => {
     ctx.$lineNumber = 1;
     ctx.$filename = 'eval.edge';
     try {
-    out += '\\'hello world\\'';
+    out += "'hello world'";
     } catch (error) {
     ctx.reThrow(error);
     }
@@ -95,7 +95,7 @@ test.group('Buffer', () => {
     ctx.$filename = 'eval.edge';
     try {
     if (username) {
-    out += 'hello world';
+    out += "hello world";
     ctx.$lineNumber = 3;
     }
     } catch (error) {

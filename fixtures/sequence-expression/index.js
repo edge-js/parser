@@ -3,7 +3,7 @@ let out = '';
 ctx.$lineNumber = 1;
 ctx.$filename = '{{ __dirname }}index.edge';
 try {
-out += 'Hello ';
+out += "Hello ";
 out += `${ctx.escape((true, false))}`;
 } catch (error) {
 ctx.reThrow(error);
