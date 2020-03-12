@@ -1,7 +1,7 @@
 return (function (template, ctx) {
-let out = '';
+let out = "";
 ctx.$lineNumber = 1;
-ctx.$filename = '{{ __dirname }}index.edge';
+ctx.$filename = "{{ __dirname }}index.edge";
 try {
 out += "\u003Cscript\u003E";
 out += "\n";

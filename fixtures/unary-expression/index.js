@@ -1,7 +1,7 @@
 return (function (template, ctx) {
-let out = '';
+let out = "";
 ctx.$lineNumber = 1;
-ctx.$filename = '{{ __dirname }}index.edge';
+ctx.$filename = "{{ __dirname }}index.edge";
 try {
 out += "Inspect ";
 out += `${ctx.escape(typeof ctx.resolve('username'))}`;

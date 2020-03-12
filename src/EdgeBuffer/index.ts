@@ -73,7 +73,7 @@ export class EdgeBuffer {
     /**
      * Define output variable
      */
-    buffer.push(`let ${this.options.outputVar} = '';`)
+    buffer.push(`let ${this.options.outputVar} = "";`)
 
     if (this.wrapInsideFunction) {
       /**
@@ -84,7 +84,7 @@ export class EdgeBuffer {
       /**
        * Define filename variable
        */
-      buffer.push(`${this.options.fileNameVar} = '${this.filename}';`)
+      buffer.push(`${this.options.fileNameVar} = "${this.filename}";`)
     }
 
     /**
@@ -131,7 +131,7 @@ export class EdgeBuffer {
   private updateFileName (filename: string) {
     if (this.currentFileName !== filename) {
       this.currentFileName = filename
-      this.buffer.push(`${this.options.fileNameVar} = '${filename}';`)
+      this.buffer.push(`${this.options.fileNameVar} = "${filename}";`)
     }
   }
 

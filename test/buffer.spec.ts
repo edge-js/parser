@@ -20,9 +20,9 @@ test.group('Buffer', () => {
     const buff = new EdgeBuffer('eval.edge', true)
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, ctx) {
-    let out = '';
+    let out = "";
     ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
+    ctx.$filename = "eval.edge";
     try {
     out += 'hello world';
     } catch (error) {
@@ -37,9 +37,9 @@ test.group('Buffer', () => {
     buff.outputRaw('hello world')
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, ctx) {
-    let out = '';
+    let out = "";
     ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
+    ctx.$filename = "eval.edge";
     try {
     out += "hello world";
     } catch (error) {
@@ -54,9 +54,9 @@ test.group('Buffer', () => {
     buff.outputRaw('\'hello world\'')
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, ctx) {
-    let out = '';
+    let out = "";
     ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
+    ctx.$filename = "eval.edge";
     try {
     out += "'hello world'";
     } catch (error) {
@@ -71,9 +71,9 @@ test.group('Buffer', () => {
     buff.writeStatement('if (username) {', 'eval.edge', 1)
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, ctx) {
-    let out = '';
+    let out = "";
     ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
+    ctx.$filename = "eval.edge";
     try {
     if (username) {
     } catch (error) {
@@ -90,9 +90,9 @@ test.group('Buffer', () => {
     buff.writeStatement('}', 'eval.edge', 3)
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, ctx) {
-    let out = '';
+    let out = "";
     ctx.$lineNumber = 1;
-    ctx.$filename = 'eval.edge';
+    ctx.$filename = "eval.edge";
     try {
     if (username) {
     out += "hello world";
@@ -110,7 +110,7 @@ test.group('Buffer', () => {
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
-    let out = '';
+    let out = "";
     try {
     out += 'hello world';
     } catch (error) {
@@ -126,7 +126,7 @@ test.group('Buffer', () => {
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
     return function () {
-    let out = '';
+    let out = "";
     try {
     out += 'hello world';
     } catch (error) {

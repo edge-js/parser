@@ -1,9 +1,9 @@
 return (function (template, ctx) {
-let out = '';
+let out = "";
 ctx.$lineNumber = 1;
-ctx.$filename = '{{ __dirname }}index.edge';
+ctx.$filename = "{{ __dirname }}index.edge";
 try {
-out += `${ctx.escape(ctx.resolve('username') ? `Welcome ${ctx.resolve('username')}` : 'Welcome guest')}`;
+out += `${ctx.escape(ctx.resolve('username') ? `Welcome ${ctx.resolve('username')}` : "Welcome guest")}`;
 } catch (error) {
 ctx.reThrow(error);
 }
