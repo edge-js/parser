@@ -1,15 +1,15 @@
-return (function (template, ctx) {
+return (function (template, state, escape, reThrow) {
 let out = "";
-ctx.$lineNumber = 1;
-ctx.$filename = "{{ __dirname }}index.edge";
+let $lineNumber = 1;
+let $filename = "{{ __dirname }}index.edge";
 try {
 out += "@if(username)";
 out += "  Hello ";
-ctx.$lineNumber = 2;
-out += `${ctx.escape(ctx.resolve('username'))}`;
+$lineNumber = 2;
+out += `${escape(state.username)}`;
 out += "@endif";
 } catch (error) {
-ctx.reThrow(error);
+reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, ctx)
+})(template, state, escape, reThrow)

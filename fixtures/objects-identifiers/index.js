@@ -1,13 +1,13 @@
-return (function (template, ctx) {
+return (function (template, state, escape, reThrow) {
 let out = "";
-ctx.$lineNumber = 1;
-ctx.$filename = "{{ __dirname }}index.edge";
+let $lineNumber = 1;
+let $filename = "{{ __dirname }}index.edge";
 try {
-out += `${ctx.escape(Object.keys({
-  username: ctx.resolve('user').username
+out += `${escape(Object.keys({
+  username: state.user.username
 }).join(","))}`;
 } catch (error) {
-ctx.reThrow(error);
+reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, ctx)
+})(template, state, escape, reThrow)

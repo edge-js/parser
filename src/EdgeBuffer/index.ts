@@ -16,8 +16,8 @@ import stringify from 'js-stringify'
 export class EdgeBuffer {
   private options = {
     outputVar: 'out',
-    fileNameVar: 'ctx.$filename',
-    lineVar: 'ctx.$lineNumber',
+    fileNameVar: '$filename',
+    lineVar: '$lineNumber',
   }
 
   private prefix: string[] = []
@@ -67,7 +67,7 @@ export class EdgeBuffer {
      * Output closure function when [[wrapInsideFunction]] is true
      */
     if (this.wrapInsideFunction) {
-      buffer.push('return (function (template, ctx) {')
+      buffer.push('return (function (template, state, escape, reThrow) {')
     }
 
     /**
@@ -79,12 +79,12 @@ export class EdgeBuffer {
       /**
        * Define line number variable
        */
-      buffer.push(`${this.options.lineVar} = 1;`)
+      buffer.push(`let ${this.options.lineVar} = 1;`)
 
       /**
        * Define filename variable
        */
-      buffer.push(`${this.options.fileNameVar} = "${this.filename}";`)
+      buffer.push(`let ${this.options.fileNameVar} = "${this.filename}";`)
     }
 
     /**
@@ -105,7 +105,7 @@ export class EdgeBuffer {
     /**
      * Write catch block
      */
-    buffer.push('ctx.reThrow(error);')
+    buffer.push(`reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`)
 
     /**
      * End catch block
@@ -121,7 +121,7 @@ export class EdgeBuffer {
      * End closure function when [[wrapInsideFunction]] is true
      */
     if (this.wrapInsideFunction) {
-      buffer.push('})(template, ctx)')
+      buffer.push('})(template, state, escape, reThrow)')
     }
   }
 

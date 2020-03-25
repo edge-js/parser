@@ -1,7 +1,7 @@
-return (function (template, ctx) {
+return (function (template, state, escape, reThrow) {
 let out = "";
-ctx.$lineNumber = 1;
-ctx.$filename = "{{ __dirname }}index.edge";
+let $lineNumber = 1;
+let $filename = "{{ __dirname }}index.edge";
 try {
 out += "\u003Cscript\u003E";
 out += "\n";
@@ -9,7 +9,7 @@ out += "  var reg = \u002F\\+\u002Fg";
 out += "\n";
 out += "\u003C\u002Fscript\u003E";
 } catch (error) {
-ctx.reThrow(error);
+reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, ctx)
+})(template, state, escape, reThrow)

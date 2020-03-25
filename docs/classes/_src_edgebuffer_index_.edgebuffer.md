@@ -14,6 +14,17 @@ Buffer class to construct template
 
 * [constructor](_src_edgebuffer_index_.edgebuffer.md#constructor)
 
+### Properties
+
+* [buffer](_src_edgebuffer_index_.edgebuffer.md#private-buffer)
+* [compiledOutput](_src_edgebuffer_index_.edgebuffer.md#private-compiledoutput)
+* [currentFileName](_src_edgebuffer_index_.edgebuffer.md#private-currentfilename)
+* [currentLineNumber](_src_edgebuffer_index_.edgebuffer.md#private-currentlinenumber)
+* [filename](_src_edgebuffer_index_.edgebuffer.md#private-filename)
+* [prefix](_src_edgebuffer_index_.edgebuffer.md#private-prefix)
+* [suffix](_src_edgebuffer_index_.edgebuffer.md#private-suffix)
+* [wrapInsideFunction](_src_edgebuffer_index_.edgebuffer.md#private-wrapinsidefunction)
+
 ### Accessors
 
 * [size](_src_edgebuffer_index_.edgebuffer.md#size)
@@ -23,9 +34,17 @@ Buffer class to construct template
 * [flush](_src_edgebuffer_index_.edgebuffer.md#flush)
 * [outputExpression](_src_edgebuffer_index_.edgebuffer.md#outputexpression)
 * [outputRaw](_src_edgebuffer_index_.edgebuffer.md#outputraw)
+* [setup](_src_edgebuffer_index_.edgebuffer.md#private-setup)
+* [teardown](_src_edgebuffer_index_.edgebuffer.md#private-teardown)
+* [updateFileName](_src_edgebuffer_index_.edgebuffer.md#private-updatefilename)
+* [updateLineNumber](_src_edgebuffer_index_.edgebuffer.md#private-updatelinenumber)
 * [wrap](_src_edgebuffer_index_.edgebuffer.md#wrap)
 * [writeExpression](_src_edgebuffer_index_.edgebuffer.md#writeexpression)
 * [writeStatement](_src_edgebuffer_index_.edgebuffer.md#writestatement)
+
+### Object literals
+
+* [options](_src_edgebuffer_index_.edgebuffer.md#private-options)
 
 ## Constructors
 
@@ -42,6 +61,63 @@ Name | Type |
 `options?` | undefined &#124; object |
 
 **Returns:** *[EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)*
+
+## Properties
+
+### `Private` buffer
+
+• **buffer**: *string[]* = []
+
+Collected lines
+
+___
+
+### `Private` compiledOutput
+
+• **compiledOutput**: *string | undefined*
+
+Cached compiled output. Once this value is set, the `flush`
+method will become a noop
+
+___
+
+### `Private` currentFileName
+
+• **currentFileName**: *string* = this.filename
+
+Current runtime filename
+
+___
+
+### `Private` currentLineNumber
+
+• **currentLineNumber**: *number* = 1
+
+Current runtime line number
+
+___
+
+### `Private` filename
+
+• **filename**: *string*
+
+___
+
+### `Private` prefix
+
+• **prefix**: *string[]* = []
+
+___
+
+### `Private` suffix
+
+• **suffix**: *string[]* = []
+
+___
+
+### `Private` wrapInsideFunction
+
+• **wrapInsideFunction**: *boolean*
 
 ## Accessors
 
@@ -100,6 +176,70 @@ Name | Type |
 
 ___
 
+### `Private` setup
+
+▸ **setup**(`buffer`: string[]): *void*
+
+Setup template with initial set of lines
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`buffer` | string[] |
+
+**Returns:** *void*
+
+___
+
+### `Private` teardown
+
+▸ **teardown**(`buffer`: string[]): *void*
+
+Tear down template by writing final set of lines
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`buffer` | string[] |
+
+**Returns:** *void*
+
+___
+
+### `Private` updateFileName
+
+▸ **updateFileName**(`filename`: string): *void*
+
+Update the filename at runtime
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`filename` | string |
+
+**Returns:** *void*
+
+___
+
+### `Private` updateLineNumber
+
+▸ **updateLineNumber**(`lineNumber`: number): *void*
+
+Update the line number at runtime
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`lineNumber` | number |
+
+**Returns:** *void*
+
+___
+
 ###  wrap
 
 ▸ **wrap**(`prefix`: string, `suffix`: string): *void*
@@ -151,3 +291,21 @@ Name | Type |
 `lineNumber` | number |
 
 **Returns:** *void*
+
+## Object literals
+
+### `Private` options
+
+### ▪ **options**: *object*
+
+###  fileNameVar
+
+• **fileNameVar**: *string* = "$filename"
+
+###  lineVar
+
+• **lineVar**: *string* = "$lineNumber"
+
+###  outputVar
+
+• **outputVar**: *string* = "out"

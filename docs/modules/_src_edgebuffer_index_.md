@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["src/EdgeBuffer/index"](_src_edgebuffer_index_.md)
 
-# External module: "src/EdgeBuffer/index"
+# Module: "src/EdgeBuffer/index"
 
 ## Index
 

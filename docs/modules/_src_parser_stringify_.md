@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["src/Parser/stringify"](_src_parser_stringify_.md)
 
-# External module: "src/Parser/stringify"
+# Module: "src/Parser/stringify"
 
 ## Index
 

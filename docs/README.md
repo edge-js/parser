@@ -4,7 +4,7 @@
 
 ## Index
 
-### External modules
+### Modules
 
 * ["example/index"](modules/_example_index_.md)
 * ["src/Contracts/index"](modules/_src_contracts_index_.md)
@@ -28,6 +28,7 @@
 * ["src/Parser/generateAst"](modules/_src_parser_generateast_.md)
 * ["src/Parser/index"](modules/_src_parser_index_.md)
 * ["src/Parser/makeCallableExpression"](modules/_src_parser_makecallableexpression_.md)
+* ["src/Parser/makePropertyAccessor"](modules/_src_parser_makepropertyaccessor_.md)
 * ["src/Parser/stringify"](modules/_src_parser_stringify_.md)
 * ["src/Parser/transformAst"](modules/_src_parser_transformast_.md)
 * ["test-helpers/index"](modules/_test_helpers_index_.md)

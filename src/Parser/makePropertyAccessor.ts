@@ -10,13 +10,14 @@
 /**
  * Returns Acorn complaint AST for a collable expression
  */
-export function makeCallableExpression (fnName: string, args: object[]): any {
+export function makePropertyAccessor (args: object): any {
   return {
-    type: 'CallExpression',
-    callee: {
+    type: 'MemberExpression',
+    object: {
       type: 'Identifier',
-      name: fnName,
+      name: 'state',
     },
-    arguments: args,
+    computed: false,
+    property: args,
   }
 }

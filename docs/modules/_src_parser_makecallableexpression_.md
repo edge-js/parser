@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["src/Parser/makeCallableExpression"](_src_parser_makecallableexpression_.md)
 
-# External module: "src/Parser/makeCallableExpression"
+# Module: "src/Parser/makeCallableExpression"
 
 ## Index
 

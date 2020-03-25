@@ -7,22 +7,14 @@
 * file that was distributed with this source code.
 */
 
-import { makeCallableExpression } from '../Parser/makeCallableExpression'
-
-const WHITE_LISTED = ['Object', 'ctx']
+import { makePropertyAccessor } from '../Parser/makePropertyAccessor'
+const WHITE_LISTED = ['Object', 'state']
 
 export default {
   toStatement (statement: any): object {
     if (WHITE_LISTED.indexOf(statement.name) > -1) {
       return statement
     }
-
-    return makeCallableExpression('resolve', [
-      Object.assign({}, statement, {
-        type: 'Literal',
-        value: statement.name,
-        raw: `'${statement.name}'`,
-      }),
-    ])
+    return makePropertyAccessor(statement)
   },
 }

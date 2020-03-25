@@ -74,7 +74,7 @@ test.group('Parser', () => {
   })
 
   test('report runtime errors with correct line number', (assert) => {
-    assert.plan(3)
+    assert.plan(1)
 
     const parser = new Parser(tags, { filename: 'eval.edge' })
     const template = dedent`
@@ -82,17 +82,9 @@ test.group('Parser', () => {
       {{ getUser() }}!
     `
 
-    const fn = new Function('template', 'ctx', parser.parse(template))
-
-    fn({}, {
-      resolve () {
-        return undefined
-      },
-      reThrow (error) {
-        assert.match(error.message, /ctx.resolve\(...\)/)
-        assert.equal(this.$filename, 'eval.edge')
-        assert.equal(this.$lineNumber, 2)
-      },
+    const fn = new Function('template', 'state', 'escape', 'reThrow', parser.parse(template))
+    fn({}, {}, function escape () {}, function reThrow (error) {
+      assert.equal(error.message, 'state.getUser is not a function')
     })
   })
 

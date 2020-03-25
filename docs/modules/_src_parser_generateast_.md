@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["src/Parser/generateAst"](_src_parser_generateast_.md)
 
-# External module: "src/Parser/generateAst"
+# Module: "src/Parser/generateAst"
 
 ## Index
 

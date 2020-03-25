@@ -1,14 +1,14 @@
-return (function (template, ctx) {
+return (function (template, state, escape, reThrow) {
 let out = "";
-ctx.$lineNumber = 1;
-ctx.$filename = "{{ __dirname }}index.edge";
+let $lineNumber = 1;
+let $filename = "{{ __dirname }}index.edge";
 try {
-out += `${ctx.escape(ctx.resolve('toJSON')({
-  username: ctx.resolve('username'),
+out += `${escape(state.toJSON({
+  username: state.username,
   age: "22"
 }))}`;
 } catch (error) {
-ctx.reThrow(error);
+reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, ctx)
+})(template, state, escape, reThrow)

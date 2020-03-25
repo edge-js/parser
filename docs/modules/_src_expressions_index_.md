@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["src/Expressions/index"](_src_expressions_index_.md)
 
-# External module: "src/Expressions/index"
+# Module: "src/Expressions/index"
 
 ## Index
 

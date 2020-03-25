@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["test-helpers/index"](_test_helpers_index_.md)
 
-# External module: "test-helpers/index"
+# Module: "test-helpers/index"
 
 ## Index
 

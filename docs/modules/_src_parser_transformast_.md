@@ -1,6 +1,6 @@
 [edge-parser](../README.md) › ["src/Parser/transformAst"](_src_parser_transformast_.md)
 
-# External module: "src/Parser/transformAst"
+# Module: "src/Parser/transformAst"
 
 ## Index
 

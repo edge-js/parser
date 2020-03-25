@@ -41,6 +41,9 @@ console.log(fn)
 ### Methods
 
 * [parse](_src_parser_index_.parser.md#parse)
+* [processEscapedMustache](_src_parser_index_.parser.md#private-processescapedmustache)
+* [processEscapedTagToken](_src_parser_index_.parser.md#private-processescapedtagtoken)
+* [processMustache](_src_parser_index_.parser.md#private-processmustache)
 * [processToken](_src_parser_index_.parser.md#processtoken)
 * [tokenize](_src_parser_index_.parser.md#tokenize)
 
@@ -84,7 +87,7 @@ ___
 
 #### Type declaration:
 
-* \[ **key**: *string*\]: [ParserTagDefininationContract](../interfaces/_src_contracts_index_.parsertagdefininationcontract.md)
+* \[ **key**: *string*\]: [ParserTagDefinitionContract](../interfaces/_src_contracts_index_.parsertagdefinitioncontract.md)
 
 ## Methods
 
@@ -101,6 +104,65 @@ Name | Type |
 `template` | string |
 
 **Returns:** *string*
+
+___
+
+### `Private` processEscapedMustache
+
+▸ **processEscapedMustache**(`token`: MustacheToken, `buffer`: [EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)): *void*
+
+Process escaped tag token by writing it as it is. However, the children
+inside a tag are still processed.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`token` | MustacheToken |
+`buffer` | [EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md) |
+
+**Returns:** *void*
+
+___
+
+### `Private` processEscapedTagToken
+
+▸ **processEscapedTagToken**(`token`: TagToken, `buffer`: [EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)): *void*
+
+Process escaped tag token by writing it as it is. However, the children
+inside a tag are still processed.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`token` | TagToken |
+`buffer` | [EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md) |
+
+**Returns:** *void*
+
+___
+
+### `Private` processMustache
+
+▸ **processMustache**(`__namedParameters`: object, `buffer`: [EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)): *void*
+
+Process mustache token
+
+**Parameters:**
+
+▪ **__namedParameters**: *object*
+
+Name | Type |
+------ | ------ |
+`filename` | string |
+`loc` | object |
+`properties` | object |
+`type` | MustacheTypes |
+
+▪ **buffer**: *[EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)*
+
+**Returns:** *void*
 
 ___
 
@@ -123,7 +185,7 @@ ___
 
 ###  tokenize
 
-▸ **tokenize**(`template`: string, `filename?`: undefined | string): *object | object | object | object[]*
+▸ **tokenize**(`template`: string, `filename?`: undefined | string): *object | object | object | object | object[]*
 
 Convert template to tokens
 
@@ -134,7 +196,7 @@ Name | Type |
 `template` | string |
 `filename?` | undefined &#124; string |
 
-**Returns:** *object | object | object | object[]*
+**Returns:** *object | object | object | object | object[]*
 
 ## Object literals
 

@@ -29,7 +29,7 @@
     - [SequenceExpression](#sequenceexpression)
     - [TemplateLiteral](#templateliteral)
     - [ArrowFunctionExpression](#arrowfunctionexpression)
-- [Context expectations](#context-expectations)
+- [Template expectations](#template-expectations)
 - [API Docs](#api-docs)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -60,18 +60,18 @@ parser.parse(`Hello {{ username }}`)
 **Output**
 
 ```js
-(function (template, ctx) {
-  let out = '';
-  let edge_debug_line = 1;
-  let edge_filename = 'foo.edge';
-  try {
-    out += 'Hello ';
-    out += `${ctx.escape(ctx.resolve('username'))}`;
-  } catch (error) {
-    ctx.reThrow(error, edge_filename, edge_debug_line);
-  }
-  return out;
-})(template, ctx)
+return (function (template, state, escape, reThrow) {
+let out = "";
+let $lineNumber = 1;
+let $filename = "eval.edge";
+try {
+out += "Hello ";
+out += `${escape(state.username)}`;
+} catch (error) {
+reThrow(error, $filename, $lineNumber);
+}
+return out;
+})(template, state, escape, reThrow)
 ```
 
 > Notice of use of `ctx` in the function body. Parser doesn't provide the implementation of `ctx`, the runtime of template engine should provide it.
@@ -169,18 +169,18 @@ parser.parse('Hello {{ username }}')
 **Output**
 
 ```js
-(function (template, ctx) {
-  let out = '';
-  let edge_debug_line = 1;
-  let edge_filename = 'eval.edge';
-  try {
-    out += 'Hello ';
-    out += `${ctx.escape(ctx.resolve('username'))}`;
-  } catch (error) {
-    ctx.reThrow(error, edge_filename, edge_debug_line);
-  }
-  return out;
-})(template, ctx)
+return (function (template, state, escape, reThrow) {
+let out = "";
+let $lineNumber = 1;
+let $filename = "eval.edge";
+try {
+out += "Hello ";
+out += `${escape(state.username)}`;
+} catch (error) {
+reThrow(error, $filename, $lineNumber);
+}
+return out;
+})(template, state, escape, reThrow)
 ```
 
 #### processToken(token, buffer)
@@ -215,17 +215,13 @@ import { expressions } from 'edge-parser'
 ```
 
 #### Identifier
-
-The identifier is wrapped inside `ctx.resolve`. The `resolve` method job is to resolve the value.
-
-In following statement `username` is the identifier
+The identifier are prefixed with `state.` In following statement `username` is the identifier
 
 ```
 Hello {{ username }}
 ```
 
 #### Literal
-
 A string literal
 
 ```
@@ -233,7 +229,6 @@ Hello {{ 'Guest' }}
 ```
 
 #### ArrayExpression
-
 The `[1, 2, 3, 4]` is an array expression.
 
 ```
@@ -243,7 +238,6 @@ Evens are {{
 ```
 
 #### ObjectExpression
-
 The `{ username: 'virk' }` is an Object expression
 
 ```
@@ -251,7 +245,6 @@ The `{ username: 'virk' }` is an Object expression
 ```
 
 #### UnaryExpression
-
 Following are examples of `UnaryExpression`.
 
 ```
@@ -261,7 +254,6 @@ Following are examples of `UnaryExpression`.
 ```
 
 #### BinaryExpression
-
 Here `{{ 2 + 2 }}` is the binary expression
 
 ```
@@ -269,7 +261,6 @@ Here `{{ 2 + 2 }}` is the binary expression
 ```
 
 #### LogicalExpression
-
 Following is the example of `LogicalExpression`.
 
 ```
@@ -277,25 +268,21 @@ Following is the example of `LogicalExpression`.
 ```
 
 #### MemberExpression
-
 ```
 {{ username.toUpperCase() }}
 ```
 
 #### ConditionalExpression
-
 ```
 {{ username ? username : 'Guest' }}
 ```
 
 #### CallExpression
-
 ```
 {{ upper(username) }}
 ```
 
 #### SequenceExpression
-
 Sequence is not supported in mustache blocks and instead used inside tags. For example:
 
 Everything inside `()` is a sequence expression.
@@ -320,20 +307,19 @@ Everything inside `()` is a sequence expression.
 }}
 ```
 
-## Context expectations
-
-Context must have following methods to work with the core parser.
+## Template expectations
+You must define `escape` and `reThrow` methods when executing the parser compiled function
 
 ```ts
-class Context {
-  // Resolve value for a key
-  resolve(key: string): any
+function escape (value) {
+  if (typeof (value) === 'string') {
+    return escapedValue
+  }
+  
+  return value
+}
 
-  // make input HTML safe
-  escape (input: string): string
-
-  // Manually handle runtime exceptions
-  reThrow (error: Error, filename: string, line: number): string
+function reThrow (error, fileName, lineNumber) {
 }
 ```
 

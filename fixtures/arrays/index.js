@@ -1,12 +1,12 @@
-return (function (template, ctx) {
+return (function (template, state, escape, reThrow) {
 let out = "";
-ctx.$lineNumber = 1;
-ctx.$filename = "{{ __dirname }}index.edge";
+let $lineNumber = 1;
+let $filename = "{{ __dirname }}index.edge";
 try {
 out += "The even numbers are ";
-out += `${ctx.escape([1, 2, 3, 4].filter(num => num % 2 === 0))}`;
+out += `${escape([1, 2, 3, 4].filter(num => num % 2 === 0))}`;
 } catch (error) {
-ctx.reThrow(error);
+reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, ctx)
+})(template, state, escape, reThrow)
