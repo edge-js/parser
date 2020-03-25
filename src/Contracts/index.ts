@@ -15,7 +15,7 @@ import { EdgeBuffer } from '../EdgeBuffer'
 /**
  * The parser needs the `compile` method on every tag
  */
-export interface ParserTagDefininationContract extends LexerTagDefinitionContract {
+export interface ParserTagDefinitionContract extends LexerTagDefinitionContract {
   compile (parser: Parser, buffer: EdgeBuffer, token: TagToken): void
 }
 

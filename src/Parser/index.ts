@@ -21,7 +21,7 @@ import { stringify } from './stringify'
 import { EdgeBuffer } from '../EdgeBuffer'
 import { generateAST } from './generateAst'
 import { transformAst } from './transformAst'
-import { ParserTagDefininationContract } from '../Contracts'
+import { ParserTagDefinitionContract } from '../Contracts'
 import { makeCallableExpression } from './makeCallableExpression'
 
 /**
@@ -48,7 +48,7 @@ import { makeCallableExpression } from './makeCallableExpression'
  */
 export class Parser {
   constructor (
-    public tags: { [key: string]: ParserTagDefininationContract },
+    public tags: { [key: string]: ParserTagDefinitionContract },
     public options: { filename: string },
   ) {}
 
