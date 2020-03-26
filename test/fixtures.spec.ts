@@ -13,9 +13,9 @@ import test from 'japa'
 import { join, sep } from 'path'
 import { readdirSync, readFileSync, statSync } from 'fs'
 
+import { EdgeBuffer } from '../src/EdgeBuffer'
 import { Parser } from '../src/Parser'
 import { normalizeNewLines } from '../test-helpers'
-
 const basePath = join(__dirname, '../fixtures')
 
 const tags = {
@@ -29,9 +29,7 @@ const tags = {
 }
 
 test.group('Fixtures', () => {
-  const dirs = readdirSync(basePath).filter((file) => {
-    return statSync(join(basePath, file)).isDirectory()
-  })
+  const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
 
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
@@ -40,10 +38,12 @@ test.group('Fixtures', () => {
       const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
       const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 
-      const parser = new Parser(tags, { filename: join(dirBasePath, 'index.edge') })
-      const output = parser.parse(template)
+      const parser = new Parser(tags)
+      const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'))
+      const tokens = parser.tokenize(template, join(dirBasePath, 'index.edge'))
+      tokens.forEach((token) => parser.processToken(token, buffer))
 
-      assert.stringEqual(output, out.split('\n').map((line) => {
+      assert.stringEqual(buffer.flush(), out.split('\n').map((line) => {
         return line.replace('{{ __dirname }}', `${dirBasePath}${sep}`)
       }).join('\n'))
     })

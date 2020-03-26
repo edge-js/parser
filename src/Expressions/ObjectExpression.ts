@@ -8,9 +8,10 @@
 */
 
 import { transformAst } from '../Parser/transformAst'
+import { Stack } from '../Stack'
 
 export default {
-  toStatement (statement: any, filename: string, localVariables: Set<string>) {
+  toStatement (statement: any, filename: string, stack: Stack) {
     statement.properties = statement.properties.map((node: any) => {
       /**
        * Since we change the structure of node.value, we have to
@@ -20,9 +21,9 @@ export default {
       node.shorthand = false
 
       if (node.computed === true) {
-        node.key = transformAst(node.key, filename, localVariables)
+        node.key = transformAst(node.key, filename, stack)
       }
-      node.value = transformAst(node.value, filename, localVariables)
+      node.value = transformAst(node.value, filename, stack)
       return node
     })
 

@@ -7,12 +7,13 @@
 * file that was distributed with this source code.
 */
 
+import { Stack } from '../Stack'
 import { makeStatePropertyAccessor } from '../Parser/makeStatePropertyAccessor'
 const WHITE_LISTED = ['Object', 'state']
 
 export default {
-  toStatement (statement: any, _: string, localVariables: Set<string>): object {
-    if (WHITE_LISTED.indexOf(statement.name) > -1 || localVariables.has(statement.name)) {
+  toStatement (statement: any, _: string, stack: Stack): object {
+    if (WHITE_LISTED.indexOf(statement.name) > -1 || stack.has(statement.name)) {
       return statement
     }
     return makeStatePropertyAccessor(statement)

@@ -8,11 +8,12 @@
 */
 
 import { transformAst } from '../Parser/transformAst'
+import { Stack } from '../Stack'
 
 export default {
-  toStatement (statement: any, filename: string, localVariables: Set<string>) {
-    statement.callee = transformAst(statement.callee, filename, localVariables)
-    statement.arguments = statement.arguments.map((node: any) => transformAst(node, filename, localVariables))
+  toStatement (statement: any, filename: string, stack: Stack) {
+    statement.callee = transformAst(statement.callee, filename, stack)
+    statement.arguments = statement.arguments.map((node: any) => transformAst(node, filename, stack))
     return statement
   },
 }

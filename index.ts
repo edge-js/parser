@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
 */
 
+export { Stack } from './src/Stack'
 export { Parser } from './src/Parser'
 export { EdgeBuffer } from './src/EdgeBuffer'
 export { ParserTagDefinitionContract, AcornLoc } from './src/Contracts'

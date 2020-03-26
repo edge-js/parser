@@ -17,7 +17,7 @@ import { normalizeNewLines } from '../test-helpers'
 
 test.group('Buffer', () => {
   test('write line to the output', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', true)
+    const buff = new EdgeBuffer('eval.edge')
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
     let $lineNumber = 1;
@@ -31,7 +31,7 @@ test.group('Buffer', () => {
   })
 
   test('write raw line to the output', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', true)
+    const buff = new EdgeBuffer('eval.edge')
     buff.outputRaw('hello world')
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
@@ -46,7 +46,7 @@ test.group('Buffer', () => {
   })
 
   test('escape quotes in raw line', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', true)
+    const buff = new EdgeBuffer('eval.edge')
     buff.outputRaw('\'hello world\'')
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
@@ -61,7 +61,7 @@ test.group('Buffer', () => {
   })
 
   test('write expression', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', true)
+    const buff = new EdgeBuffer('eval.edge')
     buff.writeStatement('if (username) {', 'eval.edge', 1)
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
@@ -76,7 +76,7 @@ test.group('Buffer', () => {
   })
 
   test('indent output', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', true)
+    const buff = new EdgeBuffer('eval.edge')
     buff.writeStatement('if (username) {', 'eval.edge', 1)
     buff.outputRaw('hello world')
     buff.writeStatement('}', 'eval.edge', 3)
@@ -95,28 +95,16 @@ test.group('Buffer', () => {
     return out;`))
   })
 
-  test('flush lines without defining isolated variables', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', false)
-    buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
-
-    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
-    let out = "";
-    try {
-    out += 'hello world';
-    } catch (error) {
-    ctx.reThrow(error, $filename, $lineNumber);
-    }
-    return out;`))
-  })
-
   test('define wrapping code', (assert) => {
-    const buff = new EdgeBuffer('eval.edge', false)
+    const buff = new EdgeBuffer('eval.edge')
     buff.wrap('return function () {', '}')
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
 
     assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
     return function () {
     let out = "";
+    let $lineNumber = 1;
+    let $filename = "eval.edge";
     try {
     out += 'hello world';
     } catch (error) {

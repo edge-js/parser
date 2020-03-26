@@ -20,6 +20,9 @@ export class EdgeBuffer {
     lineVar: '$lineNumber',
   }
 
+  /**
+   * Prefixes and suffix to wrap the final output
+   */
   private prefix: string[] = []
   private suffix: string[] = []
 
@@ -44,11 +47,7 @@ export class EdgeBuffer {
    */
   private compiledOutput: string | undefined
 
-  constructor (
-    private filename: string,
-    private isolated: boolean,
-    options?: { outputVar?: string }
-  ) {
+  constructor (private filename: string, options?: { outputVar?: string }) {
     Object.assign(this.options, options)
   }
 
@@ -68,17 +67,15 @@ export class EdgeBuffer {
      */
     buffer.push(`let ${this.options.outputVar} = "";`)
 
-    if (this.isolated) {
-      /**
-       * Define line number variable
-       */
-      buffer.push(`let ${this.options.lineVar} = 1;`)
+    /**
+     * Define line number variable
+     */
+    buffer.push(`let ${this.options.lineVar} = 1;`)
 
-      /**
-       * Define filename variable
-       */
-      buffer.push(`let ${this.options.fileNameVar} = "${this.filename}";`)
-    }
+    /**
+     * Define filename variable
+     */
+    buffer.push(`let ${this.options.fileNameVar} = "${this.filename}";`)
 
     /**
      * Write try block

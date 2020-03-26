@@ -17,6 +17,7 @@ import {
   MustacheTypes,
 } from 'edge-lexer'
 
+import { Stack } from '../Stack'
 import { stringify } from './stringify'
 import { EdgeBuffer } from '../EdgeBuffer'
 import { generateAST } from './generateAst'
@@ -48,11 +49,9 @@ import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
  * ```
  */
 export class Parser {
-  private localVariables: Set<string> = new Set()
-
   constructor (
     public tags: { [key: string]: ParserTagDefinitionContract },
-    public options: { filename: string },
+    public stack: Stack = new Stack(),
   ) {}
 
   /**
@@ -105,7 +104,7 @@ export class Parser {
    * Process mustache token
    */
   private processMustache ({ properties, loc, filename, type }: MustacheToken, buffer: EdgeBuffer) {
-    const node = transformAst(generateAST(properties.jsArg, loc, filename), filename, this.localVariables)
+    const node = transformAst(generateAST(properties.jsArg, loc, filename), filename, this.stack)
 
     /**
      * Wrap mustache output to an escape call for preventing XSS attacks
@@ -126,8 +125,8 @@ export class Parser {
   /**
    * Convert template to tokens
    */
-  public tokenize (template: string, filename?: string) {
-    const tokenizer = new Tokenizer(template, this.tags, { filename: filename || this.options.filename })
+  public tokenize (template: string, filename: string) {
+    const tokenizer = new Tokenizer(template, this.tags, { filename: filename })
     tokenizer.parse()
     return tokenizer.tokens
   }
@@ -157,40 +156,5 @@ export class Parser {
       case MustacheTypes.MUSTACHE:
         this.processMustache(token, buffer)
     }
-  }
-
-  /**
-   * Parse a template to an executable function
-   */
-  public parse (template: string) {
-    const tokens = this.tokenize(template)
-    const buffer = new EdgeBuffer(this.options.filename, true)
-    tokens.forEach((token) => this.processToken(token, buffer))
-    return buffer.flush()
-  }
-
-  /**
-   * Define a local variable. Once it is defined, the parser will not attempt
-   * to resolve the value from the state and instead uses the variable
-   * name directly.
-   */
-  public defineLocalVariable (name: string): this {
-    this.localVariables.add(name)
-    return this
-  }
-
-  /**
-   * Remove earlier defined local variable
-   */
-  public removeLocalVariable (name: string): this {
-    this.localVariables.delete(name)
-    return this
-  }
-
-  /**
-   * Get a reference of defined local variables
-   */
-  public getLocalVariables (): string[] {
-    return Array.from(this.localVariables)
   }
 }
