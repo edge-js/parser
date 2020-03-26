@@ -10,11 +10,11 @@
 import './assert-extend'
 
 import test from 'japa'
-import { EOL } from 'os'
 import { join, sep } from 'path'
 import { readdirSync, readFileSync, statSync } from 'fs'
 
 import { Parser } from '../src/Parser'
+import { normalizeNewLines } from '../test-helpers'
 
 const basePath = join(__dirname, '../fixtures')
 
@@ -26,11 +26,6 @@ const tags = {
     public static compile () {
     }
   },
-}
-
-function normalizeNewLines (value: string) {
-  // eslint-disable-next-line @typescript-eslint/quotes
-  return value.replace(/out\s\+=\s"\\n"/g, `out += ${EOL === '\n' ? `"\\n"` : `"\\r\\n"`}`)
 }
 
 test.group('Fixtures', () => {
