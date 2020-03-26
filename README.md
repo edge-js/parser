@@ -60,18 +60,16 @@ parser.parse(`Hello {{ username }}`)
 **Output**
 
 ```js
-return (function (template, state, escape, reThrow) {
 let out = "";
 let $lineNumber = 1;
 let $filename = "eval.edge";
 try {
 out += "Hello ";
-out += `${escape(state.username)}`;
+out += `${ctx.escape(state.username)}`;
 } catch (error) {
-reThrow(error, $filename, $lineNumber);
+ctx.reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, state, escape, reThrow)
 ```
 
 > Notice of use of `ctx` in the function body. Parser doesn't provide the implementation of `ctx`, the runtime of template engine should provide it.
@@ -169,18 +167,16 @@ parser.parse('Hello {{ username }}')
 **Output**
 
 ```js
-return (function (template, state, escape, reThrow) {
 let out = "";
 let $lineNumber = 1;
 let $filename = "eval.edge";
 try {
 out += "Hello ";
-out += `${escape(state.username)}`;
+out += `${ctx.escape(state.username)}`;
 } catch (error) {
-reThrow(error, $filename, $lineNumber);
+ctx.reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, state, escape, reThrow)
 ```
 
 #### processToken(token, buffer)
@@ -308,18 +304,20 @@ Everything inside `()` is a sequence expression.
 ```
 
 ## Template expectations
-You must define `escape` and `reThrow` methods when executing the parser compiled function
+You must define a context object with `escape` and `reThrow` methods when executing the parser compiled function
 
 ```ts
-function escape (value) {
-  if (typeof (value) === 'string') {
-    return escapedValue
-  }
-  
-  return value
-}
+const ctx = {
+  escape (value) {
+    if (typeof (value) === 'string') {
+      return escapedValue
+    }
+    
+    return value
+  },
 
-function reThrow (error, fileName, lineNumber) {
+  reThrow (error, fileName, lineNumber) {
+  }
 }
 ```
 
