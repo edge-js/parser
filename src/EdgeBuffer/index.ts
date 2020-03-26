@@ -14,6 +14,9 @@ import stringify from 'js-stringify'
  * Buffer class to construct template
  */
 export class EdgeBuffer {
+  private outputFileAndLineNumber = true
+  private outputOutVariable = true
+
   private options = {
     outputVar: 'out',
     fileNameVar: '$filename',
@@ -65,17 +68,17 @@ export class EdgeBuffer {
     /**
      * Define output variable
      */
-    buffer.push(`let ${this.options.outputVar} = "";`)
+    this.outputOutVariable && buffer.push(`let ${this.options.outputVar} = "";`)
 
     /**
      * Define line number variable
      */
-    buffer.push(`let ${this.options.lineVar} = 1;`)
+    this.outputFileAndLineNumber && buffer.push(`let ${this.options.lineVar} = 1;`)
 
     /**
      * Define filename variable
      */
-    buffer.push(`let ${this.options.fileNameVar} = "${this.filename}";`)
+    this.outputFileAndLineNumber && buffer.push(`let ${this.options.fileNameVar} = "${this.filename}";`)
 
     /**
      * Write try block
@@ -131,50 +134,66 @@ export class EdgeBuffer {
   /**
    * Write raw text to the output variable
    */
-  public outputRaw (text: string) {
+  public outputRaw (text: string): this {
     this.buffer.push(`${this.options.outputVar} += ${stringify(text)};`)
+    return this
   }
 
   /**
    * Write JS expression to the output variable
    */
-  public outputExpression (
-    text: string,
-    filename: string,
-    lineNumber: number,
-    wrapInsideBackTicks: boolean,
-  ) {
+  public outputExpression (text: string, filename: string, lineNumber: number, templateLiteral: boolean): this {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
-    text = wrapInsideBackTicks ? `\`\${${text}}\`` : text
+    text = templateLiteral ? `\`\${${text}}\`` : text
     this.buffer.push(`${this.options.outputVar} += ${text};`)
+    return this
   }
 
   /**
    * Write JS expression
    */
-  public writeExpression (text: string, filename: string, lineNumber: number) {
+  public writeExpression (text: string, filename: string, lineNumber: number): this {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
     this.buffer.push(`${text};`)
+    return this
   }
 
   /**
    * Write JS statement. Statements are not suffixed with a semi-colon. It
    * means, they can be used for writing `if/else` statements.
    */
-  public writeStatement (text: string, filename: string, lineNumber: number) {
+  public writeStatement (text: string, filename: string, lineNumber: number): this {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
     this.buffer.push(`${text}`)
+    return this
   }
 
   /**
    * Wrap template with a custom prefix and suffix
    */
-  public wrap (prefix: string, suffix: string): void {
+  public wrap (prefix: string, suffix: string): this {
     this.prefix.push(prefix)
     this.suffix.push(suffix)
+    return this
+  }
+
+  /**
+   * Disable instantiation of the file and the line number variables.
+   */
+  public disableFileAndLineVariables (): this {
+    this.outputFileAndLineNumber = false
+    return this
+  }
+
+  /**
+   * Disable instantiation of the out variable.
+   */
+  public disableOutVariable (): this {
+    this.outputOutVariable = false
+    return this
   }
 
   /**
@@ -187,17 +206,30 @@ export class EdgeBuffer {
 
     let buffer: string[] = []
 
-    this.prefix.forEach((text) => {
-      text.split(EOL).forEach((line) => (buffer.push(`${line}`)))
-    })
+    /**
+     * Write prefixes
+     */
+    this.prefix.forEach((text) => text.split(EOL).forEach((line) => (buffer.push(`${line}`))))
 
+    /**
+     * Write setup code
+     */
     this.setup(buffer)
+
+    /**
+     * Copy template contents
+     */
     buffer = buffer.concat(this.buffer)
+
+    /**
+     * Write teardown code
+     */
     this.teardown(buffer)
 
-    this.suffix.forEach((text) => {
-      text.split(EOL).forEach((line) => buffer.push(`${line}`))
-    })
+    /**
+     * Write prefixes
+     */
+    this.suffix.forEach((text) => text.split(EOL).forEach((line) => buffer.push(`${line}`)))
 
     this.compiledOutput = buffer.join(EOL)
     return this.compiledOutput

@@ -113,4 +113,35 @@ test.group('Buffer', () => {
     return out;
     }`))
   })
+
+  test('disable filename and linenumber variables', (assert) => {
+    const buff = new EdgeBuffer('eval.edge')
+    buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
+    buff.disableFileAndLineVariables()
+
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
+    let out = "";
+    try {
+    out += 'hello world';
+    } catch (error) {
+    ctx.reThrow(error, $filename, $lineNumber);
+    }
+    return out;`))
+  })
+
+  test('disable output variable', (assert) => {
+    const buff = new EdgeBuffer('eval.edge')
+    buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
+    buff.disableOutVariable()
+
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`
+    let $lineNumber = 1;
+    let $filename = "eval.edge";
+    try {
+    out += 'hello world';
+    } catch (error) {
+    ctx.reThrow(error, $filename, $lineNumber);
+    }
+    return out;`))
+  })
 })
