@@ -10,8 +10,8 @@
 import { transformAst } from '../Parser/transformAst'
 
 export default {
-  toStatement (statement: any, filename: string) {
-    statement.elements = statement.elements.map((element: any) => transformAst(element, filename))
+  toStatement (statement: any, filename: string, localVariables: Set<string>) {
+    statement.elements = statement.elements.map((element: any) => transformAst(element, filename, localVariables))
     return statement
   },
 }

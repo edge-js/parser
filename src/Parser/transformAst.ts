@@ -14,9 +14,9 @@ import * as Expressions from '../Expressions'
  * Transform acorn AST to Edge AST. This must always be performed before
  * writing it to the compiled template buffer.
  */
-export function transformAst (astExpression: any, filename: string): any {
+export function transformAst (astExpression: any, filename: string, localVariables: Set<string>): any {
   if (Expressions[astExpression.type]) {
-    return Expressions[astExpression.type].toStatement(astExpression, filename)
+    return Expressions[astExpression.type].toStatement(astExpression, filename, localVariables)
   }
 
   const { type, loc } = astExpression

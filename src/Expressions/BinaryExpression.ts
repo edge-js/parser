@@ -10,9 +10,9 @@
 import { transformAst } from '../Parser/transformAst'
 
 export default {
-  toStatement (statement: any, filename: string) {
-    statement.left = transformAst(statement.left, filename)
-    statement.right = transformAst(statement.right, filename)
+  toStatement (statement: any, filename: string, localVariables: Set<string>) {
+    statement.left = transformAst(statement.left, filename, localVariables)
+    statement.right = transformAst(statement.right, filename, localVariables)
     return statement
   },
 }

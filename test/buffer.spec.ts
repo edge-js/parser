@@ -19,68 +19,60 @@ test.group('Buffer', () => {
   test('write line to the output', (assert) => {
     const buff = new EdgeBuffer('eval.edge', true)
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
-    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, state, escape, reThrow) {
-    let out = "";
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
     let $lineNumber = 1;
     let $filename = "eval.edge";
     try {
     out += 'hello world';
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
-    return out;
-    })(template, state, escape, reThrow)`))
+    return out;`))
   })
 
   test('write raw line to the output', (assert) => {
     const buff = new EdgeBuffer('eval.edge', true)
     buff.outputRaw('hello world')
 
-    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, state, escape, reThrow) {
-    let out = "";
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
     let $lineNumber = 1;
     let $filename = "eval.edge";
     try {
     out += "hello world";
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
-    return out;
-    })(template, state, escape, reThrow)`))
+    return out;`))
   })
 
   test('escape quotes in raw line', (assert) => {
     const buff = new EdgeBuffer('eval.edge', true)
     buff.outputRaw('\'hello world\'')
 
-    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, state, escape, reThrow) {
-    let out = "";
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
     let $lineNumber = 1;
     let $filename = "eval.edge";
     try {
     out += "'hello world'";
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
-    return out;
-    })(template, state, escape, reThrow)`))
+    return out;`))
   })
 
   test('write expression', (assert) => {
     const buff = new EdgeBuffer('eval.edge', true)
     buff.writeStatement('if (username) {', 'eval.edge', 1)
 
-    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, state, escape, reThrow) {
-    let out = "";
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
     let $lineNumber = 1;
     let $filename = "eval.edge";
     try {
     if (username) {
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
-    return out;
-    })(template, state, escape, reThrow)`))
+    return out;`))
   })
 
   test('indent output', (assert) => {
@@ -89,8 +81,7 @@ test.group('Buffer', () => {
     buff.outputRaw('hello world')
     buff.writeStatement('}', 'eval.edge', 3)
 
-    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`return (function (template, state, escape, reThrow) {
-    let out = "";
+    assert.stringEqual(buff.flush(), normalizeNewLines(dedent`let out = "";
     let $lineNumber = 1;
     let $filename = "eval.edge";
     try {
@@ -99,13 +90,12 @@ test.group('Buffer', () => {
     $lineNumber = 3;
     }
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
-    return out;
-    })(template, state, escape, reThrow)`))
+    return out;`))
   })
 
-  test('flush lines without wrapping inside fuction', (assert) => {
+  test('flush lines without defining isolated variables', (assert) => {
     const buff = new EdgeBuffer('eval.edge', false)
     buff.outputExpression('\'hello world\'', 'eval.edge', 1, false)
 
@@ -114,7 +104,7 @@ test.group('Buffer', () => {
     try {
     out += 'hello world';
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
     return out;`))
   })
@@ -130,7 +120,7 @@ test.group('Buffer', () => {
     try {
     out += 'hello world';
     } catch (error) {
-    reThrow(error, $filename, $lineNumber);
+    ctx.reThrow(error, $filename, $lineNumber);
     }
     return out;
     }`))

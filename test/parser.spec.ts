@@ -12,9 +12,11 @@ import './assert-extend'
 import test from 'japa'
 import Youch from 'youch'
 import dedent from 'dedent-js'
+import { MustacheToken } from 'edge-lexer'
+
 import { Parser } from '../src/Parser'
 import { EdgeBuffer } from '../src/EdgeBuffer'
-import { MustacheToken } from 'edge-lexer/build/src/Contracts'
+import { normalizeNewLines } from '../test-helpers'
 
 const tags = {
   if: class If {
@@ -82,9 +84,12 @@ test.group('Parser', () => {
       {{ getUser() }}!
     `
 
-    const fn = new Function('template', 'state', 'escape', 'reThrow', parser.parse(template))
-    fn({}, {}, function escape () {}, function reThrow (error) {
-      assert.equal(error.message, 'state.getUser is not a function')
+    const fn = new Function('template', 'state', 'ctx', parser.parse(template))
+    fn({}, {}, {
+      escape () {},
+      reThrow (error: any) {
+        assert.equal(error.message, 'state.getUser is not a function')
+      },
     })
   })
 
@@ -177,5 +182,34 @@ test.group('Parser', () => {
       assert.equal(json.error.frames[0].line, 1)
       assert.equal(json.error.frames[0].column, 11)
     }
+  })
+
+  test('do not prefix idenifiers with state when using local variable', (assert) => {
+    assert.plan(1)
+
+    const parser = new Parser(tags, { filename: 'eval.edge' })
+    parser.defineLocalVariable('username')
+    const template = dedent`
+      Hello
+      {{ username }}!
+    `
+
+    const fn = new Function('template', 'state', 'ctx', parser.parse(template))
+    assert.stringEqual(fn.toString(), normalizeNewLines(dedent`function anonymous(template,state,ctx
+      ) {
+      let out = "";
+      let $lineNumber = 1;
+      let $filename = "eval.edge";
+      try {
+      out += "Hello";
+      out += "\\n";
+      $lineNumber = 2;
+      out += \`\${ctx.escape(username)}\`;
+      out += "!";
+      } catch (error) {
+      ctx.reThrow(error, $filename, $lineNumber);
+      }
+      return out;
+      }`))
   })
 })

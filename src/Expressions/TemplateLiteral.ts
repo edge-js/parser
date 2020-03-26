@@ -10,9 +10,9 @@
 import { transformAst } from '../Parser/transformAst'
 
 export default {
-  toStatement (statement: any, filename: string) {
+  toStatement (statement: any, filename: string, localVariables: Set<string>) {
     statement.expressions = statement.expressions.map((expression: any) => {
-      return transformAst(expression, filename)
+      return transformAst(expression, filename, localVariables)
     })
 
     return statement

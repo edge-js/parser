@@ -7,14 +7,14 @@
 * file that was distributed with this source code.
 */
 
-import { makePropertyAccessor } from '../Parser/makePropertyAccessor'
+import { makeStatePropertyAccessor } from '../Parser/makeStatePropertyAccessor'
 const WHITE_LISTED = ['Object', 'state']
 
 export default {
-  toStatement (statement: any): object {
-    if (WHITE_LISTED.indexOf(statement.name) > -1) {
+  toStatement (statement: any, _: string, localVariables: Set<string>): object {
+    if (WHITE_LISTED.indexOf(statement.name) > -1 || localVariables.has(statement.name)) {
       return statement
     }
-    return makePropertyAccessor(statement)
+    return makeStatePropertyAccessor(statement)
   },
 }

@@ -10,12 +10,19 @@
 /**
  * Returns Acorn complaint AST for a collable expression
  */
-export function makeCallableExpression (fnName: string, args: object[]): any {
+export function makeCtxCallable (fnName: string, args: object[]): any {
   return {
     type: 'CallExpression',
     callee: {
-      type: 'Identifier',
-      name: fnName,
+      type: 'MemberExpression',
+      object: {
+        type: 'Identifier',
+        name: 'ctx',
+      },
+      property: {
+        type: 'Identifier',
+        name: fnName,
+      },
     },
     arguments: args,
   }

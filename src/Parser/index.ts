@@ -21,8 +21,9 @@ import { stringify } from './stringify'
 import { EdgeBuffer } from '../EdgeBuffer'
 import { generateAST } from './generateAst'
 import { transformAst } from './transformAst'
+import { makeCtxCallable } from './makeCtxCallable'
 import { ParserTagDefinitionContract } from '../Contracts'
-import { makeCallableExpression } from './makeCallableExpression'
+import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -47,6 +48,8 @@ import { makeCallableExpression } from './makeCallableExpression'
  * ```
  */
 export class Parser {
+  private localVariables: Set<string> = new Set()
+
   constructor (
     public tags: { [key: string]: ParserTagDefinitionContract },
     public options: { filename: string },
@@ -59,7 +62,8 @@ export class Parser {
     generateAST,
     transformAst,
     stringify,
-    makeCallableExpression,
+    makeCtxCallable,
+    makeStatePropertyAccessor,
   }
 
   /**
@@ -101,12 +105,12 @@ export class Parser {
    * Process mustache token
    */
   private processMustache ({ properties, loc, filename, type }: MustacheToken, buffer: EdgeBuffer) {
-    const node = transformAst(generateAST(properties.jsArg, loc, filename), filename)
+    const node = transformAst(generateAST(properties.jsArg, loc, filename), filename, this.localVariables)
 
     /**
      * Wrap mustache output to an escape call for preventing XSS attacks
      */
-    const expression = type === MustacheTypes.MUSTACHE ? makeCallableExpression('escape', [node]) : node
+    const expression = type === MustacheTypes.MUSTACHE ? makeCtxCallable('escape', [node]) : node
 
     /**
      * Template literal, so there is no need to wrap it inside another
@@ -163,5 +167,30 @@ export class Parser {
     const buffer = new EdgeBuffer(this.options.filename, true)
     tokens.forEach((token) => this.processToken(token, buffer))
     return buffer.flush()
+  }
+
+  /**
+   * Define a local variable. Once it is defined, the parser will not attempt
+   * to resolve the value from the state and instead uses the variable
+   * name directly.
+   */
+  public defineLocalVariable (name: string): this {
+    this.localVariables.add(name)
+    return this
+  }
+
+  /**
+   * Remove earlier defined local variable
+   */
+  public removeLocalVariable (name: string): this {
+    this.localVariables.delete(name)
+    return this
+  }
+
+  /**
+   * Get a reference of defined local variables
+   */
+  public getLocalVariables (): string[] {
+    return Array.from(this.localVariables)
   }
 }

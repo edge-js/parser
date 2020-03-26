@@ -46,7 +46,7 @@ export class EdgeBuffer {
 
   constructor (
     private filename: string,
-    private wrapInsideFunction: boolean,
+    private isolated: boolean,
     options?: { outputVar?: string }
   ) {
     Object.assign(this.options, options)
@@ -64,18 +64,11 @@ export class EdgeBuffer {
    */
   private setup (buffer: string[]) {
     /**
-     * Output closure function when [[wrapInsideFunction]] is true
-     */
-    if (this.wrapInsideFunction) {
-      buffer.push('return (function (template, state, escape, reThrow) {')
-    }
-
-    /**
      * Define output variable
      */
     buffer.push(`let ${this.options.outputVar} = "";`)
 
-    if (this.wrapInsideFunction) {
+    if (this.isolated) {
       /**
        * Define line number variable
        */
@@ -105,7 +98,7 @@ export class EdgeBuffer {
     /**
      * Write catch block
      */
-    buffer.push(`reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`)
+    buffer.push(`ctx.reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`)
 
     /**
      * End catch block
@@ -116,13 +109,6 @@ export class EdgeBuffer {
      * Return output variable
      */
     buffer.push(`return ${this.options.outputVar};`)
-
-    /**
-     * End closure function when [[wrapInsideFunction]] is true
-     */
-    if (this.wrapInsideFunction) {
-      buffer.push('})(template, state, escape, reThrow)')
-    }
   }
 
   /**

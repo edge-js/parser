@@ -10,7 +10,7 @@
 /**
  * Returns Acorn complaint AST for a collable expression
  */
-export function makePropertyAccessor (args: object): any {
+export function makeStatePropertyAccessor (args: object): any {
   return {
     type: 'MemberExpression',
     object: {

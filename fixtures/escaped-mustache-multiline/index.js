@@ -1,4 +1,3 @@
-return (function (template, state, escape, reThrow) {
 let out = "";
 let $lineNumber = 1;
 let $filename = "{{ __dirname }}index.edge";
@@ -10,7 +9,6 @@ out += "    return user.username";
 out += "  })";
 out += "}}";
 } catch (error) {
-reThrow(error, $filename, $lineNumber);
+ctx.reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, state, escape, reThrow)
