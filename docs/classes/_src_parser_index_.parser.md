@@ -35,16 +35,20 @@ console.log(fn)
 
 ### Properties
 
+* [localVariables](_src_parser_index_.parser.md#private-localvariables)
 * [options](_src_parser_index_.parser.md#options)
 * [tags](_src_parser_index_.parser.md#tags)
 
 ### Methods
 
+* [defineLocalVariable](_src_parser_index_.parser.md#definelocalvariable)
+* [getLocalVariables](_src_parser_index_.parser.md#getlocalvariables)
 * [parse](_src_parser_index_.parser.md#parse)
 * [processEscapedMustache](_src_parser_index_.parser.md#private-processescapedmustache)
 * [processEscapedTagToken](_src_parser_index_.parser.md#private-processescapedtagtoken)
 * [processMustache](_src_parser_index_.parser.md#private-processmustache)
 * [processToken](_src_parser_index_.parser.md#processtoken)
+* [removeLocalVariable](_src_parser_index_.parser.md#removelocalvariable)
 * [tokenize](_src_parser_index_.parser.md#tokenize)
 
 ### Object literals
@@ -71,6 +75,12 @@ Name | Type |
 
 ## Properties
 
+### `Private` localVariables
+
+• **localVariables**: *Set‹string›* = new Set()
+
+___
+
 ###  options
 
 • **options**: *object*
@@ -90,6 +100,34 @@ ___
 * \[ **key**: *string*\]: [ParserTagDefinitionContract](../interfaces/_src_contracts_index_.parsertagdefinitioncontract.md)
 
 ## Methods
+
+###  defineLocalVariable
+
+▸ **defineLocalVariable**(`name`: string): *this*
+
+Define a local variable. Once it is defined, the parser will not attempt
+to resolve the value from the state and instead uses the variable
+name directly.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`name` | string |
+
+**Returns:** *this*
+
+___
+
+###  getLocalVariables
+
+▸ **getLocalVariables**(): *string[]*
+
+Get a reference of defined local variables
+
+**Returns:** *string[]*
+
+___
 
 ###  parse
 
@@ -183,6 +221,22 @@ Name | Type |
 
 ___
 
+###  removeLocalVariable
+
+▸ **removeLocalVariable**(`name`: string): *this*
+
+Remove earlier defined local variable
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`name` | string |
+
+**Returns:** *this*
+
+___
+
 ###  tokenize
 
 ▸ **tokenize**(`template`: string, `filename?`: undefined | string): *object | object | object | object | object[]*
@@ -210,9 +264,13 @@ Parser utilities work with the AST
 
 • **generateAST**: *[generateAST](../modules/_src_parser_generateast_.md#generateast)*
 
-###  makeCallableExpression
+###  makeCtxCallable
 
-• **makeCallableExpression**: *[makeCallableExpression](../modules/_src_parser_makecallableexpression_.md#makecallableexpression)*
+• **makeCtxCallable**: *[makeCtxCallable](../modules/_src_parser_makectxcallable_.md#makectxcallable)*
+
+###  makeStatePropertyAccessor
+
+• **makeStatePropertyAccessor**: *[makeStatePropertyAccessor](../modules/_src_parser_makestatepropertyaccessor_.md#makestatepropertyaccessor)*
 
 ###  stringify
 

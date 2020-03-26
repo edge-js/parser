@@ -21,9 +21,9 @@ Buffer class to construct template
 * [currentFileName](_src_edgebuffer_index_.edgebuffer.md#private-currentfilename)
 * [currentLineNumber](_src_edgebuffer_index_.edgebuffer.md#private-currentlinenumber)
 * [filename](_src_edgebuffer_index_.edgebuffer.md#private-filename)
+* [isolated](_src_edgebuffer_index_.edgebuffer.md#private-isolated)
 * [prefix](_src_edgebuffer_index_.edgebuffer.md#private-prefix)
 * [suffix](_src_edgebuffer_index_.edgebuffer.md#private-suffix)
-* [wrapInsideFunction](_src_edgebuffer_index_.edgebuffer.md#private-wrapinsidefunction)
 
 ### Accessors
 
@@ -50,14 +50,14 @@ Buffer class to construct template
 
 ###  constructor
 
-\+ **new EdgeBuffer**(`filename`: string, `wrapInsideFunction`: boolean, `options?`: undefined | object): *[EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)*
+\+ **new EdgeBuffer**(`filename`: string, `isolated`: boolean, `options?`: undefined | object): *[EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `filename` | string |
-`wrapInsideFunction` | boolean |
+`isolated` | boolean |
 `options?` | undefined &#124; object |
 
 **Returns:** *[EdgeBuffer](_src_edgebuffer_index_.edgebuffer.md)*
@@ -103,6 +103,12 @@ ___
 
 ___
 
+### `Private` isolated
+
+• **isolated**: *boolean*
+
+___
+
 ### `Private` prefix
 
 • **prefix**: *string[]* = []
@@ -112,12 +118,6 @@ ___
 ### `Private` suffix
 
 • **suffix**: *string[]* = []
-
-___
-
-### `Private` wrapInsideFunction
-
-• **wrapInsideFunction**: *boolean*
 
 ## Accessors
 
