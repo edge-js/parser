@@ -189,9 +189,9 @@ test.group('Parser', () => {
         Hello {{ a..b }}
       `, 'eval.edge')
 
-      const mustacheToken = (tokens[1] as MustacheToken)
+      const mustacheToken = (tokens[2] as MustacheToken)
       mustacheToken.filename = 'bar.edge'
-      parser.processToken(tokens[1], new EdgeBuffer('eval.edge'))
+      parser.processToken(mustacheToken, new EdgeBuffer('eval.edge'))
     } catch (error) {
       const json = await new Youch(error, {}).toJSON()
       assert.equal(json.error.frames[0].file, 'bar.edge')
@@ -221,6 +221,7 @@ test.group('Parser', () => {
       let $lineNumber = 1;
       let $filename = "eval.edge";
       try {
+      out += "\\n";
       out += "Hello";
       out += "\\n";
       $lineNumber = 2;
