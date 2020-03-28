@@ -8,10 +8,10 @@
 */
 
 import { transformAst } from '../Parser/transformAst'
-import { Stack } from '../Stack'
+import { Parser } from '../Parser'
 
 export default {
-  toStatement (statement: any, filename: string, stack: Stack) {
+  toStatement (statement: any, filename: string, parser: Parser) {
     statement.properties = statement.properties.map((node: any) => {
       /**
        * Since we change the structure of node.value, we have to
@@ -21,9 +21,9 @@ export default {
       node.shorthand = false
 
       if (node.computed === true) {
-        node.key = transformAst(node.key, filename, stack)
+        node.key = transformAst(node.key, filename, parser)
       }
-      node.value = transformAst(node.value, filename, stack)
+      node.value = transformAst(node.value, filename, parser)
       return node
     })
 

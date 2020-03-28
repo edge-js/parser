@@ -18,9 +18,6 @@ import { AcornLoc } from '../Contracts'
  * inside the original template engine
  */
 function patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
-  loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
-  loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
-
   /**
    * Patch the column also, when it's the first line. The reason we do this, since
    * the first line in the actual edge file may contain the Javascript expression
@@ -29,6 +26,9 @@ function patchLoc (loc: AcornLoc, lexerLoc: LexerLoc): void {
   if (loc.start.line === 1) {
     loc.start.column = loc.start.column + lexerLoc.start.col
   }
+
+  loc.start.line = (loc.start.line + lexerLoc.start.line) - 1
+  loc.end.line = (loc.end.line + lexerLoc.start.line) - 1
 }
 
 /**
@@ -40,6 +40,7 @@ export function generateAST (jsArg: string, lexerLoc: LexerLoc, filename: string
   const acornOptions = {
     locations: true,
     ecmaVersion: 7 as const,
+    allowAwaitOutsideFunction: true,
     onToken: (token: Token) => patchLoc(token.loc!, lexerLoc),
   }
 

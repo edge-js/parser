@@ -9,16 +9,16 @@
 
 import { EdgeError } from 'edge-error'
 
-import { Stack } from '../Stack'
+import { Parser } from '../Parser'
 import * as Expressions from '../Expressions'
 
 /**
  * Transform acorn AST to Edge AST. This must always be performed before
  * writing it to the compiled template buffer.
  */
-export function transformAst (astExpression: any, filename: string, stack: Stack): any {
+export function transformAst (astExpression: any, filename: string, parser: Parser): any {
   if (Expressions[astExpression.type]) {
-    return Expressions[astExpression.type].toStatement(astExpression, filename, stack)
+    return Expressions[astExpression.type].toStatement(astExpression, filename, parser)
   }
 
   const { type, loc } = astExpression

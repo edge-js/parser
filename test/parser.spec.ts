@@ -232,4 +232,25 @@ test.group('Parser', () => {
       return out;
       }`))
   })
+
+  test('report error when using await expression in non async mode', async (assert) => {
+    assert.plan(3)
+
+    const parser = new Parser(tags)
+    const template = dedent`
+    Hello {{ username }}
+
+    Let's use {{ await getUsername() }}`
+
+    try {
+      const buffer = new EdgeBuffer('eval.edge')
+      const tokens = parser.tokenize(template, 'eval.edge')
+      tokens.forEach((token) => parser.processToken(token, buffer))
+    } catch (error) {
+      const json = await new Youch(error, {}).toJSON()
+      assert.equal(json.error.frames[0].file, 'eval.edge')
+      assert.equal(json.error.frames[0].line, 3)
+      assert.equal(json.error.frames[0].column, 13)
+    }
+  })
 })

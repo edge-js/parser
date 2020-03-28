@@ -8,10 +8,10 @@
 */
 
 import { transformAst } from '../Parser/transformAst'
-import { Stack } from '../Stack'
+import { Parser } from '../Parser'
 
 export default {
-  toStatement (statement: any, filename: string, stack: Stack) {
-    return transformAst(statement.expression, filename, stack)
+  toStatement (statement: any, filename: string, parser: Parser) {
+    return transformAst(statement.expression, filename, parser)
   },
 }

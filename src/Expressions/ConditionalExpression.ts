@@ -8,13 +8,13 @@
 */
 
 import { transformAst } from '../Parser/transformAst'
-import { Stack } from '../Stack'
+import { Parser } from '../Parser'
 
 export default {
-  toStatement (statement: any, filename: string, stack: Stack) {
-    statement.test = transformAst(statement.test, filename, stack)
-    statement.consequent = transformAst(statement.consequent, filename, stack)
-    statement.alternate = transformAst(statement.alternate, filename, stack)
+  toStatement (statement: any, filename: string, parser: Parser) {
+    statement.test = transformAst(statement.test, filename, parser)
+    statement.consequent = transformAst(statement.consequent, filename, parser)
+    statement.alternate = transformAst(statement.alternate, filename, parser)
     return statement
   },
 }

@@ -38,7 +38,7 @@ test.group('Fixtures', () => {
       const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
       const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 
-      const parser = new Parser(tags)
+      const parser = new Parser(tags, true)
       const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'))
       const tokens = parser.tokenize(template, join(dirBasePath, 'index.edge'))
       tokens.forEach((token) => parser.processToken(token, buffer))

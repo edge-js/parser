@@ -51,6 +51,7 @@ import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
 export class Parser {
   constructor (
     public tags: { [key: string]: ParserTagDefinitionContract },
+    public asyncMode: boolean = false,
     public stack: Stack = new Stack(),
   ) {}
 
@@ -58,11 +59,18 @@ export class Parser {
    * Parser utilities work with the AST
    */
   public utils = {
-    generateAST,
+    generateAST: generateAST,
     transformAst,
     stringify,
     makeCtxCallable,
     makeStatePropertyAccessor,
+    getExpressionLoc (expression: any): { line: number, col: number } {
+      const loc = expression.loc || expression.property?.loc
+      return {
+        line: loc.start.line,
+        col: loc.start.column,
+      }
+    },
   }
 
   /**
@@ -104,7 +112,7 @@ export class Parser {
    * Process mustache token
    */
   private processMustache ({ properties, loc, filename, type }: MustacheToken, buffer: EdgeBuffer) {
-    const node = transformAst(generateAST(properties.jsArg, loc, filename), filename, this.stack)
+    const node = transformAst(generateAST(properties.jsArg, loc, filename), filename, this)
 
     /**
      * Wrap mustache output to an escape call for preventing XSS attacks
