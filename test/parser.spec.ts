@@ -11,6 +11,7 @@ import './assert-extend'
 
 import test from 'japa'
 import Youch from 'youch'
+import { join } from 'path'
 import dedent from 'dedent-js'
 import { MustacheToken } from 'edge-lexer'
 
@@ -253,5 +254,28 @@ test.group('Parser', () => {
       assert.equal(json.error.frames[0].line, 3)
       assert.equal(json.error.frames[0].column, 13)
     }
+  })
+
+  test('escape unicodes in filename', (assert) => {
+    assert.plan(2)
+
+    const parser = new Parser(tags)
+    const template = dedent`
+      Hello
+      {{ getUser() }}!
+    `
+
+    const buffer = new EdgeBuffer(join(__dirname, 'eval.edge'))
+    const tokens = parser.tokenize(template, join(__dirname, 'eval.edge'))
+    tokens.forEach((token) => parser.processToken(token, buffer))
+
+    const fn = new Function('template', 'state', 'ctx', buffer.flush())
+    fn({}, {}, {
+      escape () {},
+      reThrow (error: any, filename: string) {
+        assert.equal(filename, join(__dirname, 'eval.edge'))
+        assert.equal(error.message, 'state.getUser is not a function')
+      },
+    })
   })
 })
