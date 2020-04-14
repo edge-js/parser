@@ -78,7 +78,7 @@ export class EdgeBuffer {
     /**
      * Define filename variable
      */
-    this.outputFileAndLineNumber && buffer.push(`let ${this.options.fileNameVar} = "${this.filename}";`)
+    this.outputFileAndLineNumber && buffer.push(`let ${this.options.fileNameVar} = ${stringify(this.filename)};`)
 
     /**
      * Write try block
@@ -117,7 +117,7 @@ export class EdgeBuffer {
   private updateFileName (filename: string) {
     if (this.currentFileName !== filename) {
       this.currentFileName = filename
-      this.buffer.push(`${this.options.fileNameVar} = "${filename}";`)
+      this.buffer.push(`${this.options.fileNameVar} = ${stringify(filename)};`)
     }
   }
 
