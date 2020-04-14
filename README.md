@@ -29,6 +29,8 @@
     - [SequenceExpression](#sequenceexpression)
     - [TemplateLiteral](#templateliteral)
     - [ArrowFunctionExpression](#arrowfunctionexpression)
+    - [AwaitExpression](#awaitexpression)
+    - [FunctionDeclaration](#functiondeclaration)
 - [Template expectations](#template-expectations)
 - [API Docs](#api-docs)
 
@@ -302,6 +304,17 @@ Everything inside `()` is a sequence expression.
   })
 }}
 ```
+
+#### AwaitExpression
+```
+{{ await foo() }}
+```
+
+#### FunctionDeclaration
+```
+{{ function foo () {} }}
+```
+
 
 ## Template expectations
 You must define a context object with `escape` and `reThrow` methods when executing the parser compiled function
