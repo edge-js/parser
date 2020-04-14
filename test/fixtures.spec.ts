@@ -10,15 +10,14 @@
 import './assert-extend'
 
 import test from 'japa'
-import { join, sep } from 'path'
-import stringify from 'js-stringify'
+import { join } from 'path'
 import { readdirSync, readFileSync, statSync } from 'fs'
 
-import { EdgeBuffer } from '../src/EdgeBuffer'
 import { Parser } from '../src/Parser'
-import { normalizeNewLines } from '../test-helpers'
-const basePath = join(__dirname, '../fixtures')
+import { EdgeBuffer } from '../src/EdgeBuffer'
+import { normalizeNewLines, normalizeFilename } from '../test-helpers'
 
+const basePath = join(__dirname, '../fixtures')
 const tags = {
   if: class If {
     public static block = true
@@ -43,14 +42,7 @@ test.group('Fixtures', () => {
       const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'))
       const tokens = parser.tokenize(template, join(dirBasePath, 'index.edge'))
       tokens.forEach((token) => parser.processToken(token, buffer))
-
-      assert.stringEqual(buffer.flush(), out.split('\n').map((line) => {
-        line = line.replace('{{ __dirname }}', `${dirBasePath}${sep}`)
-        if (line.trim().startsWith('let $filename')) {
-          return line.replace(/=\s"(.*)"/, (_, group) => `= ${stringify(group)}`)
-        }
-        return line
-      }).join('\n'))
+      assert.stringEqual(buffer.flush(), out.split('\n').map((line) => normalizeFilename(dirBasePath, line)).join('\n'))
     })
   })
 })
