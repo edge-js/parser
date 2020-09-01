@@ -190,7 +190,7 @@ test.group('Parser', () => {
         Hello {{ a..b }}
       `, 'eval.edge')
 
-      const mustacheToken = (tokens[2] as MustacheToken)
+      const mustacheToken = (tokens[1] as MustacheToken)
       mustacheToken.filename = 'bar.edge'
       parser.processToken(mustacheToken, new EdgeBuffer('eval.edge'))
     } catch (error) {
@@ -222,7 +222,6 @@ test.group('Parser', () => {
       let $lineNumber = 1;
       let $filename = "eval.edge";
       try {
-      out += "\\n";
       out += "Hello";
       out += "\\n";
       $lineNumber = 2;

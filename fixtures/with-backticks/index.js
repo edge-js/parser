@@ -2,7 +2,6 @@ let out = "";
 let $lineNumber = 1;
 let $filename = "{{ __dirname }}index.edge";
 try {
-out += "\n";
 out += "This is ";
 out += `${ctx.escape(state.username)}`;
 out += "'s `pet`.";
