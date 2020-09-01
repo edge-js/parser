@@ -1,11 +1,11 @@
 /*
-* edge-parser
-*
-* (c) Harminder Virk <virk@adonisjs.com>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * edge-parser
+ *
+ * (c) Harminder Virk <virk@adonisjs.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 import { Parser } from '../index'
 import { EdgeBuffer } from '../index'
@@ -14,15 +14,17 @@ const filename = 'eval.edge'
 const parser = new Parser({})
 const buffer = new EdgeBuffer(filename)
 const ctx = {
-  escape (value: any) {
-    return value
-  },
-  reThrow (error: Error) {
-    throw error
-  },
+	escape(value: any) {
+		return value
+	},
+	reThrow(error: Error) {
+		throw error
+	},
 }
 
-parser.tokenize('Hello {{ username }}', filename).forEach((token) => parser.processToken(token, buffer))
+parser
+	.tokenize('Hello {{ username }}', filename)
+	.forEach((token) => parser.processToken(token, buffer))
 
 /**
  * Compiled output
