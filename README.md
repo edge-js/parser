@@ -1,3 +1,5 @@
+<div align="center"><img src="https://res.cloudinary.com/adonis-js/image/upload/q_100/v1600679850/edge-banner_wao6ex.png" width="600px"></div>
+
 # Edge Parser
 
 > Parser to convert edge template to invokable functions
