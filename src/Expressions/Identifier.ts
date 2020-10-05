@@ -9,7 +9,7 @@
 
 import { Parser } from '../Parser'
 import { makeStatePropertyAccessor } from '../Parser/makeStatePropertyAccessor'
-const WHITE_LISTED = ['state']
+const WHITE_LISTED = ['state', '$filename']
 
 export default {
 	toStatement(statement: any, _: string, parser: Parser): object {
