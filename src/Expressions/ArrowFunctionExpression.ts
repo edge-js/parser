@@ -9,8 +9,6 @@
 
 import { transformAst } from '../Parser/transformAst'
 import { Parser } from '../Parser'
-import ObjectExpression from './ObjectExpression'
-import { parse } from 'path'
 
 export default {
 	toStatement(statement: any, filename: string, parser: Parser) {
