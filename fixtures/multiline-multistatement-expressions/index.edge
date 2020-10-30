@@ -1,0 +1,6 @@
+Your friends are {{
+  users.map((user) => {
+		user.height.inches = user.height.cm / 2.54
+    return user.username
+  })
+}}

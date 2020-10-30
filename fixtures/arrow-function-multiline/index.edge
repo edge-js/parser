@@ -1,0 +1,4 @@
+{{ users.find((user, index) => {
+	user.age = user.age + index
+	return user.age === minAge
+}) }}
