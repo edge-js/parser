@@ -9,6 +9,8 @@
 
 import { transformAst } from '../Parser/transformAst'
 import { Parser } from '../Parser'
+import ObjectExpression from './ObjectExpression'
+import { parse } from 'path'
 
 export default {
 	toStatement(statement: any, filename: string, parser: Parser) {
@@ -17,6 +19,10 @@ export default {
 		statement.params.forEach((param) => {
 			if (param.type === 'Identifier') {
 				parser.stack.defineVariable(param.name)
+			} else if (param.type === 'ObjectPattern') {
+				parser.utils.collectObjectExpressionProperties(param).forEach((prop) => {
+					parser.stack.defineVariable(prop)
+				})
 			} else {
 				throw new Error(
 					`Report this error to the maintainers: Expected Arrow function params to be an identifier. Instead received ${param.type}`

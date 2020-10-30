@@ -18,6 +18,7 @@ import { transformAst } from './transformAst'
 import { makeCtxCallable } from './makeCtxCallable'
 import { ParserTagDefinitionContract } from '../Contracts'
 import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
+import { collectObjectExpressionProperties } from './collectObjectExpressionProperties'
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -57,6 +58,7 @@ export class Parser {
 		stringify,
 		makeCtxCallable,
 		makeStatePropertyAccessor,
+		collectObjectExpressionProperties,
 		getExpressionLoc(expression: any): { line: number; col: number } {
 			const loc = expression.loc || expression.property?.loc
 			return {
