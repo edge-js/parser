@@ -131,8 +131,8 @@ export class Parser {
 	/**
 	 * Convert template to tokens
 	 */
-	public tokenize(template: string, filename: string) {
-		const tokenizer = new Tokenizer(template, this.tags, { filename: filename })
+	public tokenize(template: string, filename: string, onLine?: (line: string) => string) {
+		const tokenizer = new Tokenizer(template, this.tags, { filename: filename, onLine })
 		tokenizer.parse()
 		return tokenizer.tokens
 	}
