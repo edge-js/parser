@@ -23,7 +23,7 @@ const ctx = {
 }
 
 parser
-	.tokenize('Hello {{ username }}', filename)
+	.tokenize('Hello {{ username }}', { filename })
 	.forEach((token) => parser.processToken(token, buffer))
 
 /**
