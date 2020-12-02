@@ -39,7 +39,9 @@ test.group('Fixtures', () => {
 
 			const parser = new Parser(tags, true)
 			const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'))
-			const tokens = parser.tokenize(template, join(dirBasePath, 'index.edge'))
+			const tokens = parser.tokenize(template, {
+				filename: join(dirBasePath, 'index.edge'),
+			})
 			tokens.forEach((token) => parser.processToken(token, buffer))
 			assert.stringEqual(
 				buffer.flush(),

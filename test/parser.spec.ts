@@ -13,7 +13,7 @@ import test from 'japa'
 import Youch from 'youch'
 import { join } from 'path'
 import dedent from 'dedent-js'
-import { MustacheToken } from 'edge-lexer'
+import { MustacheToken, TagToken } from 'edge-lexer'
 
 import { Parser } from '../src/Parser'
 import { EdgeBuffer } from '../src/EdgeBuffer'
@@ -43,7 +43,9 @@ test.group('Parser', () => {
 
 		try {
 			const buffer = new EdgeBuffer('eval.edge')
-			const tokens = parser.tokenize(template, 'eval.edge')
+			const tokens = parser.tokenize(template, {
+				filename: 'eval.edge',
+			})
 			tokens.forEach((token) => parser.processToken(token, buffer))
 		} catch (error) {
 			const json = await new Youch(error, {}).toJSON()
@@ -69,7 +71,9 @@ test.group('Parser', () => {
 
 		try {
 			const buffer = new EdgeBuffer('eval.edge')
-			const tokens = parser.tokenize(template, 'eval.edge')
+			const tokens = parser.tokenize(template, {
+				filename: 'eval.edge',
+			})
 			tokens.forEach((token) => parser.processToken(token, buffer))
 		} catch (error) {
 			const json = await new Youch(error, {}).toJSON()
@@ -89,7 +93,9 @@ test.group('Parser', () => {
     `
 
 		const buffer = new EdgeBuffer('eval.edge')
-		const tokens = parser.tokenize(template, 'eval.edge')
+		const tokens = parser.tokenize(template, {
+			filename: 'eval.edge',
+		})
 		tokens.forEach((token) => parser.processToken(token, buffer))
 
 		const fn = new Function('template', 'state', 'ctx', buffer.flush())
@@ -126,7 +132,9 @@ test.group('Parser', () => {
     `
 		const parser = new Parser(customTags)
 		const buffer = new EdgeBuffer('eval.edge')
-		const tokens = parser.tokenize(template, 'eval.edge')
+		const tokens = parser.tokenize(template, {
+			filename: 'eval.edge',
+		})
 		tokens.forEach((token) => parser.processToken(token, buffer))
 	})
 
@@ -140,7 +148,9 @@ test.group('Parser', () => {
 				dedent`
         Hello {{ user\ name }}
       `,
-				'eval.edge'
+				{
+					filename: 'eval.edge',
+				}
 			)
 			tokens.forEach((token) => parser.processToken(token, buffer))
 		} catch (error) {
@@ -161,7 +171,9 @@ test.group('Parser', () => {
 				dedent`
         Hello {{{ user\ name }}}
       `,
-				'eval.edge'
+				{
+					filename: 'eval.edge',
+				}
 			)
 			tokens.forEach((token) => parser.processToken(token, buffer))
 		} catch ({ message, line, col }) {
@@ -182,7 +194,9 @@ test.group('Parser', () => {
           user username
         }}
       `,
-				'eval.edge'
+				{
+					filename: 'eval.edge',
+				}
 			)
 			tokens.forEach((token) => parser.processToken(token, buffer))
 		} catch (error) {
@@ -202,7 +216,9 @@ test.group('Parser', () => {
 				dedent`
         Hello {{ a..b }}
       `,
-				'eval.edge'
+				{
+					filename: 'eval.edge',
+				}
 			)
 
 			const mustacheToken = tokens[1] as MustacheToken
@@ -227,7 +243,9 @@ test.group('Parser', () => {
     `
 
 		const buffer = new EdgeBuffer('eval.edge')
-		const tokens = parser.tokenize(template, 'eval.edge')
+		const tokens = parser.tokenize(template, {
+			filename: 'eval.edge',
+		})
 		tokens.forEach((token) => parser.processToken(token, buffer))
 
 		const fn = new Function('template', 'state', 'ctx', buffer.flush())
@@ -263,7 +281,9 @@ test.group('Parser', () => {
 
 		try {
 			const buffer = new EdgeBuffer('eval.edge')
-			const tokens = parser.tokenize(template, 'eval.edge')
+			const tokens = parser.tokenize(template, {
+				filename: 'eval.edge',
+			})
 			tokens.forEach((token) => parser.processToken(token, buffer))
 		} catch (error) {
 			const json = await new Youch(error, {}).toJSON()
@@ -283,7 +303,9 @@ test.group('Parser', () => {
     `
 
 		const buffer = new EdgeBuffer(join(__dirname, 'eval.edge'))
-		const tokens = parser.tokenize(template, join(__dirname, 'eval.edge'))
+		const tokens = parser.tokenize(template, {
+			filename: join(__dirname, 'eval.edge'),
+		})
 		tokens.forEach((token) => parser.processToken(token, buffer))
 
 		const fn = new Function('template', 'state', 'ctx', buffer.flush())
@@ -297,6 +319,47 @@ test.group('Parser', () => {
 					assert.equal(error.message, 'state.getUser is not a function')
 				},
 			}
+		)
+	})
+
+	test('allow transforming tags', async (assert) => {
+		assert.plan(1)
+
+		const parser = new Parser(
+			Object.assign({}, tags, {
+				component: class Component {
+					public static block = true
+					public static seekable = true
+					public static compile(_, __, token: TagToken) {
+						assert.equal(token.properties.jsArg, `'hl/modal', { title: 'foo' }`)
+					}
+				},
+			})
+		)
+		const template = dedent`
+		@hl.modal({ title: 'foo' })
+		@end
+    `
+
+		const buffer = new EdgeBuffer('eval.edge')
+
+		const tokens = parser.tokenize(template, {
+			filename: 'eval.edge',
+			claimTag: (name) => {
+				if (name === 'hl.modal') {
+					return { seekable: true, block: true }
+				}
+				return null
+			},
+		})
+
+		tokens.forEach((token) =>
+			parser.processToken(token, buffer, (tag) => {
+				if (tag.properties.name === 'hl.modal') {
+					tag.properties.name = 'component'
+					tag.properties.jsArg = `'hl/modal', ${tag.properties.jsArg}`
+				}
+			})
 		)
 	})
 })

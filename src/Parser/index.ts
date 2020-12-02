@@ -8,7 +8,15 @@
  */
 
 import { EOL } from 'os'
-import { Token, TagToken, TagTypes, Tokenizer, MustacheToken, MustacheTypes } from 'edge-lexer'
+import {
+	Token,
+	TagToken,
+	TagTypes,
+	Tokenizer,
+	MustacheToken,
+	MustacheTypes,
+	LexerTagDefinitionContract,
+} from 'edge-lexer'
 
 import { Stack } from '../Stack'
 import { stringify } from './stringify'
@@ -16,8 +24,8 @@ import { EdgeBuffer } from '../EdgeBuffer'
 import { generateAST } from './generateAst'
 import { transformAst } from './transformAst'
 import { makeCtxCallable } from './makeCtxCallable'
-import { ParserTagDefinitionContract } from '../Contracts'
 import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
+import { ParserTagDefinitionContract, TagTransformer } from '../Contracts'
 import { collectObjectExpressionProperties } from './collectObjectExpressionProperties'
 
 /**
@@ -131,8 +139,15 @@ export class Parser {
 	/**
 	 * Convert template to tokens
 	 */
-	public tokenize(template: string, filename: string, onLine?: (line: string) => string) {
-		const tokenizer = new Tokenizer(template, this.tags, { filename: filename, onLine })
+	public tokenize(
+		template: string,
+		options: {
+			filename: string
+			onLine?: (line: string) => string
+			claimTag?: (name: string) => LexerTagDefinitionContract | null
+		}
+	) {
+		const tokenizer = new Tokenizer(template, this.tags, options)
 		tokenizer.parse()
 		return tokenizer.tokens
 	}
@@ -140,7 +155,7 @@ export class Parser {
 	/**
 	 * Process a lexer token. The output gets written to the buffer
 	 */
-	public processToken(token: Token, buffer: EdgeBuffer) {
+	public processToken(token: Token, buffer: EdgeBuffer, onTag?: TagTransformer) {
 		switch (token.type) {
 			case 'raw':
 				buffer.outputRaw(token.value)
@@ -149,6 +164,9 @@ export class Parser {
 				buffer.outputRaw(EOL === '\n' ? '\n' : '\r\n')
 				break
 			case TagTypes.TAG:
+				if (typeof onTag === 'function') {
+					onTag(token)
+				}
 				this.tags[token.properties.name].compile(this, buffer, token as TagToken)
 				break
 			case TagTypes.ETAG:

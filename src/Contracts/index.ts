@@ -32,3 +32,5 @@ export type AcornLoc = {
 		column: number
 	}
 }
+
+export type TagTransformer = (tag: TagToken) => void
