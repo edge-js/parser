@@ -17,7 +17,7 @@ import { generateAST } from './generateAst'
 import { transformAst } from './transformAst'
 import { makeCtxCallable } from './makeCtxCallable'
 import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
-import { ParserTagDefinitionContract, ParserOptions, ClaimTagFn } from '../Contracts'
+import { ParserTagDefinitionContract, ParserOptions } from '../Contracts'
 import { collectObjectExpressionProperties } from './collectObjectExpressionProperties'
 
 /**
