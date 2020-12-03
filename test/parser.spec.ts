@@ -334,8 +334,24 @@ test.group('Parser', () => {
 						assert.equal(token.properties.jsArg, `'hl/modal', { title: 'foo' }`)
 					}
 				},
-			})
+			}),
+			undefined,
+			{
+				claimTag: (name) => {
+					if (name === 'hl.modal') {
+						return { seekable: true, block: true }
+					}
+					return null
+				},
+				onTag: (tag) => {
+					if (tag.properties.name === 'hl.modal') {
+						tag.properties.name = 'component'
+						tag.properties.jsArg = `'hl/modal', ${tag.properties.jsArg}`
+					}
+				},
+			}
 		)
+
 		const template = dedent`
 		@hl.modal({ title: 'foo' })
 		@end
@@ -345,21 +361,8 @@ test.group('Parser', () => {
 
 		const tokens = parser.tokenize(template, {
 			filename: 'eval.edge',
-			claimTag: (name) => {
-				if (name === 'hl.modal') {
-					return { seekable: true, block: true }
-				}
-				return null
-			},
 		})
 
-		tokens.forEach((token) =>
-			parser.processToken(token, buffer, (tag) => {
-				if (tag.properties.name === 'hl.modal') {
-					tag.properties.name = 'component'
-					tag.properties.jsArg = `'hl/modal', ${tag.properties.jsArg}`
-				}
-			})
-		)
+		tokens.forEach((token) => parser.processToken(token, buffer))
 	})
 })

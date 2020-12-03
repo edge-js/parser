@@ -10,7 +10,8 @@
 export { Stack } from './src/Stack'
 export { Parser } from './src/Parser'
 export { EdgeBuffer } from './src/EdgeBuffer'
-export { ParserTagDefinitionContract, AcornLoc } from './src/Contracts'
+
+export * from './src/Contracts'
 import * as ExpressionsList from './src/Expressions'
 
 /**

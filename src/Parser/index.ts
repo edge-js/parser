@@ -8,15 +8,7 @@
  */
 
 import { EOL } from 'os'
-import {
-	Token,
-	TagToken,
-	TagTypes,
-	Tokenizer,
-	MustacheToken,
-	MustacheTypes,
-	LexerTagDefinitionContract,
-} from 'edge-lexer'
+import { Token, TagToken, TagTypes, Tokenizer, MustacheToken, MustacheTypes } from 'edge-lexer'
 
 import { Stack } from '../Stack'
 import { stringify } from './stringify'
@@ -25,7 +17,7 @@ import { generateAST } from './generateAst'
 import { transformAst } from './transformAst'
 import { makeCtxCallable } from './makeCtxCallable'
 import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
-import { ParserTagDefinitionContract, TagTransformer } from '../Contracts'
+import { ParserTagDefinitionContract, ParserOptions, ClaimTagFn } from '../Contracts'
 import { collectObjectExpressionProperties } from './collectObjectExpressionProperties'
 
 /**
@@ -53,8 +45,8 @@ import { collectObjectExpressionProperties } from './collectObjectExpressionProp
 export class Parser {
 	constructor(
 		public tags: { [key: string]: ParserTagDefinitionContract },
-		public asyncMode: boolean = false,
-		public stack: Stack = new Stack()
+		public stack: Stack = new Stack(),
+		public options: ParserOptions = {}
 	) {}
 
 	/**
@@ -143,11 +135,18 @@ export class Parser {
 		template: string,
 		options: {
 			filename: string
-			onLine?: (line: string) => string
-			claimTag?: (name: string) => LexerTagDefinitionContract | null
 		}
 	) {
-		const tokenizer = new Tokenizer(template, this.tags, options)
+		const tokenizer = new Tokenizer(
+			template,
+			this.tags,
+			this.options.claimTag
+				? {
+						claimTag: this.options.claimTag,
+						filename: options.filename,
+				  }
+				: options
+		)
 		tokenizer.parse()
 		return tokenizer.tokens
 	}
@@ -155,7 +154,7 @@ export class Parser {
 	/**
 	 * Process a lexer token. The output gets written to the buffer
 	 */
-	public processToken(token: Token, buffer: EdgeBuffer, onTag?: TagTransformer) {
+	public processToken(token: Token, buffer: EdgeBuffer) {
 		switch (token.type) {
 			case 'raw':
 				buffer.outputRaw(token.value)
@@ -164,8 +163,8 @@ export class Parser {
 				buffer.outputRaw(EOL === '\n' ? '\n' : '\r\n')
 				break
 			case TagTypes.TAG:
-				if (typeof onTag === 'function') {
-					onTag(token)
+				if (typeof this.options.onTag === 'function') {
+					this.options.onTag(token)
 				}
 				this.tags[token.properties.name].compile(this, buffer, token as TagToken)
 				break
@@ -178,6 +177,9 @@ export class Parser {
 				break
 			case MustacheTypes.SMUSTACHE:
 			case MustacheTypes.MUSTACHE:
+				if (typeof this.options.onMustache === 'function') {
+					this.options.onMustache(token)
+				}
 				this.processMustache(token, buffer)
 		}
 	}

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { TagToken, LexerTagDefinitionContract } from 'edge-lexer'
+import { TagToken, LexerTagDefinitionContract, MustacheToken } from 'edge-lexer'
 
 import { Parser } from '../Parser'
 import { EdgeBuffer } from '../EdgeBuffer'
@@ -34,3 +34,15 @@ export type AcornLoc = {
 }
 
 export type TagTransformer = (tag: TagToken) => void
+export type MustacheTransformer = (tag: MustacheToken) => void
+export type ClaimTagFn = (name: string) => LexerTagDefinitionContract | null
+
+/**
+ * Parser options
+ */
+export type ParserOptions = {
+	async?: boolean
+	onTag?: TagTransformer
+	onMustache?: MustacheTransformer
+	claimTag?: ClaimTagFn
+}

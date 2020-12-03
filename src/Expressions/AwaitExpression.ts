@@ -16,7 +16,7 @@ const UNALLOWED_EXPRESSION_MESSAGE =
 
 export default {
 	toStatement(statement: any, filename: string, parser: Parser) {
-		if (!parser.asyncMode) {
+		if (!parser.options.async) {
 			const { line, col } = parser.utils.getExpressionLoc(statement)
 			throw new EdgeError(UNALLOWED_EXPRESSION_MESSAGE, 'E_PARSER_ERROR', {
 				line,
