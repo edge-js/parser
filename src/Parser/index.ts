@@ -43,6 +43,11 @@ import { collectObjectExpressionProperties } from './collectObjectExpressionProp
  * ```
  */
 export class Parser {
+	/**
+	 * A boolean to know if async mode is enabled
+	 */
+	public asyncMode = !!this.options.async
+
 	constructor(
 		public tags: { [key: string]: ParserTagDefinitionContract },
 		public stack: Stack = new Stack(),
