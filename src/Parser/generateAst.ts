@@ -39,7 +39,7 @@ function patchLoc(loc: AcornLoc, lexerLoc: LexerLoc): void {
 export function generateAST(jsArg: string, lexerLoc: LexerLoc, filename: string): any {
 	const acornOptions = {
 		locations: true,
-		ecmaVersion: 7 as const,
+		ecmaVersion: 2020 as const,
 		allowAwaitOutsideFunction: true,
 		onToken: (token: Token) => patchLoc(token.loc!, lexerLoc),
 	}
