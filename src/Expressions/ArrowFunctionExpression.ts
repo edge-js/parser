@@ -9,6 +9,7 @@
 
 import { transformAst } from '../Parser/transformAst'
 import { Parser } from '../Parser'
+import { EdgeError } from 'edge-error'
 
 export default {
 	toStatement(statement: any, filename: string, parser: Parser) {
@@ -22,8 +23,15 @@ export default {
 					parser.stack.defineVariable(prop)
 				})
 			} else {
-				throw new Error(
-					`Report this error to the maintainers: Expected Arrow function params to be an identifier. Instead received ${param.type}`
+				const { line, col } = parser.utils.getExpressionLoc(param)
+				throw new EdgeError(
+					`Report this error to the maintainers: Unexpected arrow function property type ${param.type}`,
+					'E_PARSER_ERROR',
+					{
+						line,
+						col,
+						filename,
+					}
 				)
 			}
 		})

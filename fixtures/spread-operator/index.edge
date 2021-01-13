@@ -1,0 +1,17 @@
+{{-- Function call --}}
+{{ foo(...args) }}
+
+{{-- With literal values --}}
+{{ foo(...[1, 2, 3]) }}
+
+{{-- Concat array --}}
+{{ users = [...newUsers, ...suspendedUsers] }}
+
+{{-- With literal values --}}
+{{ users = [...[1, 2, 3], 4] }}
+
+{{-- Merging objects --}}
+{{ cloned = { ...users, ...suspendedUsers } }}
+
+{{-- During function calls --}}
+{{ foo({ ...users, ...suspendedUsers }) }}
