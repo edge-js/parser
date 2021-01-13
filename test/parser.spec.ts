@@ -32,7 +32,10 @@ test.group('Parser', () => {
 	test('report correct line number when expression is not allowed', async (assert) => {
 		assert.plan(3)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		const template = dedent`
     Hello {{ username }}
 
@@ -42,7 +45,10 @@ test.group('Parser', () => {
     `
 
 		try {
-			const buffer = new EdgeBuffer('eval.edge')
+			const buffer = new EdgeBuffer('eval.edge', {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
 			const tokens = parser.tokenize(template, {
 				filename: 'eval.edge',
 			})
@@ -58,7 +64,10 @@ test.group('Parser', () => {
 	test('report compile time syntax errors with correct line number', async (assert) => {
 		assert.plan(3)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		const template = dedent`
     Hello world!
 
@@ -70,7 +79,10 @@ test.group('Parser', () => {
     `
 
 		try {
-			const buffer = new EdgeBuffer('eval.edge')
+			const buffer = new EdgeBuffer('eval.edge', {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
 			const tokens = parser.tokenize(template, {
 				filename: 'eval.edge',
 			})
@@ -86,13 +98,19 @@ test.group('Parser', () => {
 	test('report runtime errors with correct line number', (assert) => {
 		assert.plan(1)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		const template = dedent`
       Hello
       {{ getUser() }}!
     `
 
-		const buffer = new EdgeBuffer('eval.edge')
+		const buffer = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		const tokens = parser.tokenize(template, {
 			filename: 'eval.edge',
 		})
@@ -130,8 +148,14 @@ test.group('Parser', () => {
     @if(username)
     @endif
     `
-		const parser = new Parser(customTags)
-		const buffer = new EdgeBuffer('eval.edge')
+		const parser = new Parser(customTags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
+		const buffer = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		const tokens = parser.tokenize(template, {
 			filename: 'eval.edge',
 		})
@@ -141,9 +165,15 @@ test.group('Parser', () => {
 	test('report correct columns in errors inside mustache statement', async (assert) => {
 		assert.plan(3)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		try {
-			const buffer = new EdgeBuffer('eval.edge')
+			const buffer = new EdgeBuffer('eval.edge', {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
 			const tokens = parser.tokenize(
 				dedent`
         Hello {{ user\ name }}
@@ -164,9 +194,15 @@ test.group('Parser', () => {
 	test('report correct columns in errors inside safe mustache statement', (assert) => {
 		assert.plan(2)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		try {
-			const buffer = new EdgeBuffer('eval.edge')
+			const buffer = new EdgeBuffer('eval.edge', {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
 			const tokens = parser.tokenize(
 				dedent`
         Hello {{{ user\ name }}}
@@ -185,9 +221,15 @@ test.group('Parser', () => {
 	test('report correct columns in errors in multiline mustache', async (assert) => {
 		assert.plan(3)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		try {
-			const buffer = new EdgeBuffer('eval.edge')
+			const buffer = new EdgeBuffer('eval.edge', {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
 			const tokens = parser.tokenize(
 				dedent`
         Hello {{
@@ -210,7 +252,10 @@ test.group('Parser', () => {
 	test('report filename mentioned on token for mustache', async (assert) => {
 		assert.plan(3)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		try {
 			const tokens = parser.tokenize(
 				dedent`
@@ -223,7 +268,10 @@ test.group('Parser', () => {
 
 			const mustacheToken = tokens[1] as MustacheToken
 			mustacheToken.filename = 'bar.edge'
-			parser.processToken(mustacheToken, new EdgeBuffer('eval.edge'))
+			parser.processToken(
+				mustacheToken,
+				new EdgeBuffer('eval.edge', { outputVar: 'out', rethrowCallPath: ['ctx', 'reThrow'] })
+			)
 		} catch (error) {
 			const json = await new Youch(error, {}).toJSON()
 			assert.equal(json.error.frames[0].file, 'bar.edge')
@@ -235,14 +283,20 @@ test.group('Parser', () => {
 	test('do not prefix idenifiers with state when using local variable', (assert) => {
 		assert.plan(1)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		parser.stack.defineVariable('username')
 		const template = dedent`
       Hello
       {{ username }}!
     `
 
-		const buffer = new EdgeBuffer('eval.edge')
+		const buffer = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		const tokens = parser.tokenize(template, {
 			filename: 'eval.edge',
 		})
@@ -273,14 +327,20 @@ test.group('Parser', () => {
 	test('report error when using await expression in non async mode', async (assert) => {
 		assert.plan(3)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		const template = dedent`
     Hello {{ username }}
 
     Let's use {{ await getUsername() }}`
 
 		try {
-			const buffer = new EdgeBuffer('eval.edge')
+			const buffer = new EdgeBuffer('eval.edge', {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
 			const tokens = parser.tokenize(template, {
 				filename: 'eval.edge',
 			})
@@ -296,13 +356,19 @@ test.group('Parser', () => {
 	test('escape unicodes in filename', (assert) => {
 		assert.plan(2)
 
-		const parser = new Parser(tags)
+		const parser = new Parser(tags, undefined, {
+			statePropertyName: 'state',
+			escapeCallPath: ['ctx', 'escape'],
+		})
 		const template = dedent`
       Hello
       {{ getUser() }}!
     `
 
-		const buffer = new EdgeBuffer(join(__dirname, 'eval.edge'))
+		const buffer = new EdgeBuffer(join(__dirname, 'eval.edge'), {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		const tokens = parser.tokenize(template, {
 			filename: join(__dirname, 'eval.edge'),
 		})
@@ -337,6 +403,8 @@ test.group('Parser', () => {
 			}),
 			undefined,
 			{
+				statePropertyName: 'state',
+				escapeCallPath: ['ctx', 'escape'],
 				claimTag: (name) => {
 					if (name === 'hl.modal') {
 						return { seekable: true, block: true }
@@ -357,7 +425,10 @@ test.group('Parser', () => {
 		@end
     `
 
-		const buffer = new EdgeBuffer('eval.edge')
+		const buffer = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 
 		const tokens = parser.tokenize(template, {
 			filename: 'eval.edge',

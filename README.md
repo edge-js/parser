@@ -14,9 +14,8 @@
 - [Parser API](#parser-api)
     - [generateAST(jsExpression, lexerLoc, filename)](#generateastjsexpression-lexerloc-filename)
     - [transformAst(acornAst, filename)](#transformastacornast-filename)
-    - [tokenize (template)](#tokenize-template)
+    - [tokenize (template, options: { filename })](#tokenize-template-options--filename-)
     - [stringify(expression)](#stringifyexpression)
-    - [parse(template)](#parsetemplate)
     - [processToken(token, buffer)](#processtokentoken-buffer)
 - [Supported Expressions](#supported-expressions)
     - [Identifier](#identifier)
@@ -34,12 +33,12 @@
     - [ArrowFunctionExpression](#arrowfunctionexpression)
     - [AwaitExpression](#awaitexpression)
     - [FunctionDeclaration](#functiondeclaration)
-- [Template expectations](#template-expectations)
-- [API Docs](#api-docs)
+    - [BlockStatement](#blockstatement)
+    - [ChainExpression](#chainexpression)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-This repo is the **parser to convert edge templates** to a self invoked Javascript function. Later you can invoke this function by providing a [context](#context-expectations).
+This repo is the **parser to convert edge templates** to a self invoked Javascript function.
 
 ## Usage
 
@@ -55,15 +54,34 @@ yarn add edge-parser
 and then use it as follows
 
 ```js
-import { Parser } from 'edge-parser'
+import { Parser, EdgeBuffer, Stack } from 'edge-parser'
 
-const tagsIfAny = {}
-const parser = new Parser(tagsIfAny, { filename: 'foo.edge' })
+const filename = 'eval.edge'
+const statePropertyName = 'state'
+const escapeCallPath = 'escape'
+const outputVar = 'out'
+const rethrowCallPath = 'reThrow'
 
-parser.parse(`Hello {{ username }}`)
+const parser = new Parser({}, new Stack(), {
+  statePropertyName,
+  escapeCallPath,
+})
+
+const buffer = new EdgeBuffer(filename, { outputVar, rethrowCallPath })
+
+parser
+  .tokenize('Hello {{ username }}', { filename })
+  .forEach((token) => parser.processToken(token, buffer))
 ```
 
-**Output**
+- All the first set of `const` declarations are the config values that impacts the compiled output.
+  - `filename` is required to ensure that exceptions stack traces point back to the correct filename.
+  - `statePropertyName` is the variable name from which the values should be accessed. For example: `{{ username }}` will be compiled as `state.username`. Leave it to empty, if state is not nested inside an object.
+  - `escapeCallPath` Reference to the `escape` method for escaping interpolation values. For example: `{{ username }}` will be compiled as `escape(state.username)`. The `escape` method should escape only strings and return the other data types as it is.
+  - `outputVar` is the variable name that holds the output of the compiled template.
+  - `rethrowCallPath` Reference to the `reThrow` method to raise the template exceptions with the current `$filename` and `$lineNumber`. Check the following compiled output to see how this function is called.
+
+**Compiled output**
 
 ```js
 let out = ''
@@ -71,14 +89,42 @@ let $lineNumber = 1
 let $filename = 'eval.edge'
 try {
   out += 'Hello '
-  out += `${ctx.escape(state.username)}`
+  out += `${escape(state.username)}`
 } catch (error) {
-  ctx.reThrow(error, $filename, $lineNumber)
+  reThrow(error, $filename, $lineNumber)
 }
 return out
 ```
 
-> Notice of use of `ctx` in the function body. Parser doesn't provide the implementation of `ctx`, the runtime of template engine should provide it.
+You can wrap the compiled output inside a function and invoke it as follows
+
+```ts
+/**
+ * Convert string to a function
+ */
+const fn = new Function('', `return function template (state, escape, reThrow) { ${output} }`)()
+
+/**
+ * Template state
+ */
+const state = { username: 'virk' }
+
+/**
+ * Escape function
+ */
+function escape(value: any) {
+  return value
+}
+
+/**
+ * Rethrow function
+ */
+function reThrow(error: Error) {
+  throw error
+}
+
+console.log(fn(state, escape, reThrow))
+```
 
 ## Parser API
 
@@ -114,12 +160,14 @@ const filename = 'eval.edge'
 parser.utils.transformAst(parser.utils.generateAST('2 + 2', loc, filename), filename)
 ```
 
-#### tokenize (template)
+#### tokenize (template, options: { filename })
 
 Returns an array of [lexer tokens](https://github.com/edge-js/lexer) for the given template. The method is a shortcut to self import the lexer module and then generating tokens.
 
 ```ts
-const tokens = parser.tokenize('Hello {{ username }}')
+const tokens = parser.tokenize('Hello {{ username }}', {
+  filename: 'eval.edge',
+})
 ```
 
 **Output**
@@ -167,29 +215,6 @@ const expression = parser.utils.generateAST(
 
 expression.left.value = 3
 parser.utils.stringify(expression) // returns 3 + 2
-```
-
-#### parse(template)
-
-Parse a template to an `IIFE`. This is what you will use most of the time.
-
-```ts
-parser.parse('Hello {{ username }}')
-```
-
-**Output**
-
-```js
-let out = ''
-let $lineNumber = 1
-let $filename = 'eval.edge'
-try {
-  out += 'Hello '
-  out += `${ctx.escape(state.username)}`
-} catch (error) {
-  ctx.reThrow(error, $filename, $lineNumber)
-}
-return out
 ```
 
 #### processToken(token, buffer)
@@ -340,29 +365,23 @@ Everything inside `()` is a sequence expression.
 {{ function foo () {} }}
 ```
 
-## Template expectations
+#### BlockStatement
 
-You must define a context object with `escape` and `reThrow` methods when executing the parser compiled function
+Here the `map` callback is the block statement
 
-```ts
-const ctx = {
-  escape(value) {
-    if (typeof value === 'string') {
-      return escapedValue
-    }
-
-    return value
-  },
-
-  reThrow(error, fileName, lineNumber) {},
-}
+```
+{{
+  users.map(() => {})
+}}
 ```
 
-## API Docs
+#### ChainExpression
 
-Following are the auto generated files via Type doc
+Support for optional chaining
 
-- [API](docs/README.md)
+```
+{{ user?.username }}
+```
 
 [circleci-image]: https://img.shields.io/circleci/project/github/edge-js/parser/master.svg?style=for-the-badge&logo=circleci
 [circleci-url]: https://circleci.com/gh/edge-js/parser 'circleci'

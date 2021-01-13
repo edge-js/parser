@@ -15,7 +15,7 @@ import { stringify } from './stringify'
 import { EdgeBuffer } from '../EdgeBuffer'
 import { generateAST } from './generateAst'
 import { transformAst } from './transformAst'
-import { makeCtxCallable } from './makeCtxCallable'
+import { makeEscapeCallable } from './makeEscapeCallable'
 import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
 import { ParserTagDefinitionContract, ParserOptions } from '../Contracts'
 import { collectObjectExpressionProperties } from './collectObjectExpressionProperties'
@@ -51,7 +51,7 @@ export class Parser {
 	constructor(
 		public tags: { [key: string]: ParserTagDefinitionContract },
 		public stack: Stack = new Stack(),
-		public options: ParserOptions = {}
+		public options: ParserOptions
 	) {}
 
 	/**
@@ -61,7 +61,7 @@ export class Parser {
 		generateAST: generateAST,
 		transformAst,
 		stringify,
-		makeCtxCallable,
+		makeEscapeCallable,
 		makeStatePropertyAccessor,
 		collectObjectExpressionProperties,
 		getExpressionLoc(expression: any): { line: number; col: number } {
@@ -71,6 +71,21 @@ export class Parser {
 				col: loc.start.column,
 			}
 		},
+	}
+
+	/**
+	 * Returns the options to be passed to the tokenizer
+	 */
+	private getTokenizerOptions(options: { filename: string }) {
+		if (!this.options) {
+			return options
+		}
+
+		return {
+			claimTag: this.options.claimTag,
+			onLine: this.options.onLine,
+			filename: options.filename,
+		}
 	}
 
 	/**
@@ -97,8 +112,7 @@ export class Parser {
 	}
 
 	/**
-	 * Process escaped tag token by writing it as it is. However, the children
-	 * inside a tag are still processed.
+	 * Process escaped muscahe block by writing it as it is.
 	 */
 	private processEscapedMustache(token: MustacheToken, buffer: EdgeBuffer) {
 		const lines =
@@ -118,7 +132,10 @@ export class Parser {
 		/**
 		 * Wrap mustache output to an escape call for preventing XSS attacks
 		 */
-		const expression = type === MustacheTypes.MUSTACHE ? makeCtxCallable('escape', [node]) : node
+		const expression =
+			type === MustacheTypes.MUSTACHE
+				? makeEscapeCallable(this.options.escapeCallPath, [node])
+				: node
 
 		/**
 		 * Template literal, so there is no need to wrap it inside another
@@ -136,22 +153,8 @@ export class Parser {
 	/**
 	 * Convert template to tokens
 	 */
-	public tokenize(
-		template: string,
-		options: {
-			filename: string
-		}
-	) {
-		const tokenizer = new Tokenizer(
-			template,
-			this.tags,
-			this.options.claimTag
-				? {
-						claimTag: this.options.claimTag,
-						filename: options.filename,
-				  }
-				: options
-		)
+	public tokenize(template: string, options: { filename: string }) {
+		const tokenizer = new Tokenizer(template, this.tags, this.getTokenizerOptions(options))
 		tokenizer.parse()
 		return tokenizer.tokens
 	}

@@ -7,20 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import { Parser } from '../index'
-import { EdgeBuffer } from '../index'
+import { Parser, EdgeBuffer, Stack } from '../index'
 
 const filename = 'eval.edge'
-const parser = new Parser({})
-const buffer = new EdgeBuffer(filename)
-const ctx = {
-	escape(value: any) {
-		return value
-	},
-	reThrow(error: Error) {
-		throw error
-	},
-}
+
+const parser = new Parser({}, new Stack(), {
+	statePropertyName: 'state',
+	escapeCallPath: 'escape',
+})
+
+const buffer = new EdgeBuffer(filename, { outputVar: 'out', rethrowCallPath: 'reThrow' })
 
 parser
 	.tokenize('Hello {{ username }}', { filename })
@@ -30,10 +26,20 @@ parser
  * Compiled output
  */
 const output = buffer.flush()
-console.log({ compiled: output })
+console.log(output)
+
+const state = { username: 'virk' }
+
+function escape(value: any) {
+	return value
+}
+
+function reThrow(error: Error) {
+	throw error
+}
 
 /**
  * Wrap inside function and invoke it
  */
-const fn = new Function('', `return function template (state, ctx) { ${output} }`)()
-console.log(fn({ username: 'virk' }, ctx))
+const fn = new Function('', `return function template (state, escape, reThrow) { ${output} }`)()
+console.log(fn(state, escape, reThrow))

@@ -18,7 +18,8 @@ export class EdgeBuffer {
 	private outputOutVariable = true
 
 	private options = {
-		outputVar: 'out',
+		outputVar: '',
+		rethrowCallPath: '',
 		fileNameVar: '$filename',
 		lineVar: '$lineNumber',
 	}
@@ -50,8 +51,14 @@ export class EdgeBuffer {
 	 */
 	private compiledOutput: string | undefined
 
-	constructor(private filename: string, options?: { outputVar?: string }) {
-		Object.assign(this.options, options)
+	constructor(
+		private filename: string,
+		options: { outputVar: string; rethrowCallPath: string | [string, string] }
+	) {
+		this.options.outputVar = options.outputVar
+		this.options.rethrowCallPath = Array.isArray(options.rethrowCallPath)
+			? options.rethrowCallPath.join('.')
+			: options.rethrowCallPath
 	}
 
 	/**
@@ -99,7 +106,9 @@ export class EdgeBuffer {
 		/**
 		 * Write catch block
 		 */
-		buffer.push(`ctx.reThrow(error, ${this.options.fileNameVar}, ${this.options.lineVar});`)
+		buffer.push(
+			`${this.options.rethrowCallPath}(error, ${this.options.fileNameVar}, ${this.options.lineVar});`
+		)
 
 		/**
 		 * End catch block

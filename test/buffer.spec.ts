@@ -17,7 +17,10 @@ import { normalizeNewLines } from '../test-helpers'
 
 test.group('Buffer', () => {
 	test('write line to the output', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.outputExpression("'hello world'", 'eval.edge', 1, false)
 		assert.stringEqual(
 			buff.flush(),
@@ -34,7 +37,10 @@ test.group('Buffer', () => {
 	})
 
 	test('write raw line to the output', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.outputRaw('hello world')
 
 		assert.stringEqual(
@@ -52,7 +58,10 @@ test.group('Buffer', () => {
 	})
 
 	test('escape quotes in raw line', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.outputRaw("'hello world'")
 
 		assert.stringEqual(
@@ -70,7 +79,10 @@ test.group('Buffer', () => {
 	})
 
 	test('write expression', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.writeStatement('if (username) {', 'eval.edge', 1)
 
 		assert.stringEqual(
@@ -88,7 +100,10 @@ test.group('Buffer', () => {
 	})
 
 	test('indent output', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.writeStatement('if (username) {', 'eval.edge', 1)
 		buff.outputRaw('hello world')
 		buff.writeStatement('}', 'eval.edge', 3)
@@ -111,7 +126,10 @@ test.group('Buffer', () => {
 	})
 
 	test('define wrapping code', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.wrap('return function () {', '}')
 		buff.outputExpression("'hello world'", 'eval.edge', 1, false)
 
@@ -133,7 +151,10 @@ test.group('Buffer', () => {
 	})
 
 	test('disable filename and linenumber variables', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.outputExpression("'hello world'", 'eval.edge', 1, false)
 		buff.disableFileAndLineVariables()
 
@@ -151,7 +172,10 @@ test.group('Buffer', () => {
 	})
 
 	test('disable output variable', (assert) => {
-		const buff = new EdgeBuffer('eval.edge')
+		const buff = new EdgeBuffer('eval.edge', {
+			outputVar: 'out',
+			rethrowCallPath: ['ctx', 'reThrow'],
+		})
 		buff.outputExpression("'hello world'", 'eval.edge', 1, false)
 		buff.disableOutVariable()
 

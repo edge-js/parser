@@ -9,17 +9,17 @@
 
 import { Parser } from '../Parser'
 import { makeStatePropertyAccessor } from '../Parser/makeStatePropertyAccessor'
-const WHITE_LISTED = ['state', '$filename']
 
 export default {
 	toStatement(statement: any, _: string, parser: Parser): object {
 		if (
-			WHITE_LISTED.indexOf(statement.name) > -1 ||
+			(parser.options.localVariables || []).indexOf(statement.name) > -1 ||
 			parser.stack.has(statement.name) ||
 			global[statement.name] !== undefined
 		) {
 			return statement
 		}
-		return makeStatePropertyAccessor(statement)
+
+		return makeStatePropertyAccessor(parser.options.statePropertyName, statement)
 	},
 }

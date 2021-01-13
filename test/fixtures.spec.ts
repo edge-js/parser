@@ -37,12 +37,22 @@ test.group('Fixtures', () => {
 			const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
 			const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 
-			const parser = new Parser(tags, undefined, { async: true })
-			const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'))
+			const parser = new Parser(tags, undefined, {
+				async: true,
+				statePropertyName: 'state',
+				escapeCallPath: ['ctx', 'escape'],
+			})
+
+			const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'), {
+				outputVar: 'out',
+				rethrowCallPath: ['ctx', 'reThrow'],
+			})
+
 			const tokens = parser.tokenize(template, {
 				filename: join(dirBasePath, 'index.edge'),
 			})
 			tokens.forEach((token) => parser.processToken(token, buffer))
+
 			assert.stringEqual(
 				buffer.flush(),
 				out
