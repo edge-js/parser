@@ -62,6 +62,16 @@ export class EdgeBuffer {
 	}
 
 	/**
+	 * Creates a new buffer instance by merging the options from the existing one
+	 */
+	public create(
+		filename: string,
+		options: { outputVar?: string; rethrowCallPath?: string | [string, string] }
+	) {
+		return new EdgeBuffer(filename, Object.assign({}, this.options, options))
+	}
+
+	/**
 	 * Returns the size of buffer text
 	 */
 	public get size() {
