@@ -18,6 +18,6 @@ import * as ExpressionsList from './src/Expressions'
  * Names of supported expressions
  */
 export const expressions = Object.keys(ExpressionsList).reduce((result, name) => {
-	result[name] = name
-	return result
+  result[name] = name
+  return result
 }, {}) as { [P in keyof typeof ExpressionsList]: P }

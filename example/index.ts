@@ -12,15 +12,15 @@ import { Parser, EdgeBuffer, Stack } from '../index'
 const filename = 'eval.edge'
 
 const parser = new Parser({}, new Stack(), {
-	statePropertyName: 'state',
-	escapeCallPath: 'escape',
+  statePropertyName: 'state',
+  escapeCallPath: 'escape',
 })
 
 const buffer = new EdgeBuffer(filename, { outputVar: 'out', rethrowCallPath: 'reThrow' })
 
 parser
-	.tokenize('Hello {{ username }}', { filename })
-	.forEach((token) => parser.processToken(token, buffer))
+  .tokenize('Hello {{ username }}', { filename })
+  .forEach((token) => parser.processToken(token, buffer))
 
 /**
  * Compiled output
@@ -31,11 +31,11 @@ console.log(output)
 const state = { username: 'virk' }
 
 function escape(value: any) {
-	return value
+  return value
 }
 
 function reThrow(error: Error) {
-	throw error
+  throw error
 }
 
 /**

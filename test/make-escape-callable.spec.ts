@@ -12,34 +12,34 @@ import { generate } from 'astring'
 import { makeEscapeCallable } from '../src/Parser/makeEscapeCallable'
 
 test.group('make escape callable function', () => {
-	test('make path to a function', (assert) => {
-		assert.equal(
-			generate(
-				makeEscapeCallable('escape', [
-					{
-						type: 'Literal',
-						value: 'foo',
-					},
-				])
-			),
-			'escape("foo")'
-		)
-	})
+  test('make path to a function', (assert) => {
+    assert.equal(
+      generate(
+        makeEscapeCallable('escape', [
+          {
+            type: 'Literal',
+            value: 'foo',
+          },
+        ])
+      ),
+      'escape("foo")'
+    )
+  })
 
-	test('make path to an object property', (assert) => {
-		assert.equal(
-			generate(
-				makeEscapeCallable(
-					['ctx', 'escape'],
-					[
-						{
-							type: 'Literal',
-							value: 'foo',
-						},
-					]
-				)
-			),
-			'ctx.escape("foo")'
-		)
-	})
+  test('make path to an object property', (assert) => {
+    assert.equal(
+      generate(
+        makeEscapeCallable(
+          ['ctx', 'escape'],
+          [
+            {
+              type: 'Literal',
+              value: 'foo',
+            },
+          ]
+        )
+      ),
+      'ctx.escape("foo")'
+    )
+  })
 })

@@ -11,11 +11,11 @@ import { transformAst } from '../Parser/transformAst'
 import { Parser } from '../Parser'
 
 export default {
-	toStatement(statement: any, filename: string, parser: Parser) {
-		statement.body = statement.body.map((token) => {
-			return transformAst(token, filename, parser)
-		})
+  toStatement(statement: any, filename: string, parser: Parser) {
+    statement.body = statement.body.map((token) => {
+      return transformAst(token, filename, parser)
+    })
 
-		return statement
-	},
+    return statement
+  },
 }

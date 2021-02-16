@@ -13,5 +13,5 @@ import { generate } from 'astring'
  * Convert the acorn AST to a Javascript expression string
  */
 export function stringify(astExpression: any): string {
-	return generate(astExpression)
+  return generate(astExpression)
 }

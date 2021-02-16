@@ -11,8 +11,8 @@ import { transformAst } from '../Parser/transformAst'
 import { Parser } from '../Parser'
 
 export default {
-	toStatement(statement: any, filename: string, parser: Parser) {
-		statement.right = transformAst(statement.right, filename, parser)
-		return statement
-	},
+  toStatement(statement: any, filename: string, parser: Parser) {
+    statement.right = transformAst(statement.right, filename, parser)
+    return statement
+  },
 }

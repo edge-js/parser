@@ -11,13 +11,13 @@
  * Returns Acorn complaint AST for a collable expression
  */
 export function makeStatePropertyAccessor(propertyName: string, args: object): any {
-	return {
-		type: 'MemberExpression',
-		object: {
-			type: 'Identifier',
-			name: propertyName,
-		},
-		computed: false,
-		property: args,
-	}
+  return {
+    type: 'MemberExpression',
+    object: {
+      type: 'Identifier',
+      name: propertyName,
+    },
+    computed: false,
+    property: args,
+  }
 }

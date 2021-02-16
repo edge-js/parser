@@ -19,47 +19,47 @@ import { normalizeNewLines, normalizeFilename } from '../test-helpers'
 
 const basePath = join(__dirname, '../fixtures')
 const tags = {
-	if: class If {
-		public static block = true
-		public static seekable = true
-		public static selfclosed = false
-		public static compile() {}
-	},
+  if: class If {
+    public static block = true
+    public static seekable = true
+    public static selfclosed = false
+    public static compile() {}
+  },
 }
 
 test.group('Fixtures', () => {
-	const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
+  const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
 
-	dirs.forEach((dir) => {
-		const dirBasePath = join(basePath, dir)
+  dirs.forEach((dir) => {
+    const dirBasePath = join(basePath, dir)
 
-		test(dir, (assert) => {
-			const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
-			const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
+    test(dir, (assert) => {
+      const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
+      const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 
-			const parser = new Parser(tags, undefined, {
-				async: true,
-				statePropertyName: 'state',
-				escapeCallPath: ['ctx', 'escape'],
-			})
+      const parser = new Parser(tags, undefined, {
+        async: true,
+        statePropertyName: 'state',
+        escapeCallPath: ['ctx', 'escape'],
+      })
 
-			const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'), {
-				outputVar: 'out',
-				rethrowCallPath: ['ctx', 'reThrow'],
-			})
+      const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'), {
+        outputVar: 'out',
+        rethrowCallPath: ['ctx', 'reThrow'],
+      })
 
-			const tokens = parser.tokenize(template, {
-				filename: join(dirBasePath, 'index.edge'),
-			})
-			tokens.forEach((token) => parser.processToken(token, buffer))
+      const tokens = parser.tokenize(template, {
+        filename: join(dirBasePath, 'index.edge'),
+      })
+      tokens.forEach((token) => parser.processToken(token, buffer))
 
-			assert.stringEqual(
-				buffer.flush(),
-				out
-					.split('\n')
-					.map((line) => normalizeFilename(dirBasePath, line))
-					.join('\n')
-			)
-		})
-	})
+      assert.stringEqual(
+        buffer.flush(),
+        out
+          .split('\n')
+          .map((line) => normalizeFilename(dirBasePath, line))
+          .join('\n')
+      )
+    })
+  })
 })

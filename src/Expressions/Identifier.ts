@@ -11,15 +11,15 @@ import { Parser } from '../Parser'
 import { makeStatePropertyAccessor } from '../Parser/makeStatePropertyAccessor'
 
 export default {
-	toStatement(statement: any, _: string, parser: Parser): object {
-		if (
-			(parser.options.localVariables || []).indexOf(statement.name) > -1 ||
-			parser.stack.has(statement.name) ||
-			global[statement.name] !== undefined
-		) {
-			return statement
-		}
+  toStatement(statement: any, _: string, parser: Parser): object {
+    if (
+      (parser.options.localVariables || []).indexOf(statement.name) > -1 ||
+      parser.stack.has(statement.name) ||
+      global[statement.name] !== undefined
+    ) {
+      return statement
+    }
 
-		return makeStatePropertyAccessor(parser.options.statePropertyName, statement)
-	},
+    return makeStatePropertyAccessor(parser.options.statePropertyName, statement)
+  },
 }

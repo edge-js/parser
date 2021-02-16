@@ -12,39 +12,39 @@ import { Parser } from '../Parser'
 import { EdgeError } from 'edge-error'
 
 export default {
-	toStatement(statement: any, filename: string, parser: Parser) {
-		statement.properties = statement.properties.map((node: any) => {
-			if (node.type === 'Property') {
-				/**
-				 * Since we change the structure of node.value, we have to
-				 * turnoff shorthand objects, so that the astring outputs
-				 * the key name explicitly
-				 */
-				node.shorthand = false
+  toStatement(statement: any, filename: string, parser: Parser) {
+    statement.properties = statement.properties.map((node: any) => {
+      if (node.type === 'Property') {
+        /**
+         * Since we change the structure of node.value, we have to
+         * turnoff shorthand objects, so that the astring outputs
+         * the key name explicitly
+         */
+        node.shorthand = false
 
-				if (node.computed === true) {
-					node.key = transformAst(node.key, filename, parser)
-				}
-				node.value = transformAst(node.value, filename, parser)
-				return node
-			}
+        if (node.computed === true) {
+          node.key = transformAst(node.key, filename, parser)
+        }
+        node.value = transformAst(node.value, filename, parser)
+        return node
+      }
 
-			if (node.type === 'SpreadElement') {
-				return transformAst(node, filename, parser)
-			}
+      if (node.type === 'SpreadElement') {
+        return transformAst(node, filename, parser)
+      }
 
-			const { line, col } = parser.utils.getExpressionLoc(node)
-			throw new EdgeError(
-				`Report this error to the maintainers: Unexpected object property type "${node.type}"`,
-				'E_PARSER_ERROR',
-				{
-					line,
-					col,
-					filename,
-				}
-			)
-		})
+      const { line, col } = parser.utils.getExpressionLoc(node)
+      throw new EdgeError(
+        `Report this error to the maintainers: Unexpected object property type "${node.type}"`,
+        'E_PARSER_ERROR',
+        {
+          line,
+          col,
+          filename,
+        }
+      )
+    })
 
-		return statement
-	},
+    return statement
+  },
 }

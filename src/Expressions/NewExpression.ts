@@ -8,7 +8,7 @@
  */
 
 export default {
-	toStatement(statement: any) {
-		return statement
-	},
+  toStatement(statement: any) {
+    return statement
+  },
 }

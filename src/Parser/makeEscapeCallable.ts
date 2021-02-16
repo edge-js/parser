@@ -11,30 +11,30 @@
  * Returns Acorn complaint AST for a callable expression
  */
 export function makeEscapeCallable(paths: string | [string, string], args: object[]): any {
-	if (typeof paths === 'string') {
-		return {
-			type: 'CallExpression',
-			callee: {
-				type: 'Identifier',
-				name: paths,
-			},
-			arguments: args,
-		}
-	}
+  if (typeof paths === 'string') {
+    return {
+      type: 'CallExpression',
+      callee: {
+        type: 'Identifier',
+        name: paths,
+      },
+      arguments: args,
+    }
+  }
 
-	return {
-		type: 'CallExpression',
-		callee: {
-			type: 'MemberExpression',
-			object: {
-				type: 'Identifier',
-				name: paths[0],
-			},
-			property: {
-				type: 'Identifier',
-				name: paths[1],
-			},
-		},
-		arguments: args,
-	}
+  return {
+    type: 'CallExpression',
+    callee: {
+      type: 'MemberExpression',
+      object: {
+        type: 'Identifier',
+        name: paths[0],
+      },
+      property: {
+        type: 'Identifier',
+        name: paths[1],
+      },
+    },
+    arguments: args,
+  }
 }

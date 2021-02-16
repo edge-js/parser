@@ -10,8 +10,8 @@
 import { Parser } from '../Parser'
 
 export default {
-	toStatement(statement: any, filename: string, parser: Parser): object {
-		statement.argument = parser.utils.transformAst(statement.argument, filename, parser)
-		return statement
-	},
+  toStatement(statement: any, filename: string, parser: Parser): object {
+    statement.argument = parser.utils.transformAst(statement.argument, filename, parser)
+    return statement
+  },
 }

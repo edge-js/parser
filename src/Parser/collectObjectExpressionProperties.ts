@@ -11,10 +11,10 @@
  * Returns Acorn complaint AST for a collable expression
  */
 export function collectObjectExpressionProperties(expression: any): string[] {
-	return expression.properties.map((prop) => {
-		if (prop.value.type !== 'Identifier') {
-			throw new Error('Object destructuring should not reference dynamic properties')
-		}
-		return prop.value.name
-	})
+  return expression.properties.map((prop) => {
+    if (prop.value.type !== 'Identifier') {
+      throw new Error('Object destructuring should not reference dynamic properties')
+    }
+    return prop.value.name
+  })
 }

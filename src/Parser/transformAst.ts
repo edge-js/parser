@@ -17,14 +17,14 @@ import * as Expressions from '../Expressions'
  * writing it to the compiled template buffer.
  */
 export function transformAst(astExpression: any, filename: string, parser: Parser): any {
-	if (Expressions[astExpression.type]) {
-		return Expressions[astExpression.type].toStatement(astExpression, filename, parser)
-	}
+  if (Expressions[astExpression.type]) {
+    return Expressions[astExpression.type].toStatement(astExpression, filename, parser)
+  }
 
-	const { type, loc } = astExpression
-	throw new EdgeError(`"${type}" is not supported`, 'E_UNALLOWED_EXPRESSION', {
-		line: loc.start.line,
-		col: loc.start.column,
-		filename: filename,
-	})
+  const { type, loc } = astExpression
+  throw new EdgeError(`"${type}" is not supported`, 'E_UNALLOWED_EXPRESSION', {
+    line: loc.start.line,
+    col: loc.start.column,
+    filename: filename,
+  })
 }
