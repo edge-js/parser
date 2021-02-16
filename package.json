@@ -32,7 +32,7 @@
 	"author": "virk",
 	"license": "MIT",
 	"dependencies": {
-		"acorn": "^8.0.4",
+		"acorn": "^8.0.5",
 		"astring": "^1.6.0",
 		"edge-error": "^1.0.5",
 		"edge-lexer": "^3.2.2",
