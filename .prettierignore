@@ -5,5 +5,3 @@ config.json
 package.json
 *.html
 fixtures/*
-*.md
-*.txt

@@ -8,34 +8,35 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
 - [Usage](#usage)
 - [Parser API](#parser-api)
-    - [generateAST(jsExpression, lexerLoc, filename)](#generateastjsexpression-lexerloc-filename)
-    - [transformAst(acornAst, filename)](#transformastacornast-filename)
-    - [tokenize (template, options: { filename })](#tokenize-template-options--filename-)
-    - [stringify(expression)](#stringifyexpression)
-    - [processToken(token, buffer)](#processtokentoken-buffer)
+  - [generateAST(jsExpression, lexerLoc, filename)](#generateastjsexpression-lexerloc-filename)
+  - [transformAst(acornAst, filename)](#transformastacornast-filename)
+  - [tokenize (template, options: { filename })](#tokenize-template-options--filename-)
+  - [stringify(expression)](#stringifyexpression)
+  - [processToken(token, buffer)](#processtokentoken-buffer)
 - [Supported Expressions](#supported-expressions)
-    - [Identifier](#identifier)
-    - [Literal](#literal)
-    - [ArrayExpression](#arrayexpression)
-    - [ObjectExpression](#objectexpression)
-    - [UnaryExpression](#unaryexpression)
-    - [BinaryExpression](#binaryexpression)
-    - [LogicalExpression](#logicalexpression)
-    - [MemberExpression](#memberexpression)
-    - [ConditionalExpression](#conditionalexpression)
-    - [CallExpression](#callexpression)
-    - [SequenceExpression](#sequenceexpression)
-    - [TemplateLiteral](#templateliteral)
-    - [ArrowFunctionExpression](#arrowfunctionexpression)
-    - [AwaitExpression](#awaitexpression)
-    - [FunctionDeclaration](#functiondeclaration)
-    - [BlockStatement](#blockstatement)
-    - [ChainExpression](#chainexpression)
+  - [Identifier](#identifier)
+  - [Literal](#literal)
+  - [ArrayExpression](#arrayexpression)
+  - [ObjectExpression](#objectexpression)
+  - [UnaryExpression](#unaryexpression)
+  - [BinaryExpression](#binaryexpression)
+  - [LogicalExpression](#logicalexpression)
+  - [MemberExpression](#memberexpression)
+  - [ConditionalExpression](#conditionalexpression)
+  - [CallExpression](#callexpression)
+  - [SequenceExpression](#sequenceexpression)
+  - [TemplateLiteral](#templateliteral)
+  - [ArrowFunctionExpression](#arrowfunctionexpression)
+  - [AwaitExpression](#awaitexpression)
+  - [FunctionDeclaration](#functiondeclaration)
+  - [BlockStatement](#blockstatement)
+  - [ChainExpression](#chainexpression)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -386,14 +387,10 @@ Support for optional chaining
 
 [circleci-image]: https://img.shields.io/circleci/project/github/edge-js/parser/master.svg?style=for-the-badge&logo=circleci
 [circleci-url]: https://circleci.com/gh/edge-js/parser 'circleci'
-
 [npm-image]: https://img.shields.io/npm/v/edge-parser.svg?style=for-the-badge&logo=npm
 [npm-url]: https://npmjs.org/package/edge-parser 'npm'
-
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
-
 [license-url]: LICENSE.md
 [license-image]: https://img.shields.io/github/license/edge-js/lexer?style=for-the-badge
-
 [synk-image]: https://img.shields.io/snyk/vulnerabilities/github/edge-js/parser?label=Synk%20Vulnerabilities&style=for-the-badge
-[synk-url]: https://snyk.io/test/github/edge-js/parser?targetFile=package.json "synk"
+[synk-url]: https://snyk.io/test/github/edge-js/parser?targetFile=package.json 'synk'
