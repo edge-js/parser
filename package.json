@@ -35,7 +35,7 @@
     "acorn": "^8.0.5",
     "astring": "^1.7.0",
     "edge-error": "^2.0.0",
-    "edge-lexer": "^4.0.0",
+    "edge-lexer": "^4.0.1",
     "js-stringify": "^1.0.2"
   },
   "devDependencies": {
