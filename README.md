@@ -1,8 +1,7 @@
-<div align="center"><img src="https://res.cloudinary.com/adonis-js/image/upload/q_100/v1600679850/edge-banner_wao6ex.png" width="600px"></div>
+<div align="center"><img src="https://res.cloudinary.com/adonis-js/image/upload/v1620150474/edge-banner_tzmnox.jpg" width="600px"></div>
 
 # Edge Parser
-
-> Parser to convert edge template to invokable functions
+> Parser to convert edge templates to invokable functions
 
 [![circleci-image]][circleci-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![synk-image]][synk-url]
 
@@ -383,6 +382,35 @@ Support for optional chaining
 
 ```
 {{ user?.username }}
+```
+
+#### NewExpression
+
+```js
+{{ new User() }}
+```
+
+#### ReturnStatement
+In the following example `return` keyword is a return statement
+
+```js
+users.map((user) => {
+  return user.username
+})
+```
+
+#### ThisExpression
+Support for the this keyword
+
+```js
+{{ this.state }}
+```
+
+#### SpreadElement
+Support for the spread element
+
+```js
+{{ [...users] }}
 ```
 
 [circleci-image]: https://img.shields.io/circleci/project/github/edge-js/parser/master.svg?style=for-the-badge&logo=circleci
