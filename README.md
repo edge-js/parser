@@ -3,7 +3,7 @@
 # Edge Parser
 > Parser to convert edge templates to invokable functions
 
-[![circleci-image]][circleci-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![synk-image]][synk-url]
+[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![synk-image]][synk-url]
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -413,12 +413,16 @@ Support for the spread element
 {{ [...users] }}
 ```
 
-[circleci-image]: https://img.shields.io/circleci/project/github/edge-js/parser/master.svg?style=for-the-badge&logo=circleci
-[circleci-url]: https://circleci.com/gh/edge-js/parser 'circleci'
+[gh-workflow-image]: https://img.shields.io/github/workflow/status/edge-js/parser/test?style=for-the-badge
+[gh-workflow-url]: https://github.com/edge-js/parser/actions/workflows/test.yml "Github action"
+
 [npm-image]: https://img.shields.io/npm/v/edge-parser.svg?style=for-the-badge&logo=npm
 [npm-url]: https://npmjs.org/package/edge-parser 'npm'
+
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
+
 [license-url]: LICENSE.md
 [license-image]: https://img.shields.io/github/license/edge-js/lexer?style=for-the-badge
+
 [synk-image]: https://img.shields.io/snyk/vulnerabilities/github/edge-js/parser?label=Synk%20Vulnerabilities&style=for-the-badge
 [synk-url]: https://snyk.io/test/github/edge-js/parser?targetFile=package.json 'synk'
