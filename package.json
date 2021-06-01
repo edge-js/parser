@@ -44,8 +44,6 @@
     "@types/acorn": "^4.0.5",
     "@types/astring": "^1.7.0",
     "@types/node": "^15.6.1",
-    "commitizen": "^4.2.4",
-    "cz-conventional-changelog": "^3.3.0",
     "dedent-js": "^1.0.1",
     "del-cli": "^3.0.1",
     "doctoc": "^2.0.0",
