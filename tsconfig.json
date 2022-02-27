@@ -1,6 +1,8 @@
 {
   "extends": "./node_modules/@adonisjs/mrm-preset/_tsconfig",
   "compilerOptions": {
-    "lib": ["ES2019"]
+    "lib": [
+      "ES2019"
+    ]
   }
 }
