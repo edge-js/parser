@@ -7,8 +7,14 @@
  * file that was distributed with this source code.
  */
 
+import { transformAst } from '../Parser/transformAst'
+import { Parser } from '../Parser'
+
 export default {
-  toStatement(statement: any) {
+  toStatement(statement: any, filename: string, parser: Parser) {
+    statement.arguments = statement.arguments.map((expression: any) => {
+      return transformAst(expression, filename, parser)
+    })
     return statement
   },
 }
