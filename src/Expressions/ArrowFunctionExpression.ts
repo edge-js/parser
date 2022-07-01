@@ -22,6 +22,10 @@ export default {
         parser.utils.collectObjectExpressionProperties(param).forEach((prop) => {
           parser.stack.defineVariable(prop)
         })
+      } else if (param.type === 'ArrayPattern') {
+        parser.utils.collectArrayExpressionProperties(param).forEach((prop) => {
+          parser.stack.defineVariable(prop)
+        })
       } else {
         const { line, col } = parser.utils.getExpressionLoc(param)
         throw new EdgeError(
