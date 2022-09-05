@@ -192,4 +192,42 @@ test.group('Buffer', () => {
     return out;`)
     )
   })
+
+  test('disable try/catch block', (assert) => {
+    const buff = new EdgeBuffer('eval.edge', {
+      outputVar: 'out',
+      rethrowCallPath: ['ctx', 'reThrow'],
+    })
+    buff.outputExpression("'hello world'", 'eval.edge', 1, false)
+    buff.disableTryCatchBlock()
+
+    assert.stringEqual(
+      buff.flush(),
+      normalizeNewLines(dedent`
+    let out = "";
+    let $lineNumber = 1;
+    let $filename = "eval.edge";
+    out += 'hello world';
+    return out;`)
+    )
+  })
+
+  test('disable return statement', (assert) => {
+    const buff = new EdgeBuffer('eval.edge', {
+      outputVar: 'out',
+      rethrowCallPath: ['ctx', 'reThrow'],
+    })
+    buff.outputExpression("'hello world'", 'eval.edge', 1, false)
+    buff.disableTryCatchBlock()
+    buff.disableReturnStatement()
+
+    assert.stringEqual(
+      buff.flush(),
+      normalizeNewLines(dedent`
+    let out = "";
+    let $lineNumber = 1;
+    let $filename = "eval.edge";
+    out += 'hello world';`)
+    )
+  })
 })

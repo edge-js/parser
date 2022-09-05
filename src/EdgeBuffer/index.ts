@@ -16,6 +16,8 @@ import stringify from 'js-stringify'
 export class EdgeBuffer {
   private outputFileAndLineNumber = true
   private outputOutVariable = true
+  private outputReturnStatement = true
+  private wrapInsideTryCatch = true
 
   private options = {
     outputVar: '',
@@ -101,34 +103,36 @@ export class EdgeBuffer {
     /**
      * Write try block
      */
-    buffer.push('try {')
+    this.wrapInsideTryCatch && buffer.push('try {')
   }
 
   /**
    * Tear down template by writing final set of lines
    */
   private teardown(buffer: string[]) {
-    /**
-     * Close try and catch block
-     */
-    buffer.push('} catch (error) {')
+    if (this.wrapInsideTryCatch) {
+      /**
+       * Close try and catch block
+       */
+      buffer.push('} catch (error) {')
 
-    /**
-     * Write catch block
-     */
-    buffer.push(
-      `${this.options.rethrowCallPath}(error, ${this.options.fileNameVar}, ${this.options.lineVar});`
-    )
+      /**
+       * Write catch block
+       */
+      buffer.push(
+        `${this.options.rethrowCallPath}(error, ${this.options.fileNameVar}, ${this.options.lineVar});`
+      )
 
-    /**
-     * End catch block
-     */
-    buffer.push('}')
+      /**
+       * End catch block
+       */
+      buffer.push('}')
+    }
 
     /**
      * Return output variable
      */
-    buffer.push(`return ${this.options.outputVar};`)
+    this.outputReturnStatement && buffer.push(`return ${this.options.outputVar};`)
   }
 
   /**
@@ -218,6 +222,22 @@ export class EdgeBuffer {
    */
   public disableOutVariable(): this {
     this.outputOutVariable = false
+    return this
+  }
+
+  /**
+   * Disable outputting the return statement
+   */
+  public disableReturnStatement(): this {
+    this.outputReturnStatement = false
+    return this
+  }
+
+  /**
+   * Disable wrapping buffer output inside try/catch.
+   */
+  public disableTryCatchBlock(): this {
+    this.wrapInsideTryCatch = false
     return this
   }
 
