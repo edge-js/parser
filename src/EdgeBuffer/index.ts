@@ -53,10 +53,16 @@ export class EdgeBuffer {
    */
   private compiledOutput: string | undefined
 
+  /**
+   * Exposing output variable name
+   */
+  public outputVariableName: string
+
   constructor(
     private filename: string,
     options: { outputVar: string; rethrowCallPath: string | [string, string] }
   ) {
+    this.outputVariableName = options.outputVar
     this.options.outputVar = options.outputVar
     this.options.rethrowCallPath = Array.isArray(options.rethrowCallPath)
       ? options.rethrowCallPath.join('.')
@@ -87,7 +93,7 @@ export class EdgeBuffer {
     /**
      * Define output variable
      */
-    this.outputOutVariable && buffer.push(`let ${this.options.outputVar} = "";`)
+    this.outputOutVariable && buffer.push(`let ${this.outputVariableName} = "";`)
 
     /**
      * Define line number variable
@@ -132,7 +138,7 @@ export class EdgeBuffer {
     /**
      * Return output variable
      */
-    this.outputReturnStatement && buffer.push(`return ${this.options.outputVar};`)
+    this.outputReturnStatement && buffer.push(`return ${this.outputVariableName};`)
   }
 
   /**
@@ -159,7 +165,7 @@ export class EdgeBuffer {
    * Write raw text to the output variable
    */
   public outputRaw(text: string): this {
-    this.buffer.push(`${this.options.outputVar} += ${stringify(text)};`)
+    this.buffer.push(`${this.outputVariableName} += ${stringify(text)};`)
     return this
   }
 
@@ -175,7 +181,7 @@ export class EdgeBuffer {
     this.updateFileName(filename)
     this.updateLineNumber(lineNumber)
     text = templateLiteral ? `\`\${${text}}\`` : text
-    this.buffer.push(`${this.options.outputVar} += ${text};`)
+    this.buffer.push(`${this.outputVariableName} += ${text};`)
     return this
   }
 
