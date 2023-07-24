@@ -11,7 +11,6 @@ export { Stack } from './src/stack/index.js'
 export { Parser } from './src/parser/index.js'
 export { EdgeBuffer } from './src/edge_buffer/index.js'
 
-export * from './src/types.js'
 import * as ExpressionsList from './src/expressions/index.js'
 
 /**

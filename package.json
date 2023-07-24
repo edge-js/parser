@@ -9,6 +9,10 @@
     "build/index.d.ts",
     "build/index.js"
   ],
+  "exports": {
+    ".": "./build/index.js",
+    "./types": "./build/src/types.js"
+  },
   "scripts": {
     "pretest": "npm run lint",
     "test": "c8 npm run quick:test",
