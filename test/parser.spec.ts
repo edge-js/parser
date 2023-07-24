@@ -7,29 +7,30 @@
  * file that was distributed with this source code.
  */
 
-import './assert-extend'
+import './assert_extend.js'
 
-import test from 'japa'
+import { test } from '@japa/runner'
 import Youch from 'youch'
-import { join } from 'path'
+import { dirname, join } from 'node:path'
 import dedent from 'dedent-js'
 import { MustacheToken, TagToken } from 'edge-lexer'
 
-import { Parser } from '../src/Parser'
-import { EdgeBuffer } from '../src/EdgeBuffer'
-import { normalizeNewLines } from '../test-helpers'
+import { Parser } from '../src/parser/index.js'
+import { EdgeBuffer } from '../src/edge_buffer/index.js'
+import { normalizeNewLines } from '../test_helpers/index.js'
+import { fileURLToPath } from 'node:url'
 
 const tags = {
   if: class If {
-    public static block = true
-    public static seekable = true
-    public static selfclosed = false
-    public static compile() {}
+    static block = true
+    static seekable = true
+    static selfclosed = false
+    static compile() {}
   },
 }
 
 test.group('Parser', () => {
-  test('report correct line number when expression is not allowed', async (assert) => {
+  test('report correct line number when expression is not allowed', async ({ assert }) => {
     assert.plan(3)
 
     const parser = new Parser(tags, undefined, {
@@ -61,7 +62,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('report compile time syntax errors with correct line number', async (assert) => {
+  test('report compile time syntax errors with correct line number', async ({ assert }) => {
     assert.plan(3)
 
     const parser = new Parser(tags, undefined, {
@@ -95,7 +96,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('report runtime errors with correct line number', (assert) => {
+  test('report runtime errors with correct line number', ({ assert }) => {
     assert.plan(1)
 
     const parser = new Parser(tags, undefined, {
@@ -129,15 +130,15 @@ test.group('Parser', () => {
     )
   })
 
-  test('pass tag details to tag implementation when exists', (assert) => {
+  test('pass tag details to tag implementation when exists', ({ assert }) => {
     assert.plan(2)
 
     const customTags = {
       if: class If {
-        public static block = true
-        public static seekable = true
-        public static selfclosed = false
-        public static compile(_, __, token) {
+        static block = true
+        static seekable = true
+        static selfclosed = false
+        static compile(_: any, __: any, token: any) {
           assert.equal(token.properties.jsArg, 'username')
           assert.equal(token.properties.name, 'if')
         }
@@ -162,7 +163,7 @@ test.group('Parser', () => {
     tokens.forEach((token) => parser.processToken(token, buffer))
   })
 
-  test('report correct columns in errors inside mustache statement', async (assert) => {
+  test('report correct columns in errors inside mustache statement', async ({ assert }) => {
     assert.plan(3)
 
     const parser = new Parser(tags, undefined, {
@@ -191,7 +192,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('report correct columns in errors inside safe mustache statement', (assert) => {
+  test('report correct columns in errors inside safe mustache statement', ({ assert }) => {
     assert.plan(2)
 
     const parser = new Parser(tags, undefined, {
@@ -218,7 +219,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('report correct columns in errors in multiline mustache', async (assert) => {
+  test('report correct columns in errors in multiline mustache', async ({ assert }) => {
     assert.plan(3)
 
     const parser = new Parser(tags, undefined, {
@@ -249,7 +250,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('report filename mentioned on token for mustache', async (assert) => {
+  test('report filename mentioned on token for mustache', async ({ assert }) => {
     assert.plan(3)
 
     const parser = new Parser(tags, undefined, {
@@ -280,7 +281,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('do not prefix idenifiers with state when using local variable', (assert) => {
+  test('do not prefix idenifiers with state when using local variable', ({ assert }) => {
     assert.plan(1)
 
     const parser = new Parser(tags, undefined, {
@@ -324,7 +325,7 @@ test.group('Parser', () => {
     )
   })
 
-  test('report error when using await expression in non async mode', async (assert) => {
+  test('report error when using await expression in non async mode', async ({ assert }) => {
     assert.plan(3)
 
     const parser = new Parser(tags, undefined, {
@@ -353,7 +354,7 @@ test.group('Parser', () => {
     }
   })
 
-  test('escape unicodes in filename', (assert) => {
+  test('escape unicodes in filename', ({ assert }) => {
     assert.plan(2)
 
     const parser = new Parser(tags, undefined, {
@@ -365,12 +366,12 @@ test.group('Parser', () => {
       {{ getUser() }}!
     `
 
-    const buffer = new EdgeBuffer(join(__dirname, 'eval.edge'), {
+    const buffer = new EdgeBuffer(join(dirname(fileURLToPath(import.meta.url)), 'eval.edge'), {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
     })
     const tokens = parser.tokenize(template, {
-      filename: join(__dirname, 'eval.edge'),
+      filename: join(dirname(fileURLToPath(import.meta.url)), 'eval.edge'),
     })
     tokens.forEach((token) => parser.processToken(token, buffer))
 
@@ -381,22 +382,22 @@ test.group('Parser', () => {
       {
         escape() {},
         reThrow(error: any, filename: string) {
-          assert.equal(filename, join(__dirname, 'eval.edge'))
+          assert.equal(filename, join(dirname(fileURLToPath(import.meta.url)), 'eval.edge'))
           assert.equal(error.message, 'state.getUser is not a function')
         },
       }
     )
   })
 
-  test('allow transforming tags', async (assert) => {
+  test('allow transforming tags', async ({ assert }) => {
     assert.plan(1)
 
     const parser = new Parser(
       Object.assign({}, tags, {
         component: class Component {
-          public static block = true
-          public static seekable = true
-          public static compile(_, __, token: TagToken) {
+          static block = true
+          static seekable = true
+          static compile(_: any, __: any, token: TagToken) {
             assert.equal(token.properties.jsArg, `'hl/modal', { title: 'foo' }`)
           }
         },

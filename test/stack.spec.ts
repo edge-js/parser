@@ -7,11 +7,11 @@
  * file that was distributed with this source code.
  */
 
-import test from 'japa'
-import { Stack } from '../src/Stack'
+import { test } from '@japa/runner'
+import { Stack } from '../src/stack/index.js'
 
 test.group('Stack', () => {
-  test('define variable', (assert) => {
+  test('define variable', ({ assert }) => {
     const stack = new Stack()
     stack.defineVariable('username')
     stack.defineVariable('age')
@@ -25,7 +25,7 @@ test.group('Stack', () => {
     })
   })
 
-  test('define scope and variables inside it', (assert) => {
+  test('define scope and variables inside it', ({ assert }) => {
     const stack = new Stack()
     stack.defineVariable('username')
     stack.defineScope()
@@ -40,7 +40,7 @@ test.group('Stack', () => {
     })
   })
 
-  test("clear scope and it's variables", (assert) => {
+  test("clear scope and it's variables", ({ assert }) => {
     const stack = new Stack()
     stack.defineVariable('username')
     stack.defineScope()

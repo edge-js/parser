@@ -7,23 +7,24 @@
  * file that was distributed with this source code.
  */
 
-import './assert-extend'
+import './assert_extend.js'
 
-import test from 'japa'
-import { join } from 'path'
-import { readdirSync, readFileSync, statSync } from 'fs'
+import { test } from '@japa/runner'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 
-import { Parser } from '../src/Parser'
-import { EdgeBuffer } from '../src/EdgeBuffer'
-import { normalizeNewLines, normalizeFilename } from '../test-helpers'
+import { Parser } from '../src/parser/index.js'
+import { EdgeBuffer } from '../src/edge_buffer/index.js'
+import { normalizeNewLines, normalizeFilename } from '../test_helpers/index.js'
 
-const basePath = join(__dirname, '../fixtures')
+const basePath = join(dirname(fileURLToPath(import.meta.url)), '../fixtures')
 const tags = {
   if: class If {
-    public static block = true
-    public static seekable = true
-    public static selfclosed = false
-    public static compile() {}
+    static block = true
+    static seekable = true
+    static selfclosed = false
+    static compile() {}
   },
 }
 
@@ -33,7 +34,7 @@ test.group('Fixtures', () => {
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
 
-    test(dir, (assert) => {
+    test(dir, ({ assert }) => {
       const template = readFileSync(join(dirBasePath, 'index.edge'), 'utf-8')
       const out = normalizeNewLines(readFileSync(join(dirBasePath, 'index.js'), 'utf-8'))
 

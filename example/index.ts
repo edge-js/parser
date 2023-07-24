@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Parser, EdgeBuffer, Stack } from '../index'
+import { Parser, EdgeBuffer, Stack } from '../index.js'
 
 const filename = 'eval.edge'
 

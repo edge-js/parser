@@ -7,16 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import './assert-extend'
+import './assert_extend.js'
 
-import test from 'japa'
+import { test } from '@japa/runner'
 import dedent from 'dedent-js'
 
-import { EdgeBuffer } from '../src/EdgeBuffer'
-import { normalizeNewLines } from '../test-helpers'
+import { EdgeBuffer } from '../src/edge_buffer/index.js'
+import { normalizeNewLines } from '../test_helpers/index.js'
 
 test.group('Buffer', () => {
-  test('write line to the output', (assert) => {
+  test('write line to the output', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -36,7 +36,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('write raw line to the output', (assert) => {
+  test('write raw line to the output', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -57,7 +57,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('escape quotes in raw line', (assert) => {
+  test('escape quotes in raw line', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -78,7 +78,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('write expression', (assert) => {
+  test('write expression', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -99,7 +99,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('indent output', (assert) => {
+  test('indent output', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -125,7 +125,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('define wrapping code', (assert) => {
+  test('define wrapping code', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -150,7 +150,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('disable filename and linenumber variables', (assert) => {
+  test('disable filename and linenumber variables', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -171,7 +171,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('disable output variable', (assert) => {
+  test('disable output variable', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -193,7 +193,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('disable try/catch block', (assert) => {
+  test('disable try/catch block', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],
@@ -212,7 +212,7 @@ test.group('Buffer', () => {
     )
   })
 
-  test('disable return statement', (assert) => {
+  test('disable return statement', ({ assert }) => {
     const buff = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
       rethrowCallPath: ['ctx', 'reThrow'],

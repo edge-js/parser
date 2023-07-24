@@ -7,21 +7,21 @@
  * file that was distributed with this source code.
  */
 
-import { EOL } from 'os'
+import { EOL } from 'node:os'
 import { Token, TagToken, TagTypes, Tokenizer, MustacheToken, MustacheTypes } from 'edge-lexer'
 
-import { Stack } from '../Stack'
-import { stringify } from './stringify'
-import { EdgeBuffer } from '../EdgeBuffer'
-import { generateAST } from './generateAst'
-import { transformAst } from './transformAst'
-import { makeEscapeCallable } from './makeEscapeCallable'
-import { makeStatePropertyAccessor } from './makeStatePropertyAccessor'
-import { ParserTagDefinitionContract, ParserOptions } from '../Contracts'
+import { Stack } from '../stack/index.js'
+import { stringify } from './stringify.js'
+import { EdgeBuffer } from '../edge_buffer/index.js'
+import { generateAST } from './generate_ast.js'
+import { transformAst } from './transform_ast.js'
+import { makeEscapeCallable } from './make_escape_callable.js'
+import { makeStatePropertyAccessor } from './make_state_property_accessor.js'
+import { ParserTagDefinitionContract, ParserOptions } from '../types.js'
 import {
   collectObjectExpressionProperties,
   collectArrayExpressionProperties,
-} from './collectObjectExpressionProperties'
+} from './collect_object_expression_properties.js'
 
 /**
  * Edge parser converts template strings to an invokable function. This module
@@ -49,18 +49,20 @@ export class Parser {
   /**
    * A boolean to know if async mode is enabled
    */
-  public asyncMode = !!this.options.async
+  asyncMode: boolean
 
   constructor(
     public tags: { [key: string]: ParserTagDefinitionContract },
     public stack: Stack = new Stack(),
     public options: ParserOptions
-  ) {}
+  ) {
+    this.asyncMode = !!this.options.async
+  }
 
   /**
    * Parser utilities work with the AST
    */
-  public utils = {
+  utils = {
     generateAST: generateAST,
     transformAst,
     stringify,
@@ -157,7 +159,7 @@ export class Parser {
   /**
    * Convert template to tokens
    */
-  public tokenize(template: string, options: { filename: string }) {
+  tokenize(template: string, options: { filename: string }) {
     const tokenizer = new Tokenizer(template, this.tags, this.getTokenizerOptions(options))
     tokenizer.parse()
     return tokenizer.tokens
@@ -166,7 +168,7 @@ export class Parser {
   /**
    * Process a lexer token. The output gets written to the buffer
    */
-  public processToken(token: Token, buffer: EdgeBuffer) {
+  processToken(token: Token, buffer: EdgeBuffer) {
     switch (token.type) {
       case 'raw':
         buffer.outputRaw(token.value)
