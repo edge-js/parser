@@ -33,7 +33,7 @@
   "license": "MIT",
   "dependencies": {
     "acorn": "^8.8.2",
-    "astring": "^1.8.4",
+    "astring": "^1.8.6",
     "edge-error": "^3.0.0",
     "edge-lexer": "^5.0.2",
     "js-stringify": "^1.0.2"
