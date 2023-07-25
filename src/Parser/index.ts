@@ -8,8 +8,8 @@
  */
 
 import { EOL } from 'node:os'
-import { Token, TagToken, TagTypes, Tokenizer, MustacheToken, MustacheTypes } from 'edge-lexer'
-
+import { Token, TagToken, TagTypes, MustacheToken, MustacheTypes } from 'edge-lexer/types'
+import { Tokenizer } from 'edge-lexer'
 import { Stack } from '../stack/index.js'
 import { stringify } from './stringify.js'
 import { EdgeBuffer } from '../edge_buffer/index.js'

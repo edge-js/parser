@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { TagToken, LexerTagDefinitionContract, MustacheToken } from 'edge-lexer'
+import type { TagToken, LexerTagDefinitionContract, MustacheToken } from 'edge-lexer/types'
 
 import { Parser } from './parser/index.js'
 import { EdgeBuffer } from './edge_buffer/index.js'

@@ -13,7 +13,7 @@ import { test } from '@japa/runner'
 import Youch from 'youch'
 import { dirname, join } from 'node:path'
 import dedent from 'dedent-js'
-import { MustacheToken, TagToken } from 'edge-lexer'
+import type { MustacheToken, TagToken } from 'edge-lexer/types'
 
 import { Parser } from '../src/parser/index.js'
 import { EdgeBuffer } from '../src/edge_buffer/index.js'

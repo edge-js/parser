@@ -56,8 +56,8 @@
   "dependencies": {
     "acorn": "^8.10.0",
     "astring": "^1.8.6",
-    "edge-error": "^3.0.0",
-    "edge-lexer": "^5.0.2",
+    "edge-error": "^4.0.0-0",
+    "edge-lexer": "^6.0.0-0",
     "js-stringify": "^1.0.2"
   },
   "author": "virk",
