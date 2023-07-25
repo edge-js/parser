@@ -2,6 +2,9 @@
   "name": "edge-parser",
   "description": "Parser for edge template engine",
   "version": "8.2.2",
+  "engines": {
+    "node": ">=18.16.0"
+  },
   "main": "build/index.js",
   "type": "module",
   "files": [
