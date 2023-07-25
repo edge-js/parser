@@ -10,15 +10,15 @@
 import './assert_extend.js'
 
 import { test } from '@japa/runner'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { getDirname } from '@poppinss/utils'
 
 import { Parser } from '../src/parser/index.js'
 import { EdgeBuffer } from '../src/edge_buffer/index.js'
 import { normalizeNewLines, normalizeFilename } from '../test_helpers/index.js'
 
-const basePath = join(dirname(fileURLToPath(import.meta.url)), '../fixtures')
+const basePath = join(getDirname(import.meta.url), '../fixtures')
 const tags = {
   if: class If {
     static block = true
