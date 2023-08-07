@@ -56,29 +56,32 @@ and then use it as follows
 import { Parser, EdgeBuffer, Stack } from 'edge-parser'
 
 const filename = 'eval.edge'
-const statePropertyName = 'state'
-const escapeCallPath = 'escape'
-const outputVar = 'out'
-const rethrowCallPath = 'reThrow'
 
 const parser = new Parser({}, new Stack(), {
-  statePropertyName,
-  escapeCallPath,
+  statePropertyName: 'state',
+  escapeCallPath: 'escape',
+  toAttributesCallPath: 'toAttributes',
 })
 
-const buffer = new EdgeBuffer(filename, { outputVar, rethrowCallPath })
+const buffer = new EdgeBuffer(filename, {
+  outputVar: 'out',
+  rethrowCallPath: 'reThrow'
+})
 
 parser
   .tokenize('Hello {{ username }}', { filename })
   .forEach((token) => parser.processToken(token, buffer))
+
+const output = buffer.flush()
+console.log(output)
 ```
 
-- All the first set of `const` declarations are the config values that impacts the compiled output.
-  - `filename` is required to ensure that exceptions stack traces point back to the correct filename.
-  - `statePropertyName` is the variable name from which the values should be accessed. For example: `{{ username }}` will be compiled as `state.username`. Leave it to empty, if state is not nested inside an object.
-  - `escapeCallPath` Reference to the `escape` method for escaping interpolation values. For example: `{{ username }}` will be compiled as `escape(state.username)`. The `escape` method should escape only strings and return the other data types as it is.
-  - `outputVar` is the variable name that holds the output of the compiled template.
-  - `rethrowCallPath` Reference to the `reThrow` method to raise the template exceptions with the current `$filename` and `$lineNumber`. Check the following compiled output to see how this function is called.
+- `filename` is required to ensure that exceptions stack traces point back to the correct filename.
+- `statePropertyName` is the variable name from which the values should be accessed. For example: `{{ username }}` will be compiled as `state.username`. Leave it to empty, if state is not nested inside an object.
+- `escapeCallPath` Reference to the `escape` method for escaping interpolation values. For example: `{{ username }}` will be compiled as `escape(state.username)`. The `escape` method should escape only strings and return the other data types as it is.
+- `toAttributesCallPath`: Reference to the function that will convert an object to HTML attributes.
+- `outputVar` is the variable name that holds the output of the compiled template.
+- `rethrowCallPath` Reference to the `reThrow` method to raise the template exceptions with the current `$filename` and `$lineNumber`. Check the following compiled output to see how this function is called.
 
 **Compiled output**
 
@@ -101,7 +104,7 @@ You can wrap the compiled output inside a function and invoke it as follows
 /**
  * Convert string to a function
  */
-const fn = new Function('', `return function template (state, escape, reThrow) { ${output} }`)()
+const fn = new Function('state, escape, reThrow', output)
 
 /**
  * Template state

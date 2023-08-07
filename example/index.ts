@@ -42,5 +42,5 @@ function reThrow(error: Error) {
 /**
  * Wrap inside function and invoke it
  */
-const fn = new Function('', `return function template (state, escape, reThrow) { ${output} }`)()
+const fn = new Function('state, escape, reThrow', output)
 console.log(fn(state, escape, reThrow))
