@@ -27,7 +27,6 @@ parser
  * Compiled output
  */
 const output = buffer.flush()
-console.log(output)
 
 const state = { username: 'virk' }
 
@@ -42,5 +41,5 @@ function reThrow(error: Error) {
 /**
  * Wrap inside function and invoke it
  */
-const fn = new Function('state, escape, reThrow', output)
+const fn = new Function('state', 'escape', 'reThrow', output)
 console.log(fn(state, escape, reThrow))
