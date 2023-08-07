@@ -9,12 +9,12 @@
 
 import './assert_extend.js'
 
-import { test } from '@japa/runner'
 import { join } from 'node:path'
-import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { test } from '@japa/runner'
 import { getDirname } from '@poppinss/utils'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 
-import { Parser } from '../src/parser/index.js'
+import { Parser } from '../src/parser/main.js'
 import { EdgeBuffer } from '../src/edge_buffer/index.js'
 import { normalizeNewLines, normalizeFilename } from '../test_helpers/index.js'
 
@@ -27,11 +27,16 @@ const tags = {
     static compile() {}
   },
 }
+const filter = process.env.FIXTURE
 
 test.group('Fixtures', () => {
   const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
 
   dirs.forEach((dir) => {
+    if (filter && dir !== filter) {
+      return
+    }
+
     const dirBasePath = join(basePath, dir)
 
     test(dir, ({ assert }) => {
@@ -42,6 +47,7 @@ test.group('Fixtures', () => {
         async: true,
         statePropertyName: 'state',
         escapeCallPath: ['ctx', 'escape'],
+        toAttributesCallPath: ['ctx', 'toAttributes'],
       })
 
       const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'), {

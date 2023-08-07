@@ -9,7 +9,7 @@
 
 import { EdgeError } from 'edge-error'
 import { transformAst } from '../parser/transform_ast.js'
-import { Parser } from '../parser/index.js'
+import { Parser } from '../parser/main.js'
 
 const UNALLOWED_EXPRESSION_MESSAGE =
   'Make sure to render template in async mode before using await expression'

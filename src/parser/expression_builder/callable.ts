@@ -10,7 +10,7 @@
 /**
  * Returns Acorn complaint AST for a callable expression
  */
-export function makeEscapeCallable(paths: string | [string, string], args: object[]): any {
+export function makeCallable(paths: string | [string, string], args: object[]): any {
   if (typeof paths === 'string') {
     return {
       type: 'CallExpression',

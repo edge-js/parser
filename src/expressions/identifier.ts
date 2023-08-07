@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { Parser } from '../parser/index.js'
-import { makeStatePropertyAccessor } from '../parser/make_state_property_accessor.js'
+import { Parser } from '../parser/main.js'
+import { makeMemberAccessor } from '../parser/expression_builder/member.js'
 
 export default {
   toStatement(statement: any, _: string, parser: Parser): object {
@@ -20,6 +20,6 @@ export default {
       return statement
     }
 
-    return makeStatePropertyAccessor(parser.options.statePropertyName, statement)
+    return makeMemberAccessor(parser.options.statePropertyName, statement)
   },
 }

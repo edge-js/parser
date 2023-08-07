@@ -8,7 +8,7 @@
  */
 
 import { EOL } from 'node:os'
-// @ts-ignore untyped module
+// @ts-expect-error "untyped module"
 import stringify from 'js-stringify'
 
 /**
@@ -43,6 +43,9 @@ export class EdgeBuffer {
    */
   #currentLineNumber = 1
 
+  /**
+   * Input filename
+   */
   #filename: string
 
   /**

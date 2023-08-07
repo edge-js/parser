@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import type { LexerLoc } from 'edge-lexer/types'
 import { EdgeError } from 'edge-error'
+import type { LexerLoc } from 'edge-lexer/types'
 import { parse as acornParse, Token } from 'acorn'
 
 import { AcornLoc } from '../types.js'

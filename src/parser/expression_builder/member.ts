@@ -8,9 +8,9 @@
  */
 
 /**
- * Returns Acorn complaint AST for a collable expression
+ * Returns Acorn complaint AST for a member expression
  */
-export function makeStatePropertyAccessor(propertyName: string, args: object): any {
+export function makeMemberAccessor(propertyName: string, args: object): any {
   return {
     type: 'MemberExpression',
     object: {

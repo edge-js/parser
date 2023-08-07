@@ -8,7 +8,7 @@
  */
 
 import { transformAst } from '../parser/transform_ast.js'
-import { Parser } from '../parser/index.js'
+import { Parser } from '../parser/main.js'
 import { EdgeError } from 'edge-error'
 
 export default {

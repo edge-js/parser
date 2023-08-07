@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Parser } from '../parser/index.js'
+import { Parser } from '../parser/main.js'
 
 export default {
   toStatement(statement: any, filename: string, parser: Parser): object {

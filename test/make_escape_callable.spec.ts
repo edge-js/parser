@@ -9,13 +9,13 @@
 
 import { test } from '@japa/runner'
 import { generate } from 'astring'
-import { makeEscapeCallable } from '../src/parser/make_escape_callable.js'
+import { makeCallable } from '../src/parser/expression_builder/callable.js'
 
 test.group('make escape callable function', () => {
   test('make path to a function', ({ assert }) => {
     assert.equal(
       generate(
-        makeEscapeCallable('escape', [
+        makeCallable('escape', [
           {
             type: 'Literal',
             value: 'foo',
@@ -29,7 +29,7 @@ test.group('make escape callable function', () => {
   test('make path to an object property', ({ assert }) => {
     assert.equal(
       generate(
-        makeEscapeCallable(
+        makeCallable(
           ['ctx', 'escape'],
           [
             {

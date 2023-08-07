@@ -16,8 +16,8 @@ import { stringify } from './stringify.js'
 import { generateAST } from './generate_ast.js'
 import { transformAst } from './transform_ast.js'
 import { EdgeBuffer } from '../edge_buffer/index.js'
-import { makeEscapeCallable } from './make_escape_callable.js'
-import { makeStatePropertyAccessor } from './make_state_property_accessor.js'
+import { makeCallable } from './expression_builder/callable.js'
+import { makeMemberAccessor } from './expression_builder/member.js'
 import type { ParserTagDefinitionContract, ParserOptions } from '../types.js'
 import {
   collectObjectExpressionProperties,
@@ -64,11 +64,13 @@ export class Parser {
    * Parser utilities work with the AST
    */
   utils = {
-    generateAST: generateAST,
-    transformAst,
     stringify,
-    makeEscapeCallable,
-    makeStatePropertyAccessor,
+    transformAst,
+    makeCallable,
+    makeMemberAccessor,
+    generateAST: generateAST,
+    makeEscapeCallable: makeCallable,
+    makeStatePropertyAccessor: makeMemberAccessor,
     collectObjectExpressionProperties,
     collectArrayExpressionProperties,
     getExpressionLoc(expression: any): { line: number; col: number } {
@@ -83,7 +85,7 @@ export class Parser {
   /**
    * Returns the options to be passed to the tokenizer
    */
-  private getTokenizerOptions(options: { filename: string }) {
+  #getTokenizerOptions(options: { filename: string }) {
     if (!this.options) {
       return options
     }
@@ -99,7 +101,7 @@ export class Parser {
    * Process escaped tag token by writing it as it is. However, the children
    * inside a tag are still processed.
    */
-  private processEscapedTagToken(token: TagToken, buffer: EdgeBuffer) {
+  #processEscapedTagToken(token: TagToken, buffer: EdgeBuffer) {
     /**
      * Since `jsArg` can span over multiple lines, we split it into multiple lines
      * and write one line at a time to maintain the original shape.
@@ -121,7 +123,7 @@ export class Parser {
   /**
    * Process escaped muscahe block by writing it as it is.
    */
-  private processEscapedMustache(token: MustacheToken, buffer: EdgeBuffer) {
+  #processEscapedMustache(token: MustacheToken, buffer: EdgeBuffer) {
     const lines =
       token.type === MustacheTypes.EMUSTACHE
         ? `{{${token.properties.jsArg}}}`.split('\n')
@@ -133,16 +135,14 @@ export class Parser {
   /**
    * Process mustache token
    */
-  private processMustache({ properties, loc, filename, type }: MustacheToken, buffer: EdgeBuffer) {
+  #processMustache({ properties, loc, filename, type }: MustacheToken, buffer: EdgeBuffer) {
     const node = transformAst(generateAST(properties.jsArg, loc, filename), filename, this)
 
     /**
      * Wrap mustache output to an escape call for preventing XSS attacks
      */
     const expression =
-      type === MustacheTypes.MUSTACHE
-        ? makeEscapeCallable(this.options.escapeCallPath, [node])
-        : node
+      type === MustacheTypes.MUSTACHE ? makeCallable(this.options.escapeCallPath, [node]) : node
 
     /**
      * Template literal, so there is no need to wrap it inside another
@@ -150,6 +150,13 @@ export class Parser {
      */
     if (node.type === 'TemplateLiteral') {
       buffer.outputExpression(stringify(expression), filename, loc.start.line, false)
+    } else if (node.type === 'ObjectExpression') {
+      buffer.outputExpression(
+        stringify(makeCallable(this.options.toAttributesCallPath, [node])),
+        filename,
+        loc.start.line,
+        false
+      )
     } else if (node.type === 'FunctionDeclaration') {
       buffer.outputExpression(stringify(node), filename, loc.start.line, false)
     } else {
@@ -161,7 +168,7 @@ export class Parser {
    * Convert template to tokens
    */
   tokenize(template: string, options: { filename: string }) {
-    const tokenizer = new Tokenizer(template, this.tags, this.getTokenizerOptions(options))
+    const tokenizer = new Tokenizer(template, this.tags, this.#getTokenizerOptions(options))
     tokenizer.parse()
     return tokenizer.tokens
   }
@@ -184,18 +191,18 @@ export class Parser {
         this.tags[token.properties.name].compile(this, buffer, token as TagToken)
         break
       case TagTypes.ETAG:
-        this.processEscapedTagToken(token, buffer)
+        this.#processEscapedTagToken(token, buffer)
         break
       case MustacheTypes.EMUSTACHE:
       case MustacheTypes.ESMUSTACHE:
-        this.processEscapedMustache(token, buffer)
+        this.#processEscapedMustache(token, buffer)
         break
       case MustacheTypes.SMUSTACHE:
       case MustacheTypes.MUSTACHE:
         if (typeof this.options.onMustache === 'function') {
           this.options.onMustache(token)
         }
-        this.processMustache(token, buffer)
+        this.#processMustache(token, buffer)
     }
   }
 }

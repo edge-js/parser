@@ -9,7 +9,7 @@
 
 import type { TagToken, LexerTagDefinitionContract, MustacheToken } from 'edge-lexer/types'
 
-import { Parser } from './parser/index.js'
+import { Parser } from './parser/main.js'
 import { EdgeBuffer } from './edge_buffer/index.js'
 
 /**
@@ -33,10 +33,10 @@ export type AcornLoc = {
   }
 }
 
-export type TagTransformer = (tag: TagToken) => void
-export type MustacheTransformer = (tag: MustacheToken) => void
-export type ClaimTagFn = (name: string) => LexerTagDefinitionContract | null
 export type OnLineFn = (line: string) => string
+export type TagTransformer = (token: TagToken) => void
+export type MustacheTransformer = (token: MustacheToken) => void
+export type ClaimTagFn = (name: string) => LexerTagDefinitionContract | null
 
 /**
  * Parser options
@@ -71,6 +71,12 @@ export type ParserOptions = {
    * Nested or flat path to the escape method for escaping values.
    */
   escapeCallPath: string | [string, string]
+
+  /**
+   * Nested or flat path to the toAttributes method for converting
+   * objects to HTML attributes
+   */
+  toAttributesCallPath: string | [string, string]
 
   /**
    * Name of the property to be used for accessing the values from
