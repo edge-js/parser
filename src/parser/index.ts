@@ -8,16 +8,17 @@
  */
 
 import { EOL } from 'node:os'
-import { Token, TagToken, TagTypes, MustacheToken, MustacheTypes } from 'edge-lexer/types'
-import { Tokenizer } from 'edge-lexer'
+import { Tokenizer, MustacheTypes, TagTypes } from 'edge-lexer'
+import type { Token, TagToken, MustacheToken } from 'edge-lexer/types'
+
 import { Stack } from '../stack/index.js'
 import { stringify } from './stringify.js'
-import { EdgeBuffer } from '../edge_buffer/index.js'
 import { generateAST } from './generate_ast.js'
 import { transformAst } from './transform_ast.js'
+import { EdgeBuffer } from '../edge_buffer/index.js'
 import { makeEscapeCallable } from './make_escape_callable.js'
 import { makeStatePropertyAccessor } from './make_state_property_accessor.js'
-import { ParserTagDefinitionContract, ParserOptions } from '../types.js'
+import type { ParserTagDefinitionContract, ParserOptions } from '../types.js'
 import {
   collectObjectExpressionProperties,
   collectArrayExpressionProperties,
