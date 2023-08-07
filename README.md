@@ -1,9 +1,7 @@
-<div align="center"><img src="https://res.cloudinary.com/adonis-js/image/upload/v1620150474/edge-banner_tzmnox.jpg" width="600px"></div>
-
-# Edge Parser
+# edge-parser
 > Parser to convert edge templates to invokable functions
 
-[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![synk-image]][synk-url]
+[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url]
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -413,8 +411,8 @@ Support for the spread element
 {{ [...users] }}
 ```
 
-[gh-workflow-image]: https://img.shields.io/github/workflow/status/edge-js/parser/test?style=for-the-badge
-[gh-workflow-url]: https://github.com/edge-js/parser/actions/workflows/test.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/edge-js/parser/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/edge-js/parser/actions/workflows/checks.yml "Github action"
 
 [npm-image]: https://img.shields.io/npm/v/edge-parser.svg?style=for-the-badge&logo=npm
 [npm-url]: https://npmjs.org/package/edge-parser 'npm'
@@ -423,6 +421,3 @@ Support for the spread element
 
 [license-url]: LICENSE.md
 [license-image]: https://img.shields.io/github/license/edge-js/lexer?style=for-the-badge
-
-[synk-image]: https://img.shields.io/snyk/vulnerabilities/github/edge-js/parser?label=Synk%20Vulnerabilities&style=for-the-badge
-[synk-url]: https://snyk.io/test/github/edge-js/parser?targetFile=package.json 'synk'
