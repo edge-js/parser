@@ -73,12 +73,6 @@ export type ParserOptions = {
   escapeCallPath: string | [string, string]
 
   /**
-   * Nested or flat path to the toAttributes method for converting
-   * objects to HTML attributes
-   */
-  toAttributesCallPath: string | [string, string]
-
-  /**
    * Name of the property to be used for accessing the values from
    * the template. Leave it to an empty string, if properties
    * are available directly (meaning without a subpath).

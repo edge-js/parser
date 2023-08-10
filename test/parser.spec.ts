@@ -36,7 +36,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     const template = dedent`
     Hello {{ username }}
@@ -69,7 +68,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     const template = dedent`
     Hello world!
@@ -104,7 +102,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     const template = dedent`
       Hello
@@ -155,7 +152,6 @@ test.group('Parser', () => {
     const parser = new Parser(customTags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     const buffer = new EdgeBuffer('eval.edge', {
       outputVar: 'out',
@@ -173,7 +169,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     try {
       const buffer = new EdgeBuffer('eval.edge', {
@@ -203,7 +198,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     try {
       const buffer = new EdgeBuffer('eval.edge', {
@@ -231,7 +225,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     try {
       const buffer = new EdgeBuffer('eval.edge', {
@@ -263,7 +256,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     try {
       const tokens = parser.tokenize(
@@ -295,7 +287,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     parser.stack.defineVariable('username')
     const template = dedent`
@@ -340,7 +331,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     const template = dedent`
     Hello {{ username }}
@@ -370,7 +360,6 @@ test.group('Parser', () => {
     const parser = new Parser(tags, undefined, {
       statePropertyName: 'state',
       escapeCallPath: ['ctx', 'escape'],
-      toAttributesCallPath: ['ctx', 'toAttributes'],
     })
     const template = dedent`
       Hello
@@ -417,7 +406,7 @@ test.group('Parser', () => {
       {
         statePropertyName: 'state',
         escapeCallPath: ['ctx', 'escape'],
-        toAttributesCallPath: ['ctx', 'toAttributes'],
+
         claimTag: (name) => {
           if (name === 'hl.modal') {
             return { seekable: true, block: true }
@@ -434,8 +423,8 @@ test.group('Parser', () => {
     )
 
     const template = dedent`
-		@hl.modal({ title: 'foo' })
-		@end
+    @hl.modal({ title: 'foo' })
+    @end
     `
 
     const buffer = new EdgeBuffer('eval.edge', {

@@ -150,13 +150,6 @@ export class Parser {
      */
     if (node.type === 'TemplateLiteral') {
       buffer.outputExpression(stringify(expression), filename, loc.start.line, false)
-    } else if (node.type === 'ObjectExpression') {
-      buffer.outputExpression(
-        stringify(makeCallable(this.options.toAttributesCallPath, [node])),
-        filename,
-        loc.start.line,
-        false
-      )
     } else if (node.type === 'FunctionDeclaration') {
       buffer.outputExpression(stringify(node), filename, loc.start.line, false)
     } else {

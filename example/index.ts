@@ -14,7 +14,6 @@ const filename = 'eval.edge'
 const parser = new Parser({}, new Stack(), {
   statePropertyName: 'state',
   escapeCallPath: 'escape',
-  toAttributesCallPath: 'toAttributes',
 })
 
 const buffer = new EdgeBuffer(filename, { outputVar: 'out', rethrowCallPath: 'reThrow' })

@@ -47,7 +47,6 @@ test.group('Fixtures', () => {
         async: true,
         statePropertyName: 'state',
         escapeCallPath: ['ctx', 'escape'],
-        toAttributesCallPath: ['ctx', 'toAttributes'],
       })
 
       const buffer = new EdgeBuffer(join(dirBasePath, 'index.edge'), {
