@@ -12,6 +12,7 @@ import { Parser } from '../parser/main.js'
 
 export default {
   toStatement(statement: any, filename: string, parser: Parser) {
+    statement.left = transformAst(statement.left, filename, parser)
     statement.right = transformAst(statement.right, filename, parser)
     return statement
   },
