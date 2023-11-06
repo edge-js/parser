@@ -16,19 +16,19 @@ out += "";
 out += "\n";
 out += "\n";
 $lineNumber = 8;
-out += `${ctx.escape(users = [...state.newUsers, ...state.suspendedUsers])}`;
+out += `${ctx.escape(state.users = [...state.newUsers, ...state.suspendedUsers])}`;
 out += "\n";
 out += "";
 out += "\n";
 out += "\n";
 $lineNumber = 11;
-out += `${ctx.escape(users = [...[1, 2, 3], 4])}`;
+out += `${ctx.escape(state.users = [...[1, 2, 3], 4])}`;
 out += "\n";
 out += "";
 out += "\n";
 out += "\n";
 $lineNumber = 14;
-out += `${ctx.escape(cloned = {
+out += `${ctx.escape(state.cloned = {
   ...state.users,
   ...state.suspendedUsers
 })}`;

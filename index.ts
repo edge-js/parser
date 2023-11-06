@@ -7,17 +7,17 @@
  * file that was distributed with this source code.
  */
 
-export { Stack } from './src/Stack'
-export { Parser } from './src/Parser'
-export { EdgeBuffer } from './src/EdgeBuffer'
+export { Stack } from './src/stack/index.js'
+export { Parser } from './src/parser/main.js'
+export { EdgeBuffer } from './src/edge_buffer/index.js'
 
-export * from './src/Contracts'
-import * as ExpressionsList from './src/Expressions'
+import * as ExpressionsList from './src/expressions/index.js'
 
 /**
  * Names of supported expressions
  */
 export const expressions = Object.keys(ExpressionsList).reduce((result, name) => {
+  // @ts-ignore
   result[name] = name
   return result
 }, {}) as { [P in keyof typeof ExpressionsList]: P }

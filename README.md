@@ -1,9 +1,7 @@
-<div align="center"><img src="https://res.cloudinary.com/adonis-js/image/upload/v1620150474/edge-banner_tzmnox.jpg" width="600px"></div>
-
-# Edge Parser
+# edge-parser
 > Parser to convert edge templates to invokable functions
 
-[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![synk-image]][synk-url]
+[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url]
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -58,29 +56,32 @@ and then use it as follows
 import { Parser, EdgeBuffer, Stack } from 'edge-parser'
 
 const filename = 'eval.edge'
-const statePropertyName = 'state'
-const escapeCallPath = 'escape'
-const outputVar = 'out'
-const rethrowCallPath = 'reThrow'
 
 const parser = new Parser({}, new Stack(), {
-  statePropertyName,
-  escapeCallPath,
+  statePropertyName: 'state',
+  escapeCallPath: 'escape',
+  toAttributesCallPath: 'toAttributes',
 })
 
-const buffer = new EdgeBuffer(filename, { outputVar, rethrowCallPath })
+const buffer = new EdgeBuffer(filename, {
+  outputVar: 'out',
+  rethrowCallPath: 'reThrow'
+})
 
 parser
   .tokenize('Hello {{ username }}', { filename })
   .forEach((token) => parser.processToken(token, buffer))
+
+const output = buffer.flush()
+console.log(output)
 ```
 
-- All the first set of `const` declarations are the config values that impacts the compiled output.
-  - `filename` is required to ensure that exceptions stack traces point back to the correct filename.
-  - `statePropertyName` is the variable name from which the values should be accessed. For example: `{{ username }}` will be compiled as `state.username`. Leave it to empty, if state is not nested inside an object.
-  - `escapeCallPath` Reference to the `escape` method for escaping interpolation values. For example: `{{ username }}` will be compiled as `escape(state.username)`. The `escape` method should escape only strings and return the other data types as it is.
-  - `outputVar` is the variable name that holds the output of the compiled template.
-  - `rethrowCallPath` Reference to the `reThrow` method to raise the template exceptions with the current `$filename` and `$lineNumber`. Check the following compiled output to see how this function is called.
+- `filename` is required to ensure that exceptions stack traces point back to the correct filename.
+- `statePropertyName` is the variable name from which the values should be accessed. For example: `{{ username }}` will be compiled as `state.username`. Leave it to empty, if state is not nested inside an object.
+- `escapeCallPath` Reference to the `escape` method for escaping interpolation values. For example: `{{ username }}` will be compiled as `escape(state.username)`. The `escape` method should escape only strings and return the other data types as it is.
+- `toAttributesCallPath`: Reference to the function that will convert an object to HTML attributes.
+- `outputVar` is the variable name that holds the output of the compiled template.
+- `rethrowCallPath` Reference to the `reThrow` method to raise the template exceptions with the current `$filename` and `$lineNumber`. Check the following compiled output to see how this function is called.
 
 **Compiled output**
 
@@ -103,7 +104,7 @@ You can wrap the compiled output inside a function and invoke it as follows
 /**
  * Convert string to a function
  */
-const fn = new Function('', `return function template (state, escape, reThrow) { ${output} }`)()
+const fn = new Function('state, escape, reThrow', output)
 
 /**
  * Template state
@@ -413,8 +414,8 @@ Support for the spread element
 {{ [...users] }}
 ```
 
-[gh-workflow-image]: https://img.shields.io/github/workflow/status/edge-js/parser/test?style=for-the-badge
-[gh-workflow-url]: https://github.com/edge-js/parser/actions/workflows/test.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/edge-js/parser/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/edge-js/parser/actions/workflows/checks.yml "Github action"
 
 [npm-image]: https://img.shields.io/npm/v/edge-parser.svg?style=for-the-badge&logo=npm
 [npm-url]: https://npmjs.org/package/edge-parser 'npm'
@@ -423,6 +424,3 @@ Support for the spread element
 
 [license-url]: LICENSE.md
 [license-image]: https://img.shields.io/github/license/edge-js/lexer?style=for-the-badge
-
-[synk-image]: https://img.shields.io/snyk/vulnerabilities/github/edge-js/parser?label=Synk%20Vulnerabilities&style=for-the-badge
-[synk-url]: https://snyk.io/test/github/edge-js/parser?targetFile=package.json 'synk'
