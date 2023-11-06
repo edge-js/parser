@@ -18,7 +18,7 @@ import type { MustacheToken, TagToken } from 'edge-lexer/types'
 
 import { Parser } from '../src/parser/main.js'
 import { EdgeBuffer } from '../src/edge_buffer/index.js'
-import { normalizeNewLines } from '../test_helpers/index.js'
+import { normalizeNewLines } from '../tests_helpers/index.js'
 
 const tags = {
   if: class If {

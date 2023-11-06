@@ -13,7 +13,7 @@ import dedent from 'dedent-js'
 import { test } from '@japa/runner'
 
 import { EdgeBuffer } from '../src/edge_buffer/index.js'
-import { normalizeNewLines } from '../test_helpers/index.js'
+import { normalizeNewLines } from '../tests_helpers/index.js'
 
 test.group('Buffer', () => {
   test('write line to the output', ({ assert }) => {
