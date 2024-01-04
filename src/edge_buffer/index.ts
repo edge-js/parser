@@ -134,9 +134,7 @@ export class EdgeBuffer {
        * Write catch block
        */
       buffer.push(
-        `${this.#options.rethrowCallPath}(error, ${this.#options.fileNameVar}, ${
-          this.#options.lineVar
-        });`
+        `${this.#options.rethrowCallPath}(error, ${this.#options.fileNameVar}, ${this.#options.lineVar});`
       )
 
       /**
