@@ -17,10 +17,11 @@ export default {
     /**
      * Making the following expressions work
      *
+     * types[type]
      * user[Object.keys(user).find((k) => k === 'id')]
      * [num1, num2, num3].filter((num) => num % 2 === 0)
      */
-    if (statement.property.type !== 'Identifier') {
+    if (statement.computed || statement.property.type !== 'Identifier') {
       statement.property = transformAst(statement.property, filename, parser)
     }
     return statement
