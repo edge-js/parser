@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Parser } from '../parser/main.js'
+import { type Parser } from '../parser/main.js'
 import { makeMemberAccessor } from '../parser/expression_builder/member.js'
 
 export default {

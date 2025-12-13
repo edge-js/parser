@@ -9,8 +9,8 @@
 
 import type { TagToken, LexerTagDefinitionContract, MustacheToken } from 'edge-lexer/types'
 
-import { Parser } from './parser/main.js'
-import { EdgeBuffer } from './edge_buffer/index.js'
+import { type Parser } from './parser/main.js'
+import { type EdgeBuffer } from './edge_buffer/index.js'
 
 /**
  * The parser needs the `compile` method on every tag

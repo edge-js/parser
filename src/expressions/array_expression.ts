@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { Parser } from '../parser/main.js'
+import { type Parser } from '../parser/main.js'
 import { transformAst } from '../parser/transform_ast.js'
 
 export default {

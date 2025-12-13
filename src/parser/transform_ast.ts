@@ -9,7 +9,7 @@
 
 import { EdgeError } from 'edge-error'
 
-import { Parser } from './main.js'
+import { type Parser } from './main.js'
 import * as Expressions from '../expressions/index.js'
 
 /**

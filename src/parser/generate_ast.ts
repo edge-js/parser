@@ -9,9 +9,9 @@
 
 import { EdgeError } from 'edge-error'
 import type { LexerLoc } from 'edge-lexer/types'
-import { parse as acornParse, Token } from 'acorn'
+import { parse as acornParse, type Token } from 'acorn'
 
-import { AcornLoc } from '../types.js'
+import { type AcornLoc } from '../types.js'
 
 /**
  * Patch the acorn loc to point to the correct line number
