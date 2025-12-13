@@ -9,7 +9,7 @@
 
 import './assert_extend.js'
 
-import Youch from 'youch'
+import { Youch } from 'youch'
 import dedent from 'dedent-js'
 import { test } from '@japa/runner'
 import { fileURLToPath } from 'node:url'
@@ -55,10 +55,10 @@ test.group('Parser', () => {
       })
       tokens.forEach((token) => parser.processToken(token, buffer))
     } catch (error) {
-      const json = await new Youch(error, {}).toJSON()
-      assert.equal(json.error.frames[0].file, 'eval.edge')
-      assert.equal(json.error.frames[0].line, 4)
-      assert.equal(json.error.frames[0].column, 2)
+      const json = await new Youch().toJSON(error)
+      assert.equal(json.frames[0].fileName, 'eval.edge')
+      assert.equal(json.frames[0].lineNumber, 4)
+      assert.equal(json.frames[0].columnNumber, 2)
     }
   })
 
@@ -89,10 +89,10 @@ test.group('Parser', () => {
       })
       tokens.forEach((token) => parser.processToken(token, buffer))
     } catch (error) {
-      const json = await new Youch(error, {}).toJSON()
-      assert.equal(json.error.frames[0].file, 'eval.edge')
-      assert.equal(json.error.frames[0].line, 5)
-      assert.equal(json.error.frames[0].column, 16)
+      const json = await new Youch().toJSON(error)
+      assert.equal(json.frames[0].fileName, 'eval.edge')
+      assert.equal(json.frames[0].lineNumber, 5)
+      assert.equal(json.frames[0].columnNumber, 16)
     }
   })
 
@@ -185,10 +185,10 @@ test.group('Parser', () => {
       )
       tokens.forEach((token) => parser.processToken(token, buffer))
     } catch (error) {
-      const json = await new Youch(error, {}).toJSON()
-      assert.equal(json.error.frames[0].file, 'eval.edge')
-      assert.equal(json.error.frames[0].line, 1)
-      assert.equal(json.error.frames[0].column, 14)
+      const json = await new Youch().toJSON(error)
+      assert.equal(json.frames[0].fileName, 'eval.edge')
+      assert.equal(json.frames[0].lineNumber, 1)
+      assert.equal(json.frames[0].columnNumber, 14)
     }
   })
 
@@ -243,10 +243,10 @@ test.group('Parser', () => {
       )
       tokens.forEach((token) => parser.processToken(token, buffer))
     } catch (error) {
-      const json = await new Youch(error, {}).toJSON()
-      assert.equal(json.error.frames[0].file, 'eval.edge')
-      assert.equal(json.error.frames[0].line, 2)
-      assert.equal(json.error.frames[0].column, 7)
+      const json = await new Youch().toJSON(error)
+      assert.equal(json.frames[0].fileName, 'eval.edge')
+      assert.equal(json.frames[0].lineNumber, 2)
+      assert.equal(json.frames[0].columnNumber, 7)
     }
   })
 
@@ -274,10 +274,10 @@ test.group('Parser', () => {
         new EdgeBuffer('eval.edge', { outputVar: 'out', rethrowCallPath: ['ctx', 'reThrow'] })
       )
     } catch (error) {
-      const json = await new Youch(error, {}).toJSON()
-      assert.equal(json.error.frames[0].file, 'bar.edge')
-      assert.equal(json.error.frames[0].line, 1)
-      assert.equal(json.error.frames[0].column, 11)
+      const json = await new Youch().toJSON(error)
+      assert.equal(json.frames[0].fileName, 'bar.edge')
+      assert.equal(json.frames[0].lineNumber, 1)
+      assert.equal(json.frames[0].columnNumber, 11)
     }
   })
 
@@ -347,10 +347,10 @@ test.group('Parser', () => {
       })
       tokens.forEach((token) => parser.processToken(token, buffer))
     } catch (error) {
-      const json = await new Youch(error, {}).toJSON()
-      assert.equal(json.error.frames[0].file, 'eval.edge')
-      assert.equal(json.error.frames[0].line, 3)
-      assert.equal(json.error.frames[0].column, 13)
+      const json = await new Youch().toJSON(error)
+      assert.equal(json.frames[0].fileName, 'eval.edge')
+      assert.equal(json.frames[0].lineNumber, 3)
+      assert.equal(json.frames[0].columnNumber, 13)
     }
   })
 
