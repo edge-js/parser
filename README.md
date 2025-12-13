@@ -34,6 +34,11 @@
   - [FunctionDeclaration](#functiondeclaration)
   - [BlockStatement](#blockstatement)
   - [ChainExpression](#chainexpression)
+  - [NewExpression](#newexpression)
+  - [ReturnStatement](#returnstatement)
+  - [ThisExpression](#thisexpression)
+  - [SpreadElement](#spreadelement)
+  - [UpdateExpression](#updateexpression)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -413,6 +418,16 @@ Support for the spread element
 ```js
 {{ [...users] }}
 ```
+
+
+#### UpdateExpression
+
+Support for update expression
+
+```
+{{ counter++ }}
+```
+
 
 [gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/edge-js/parser/checks.yml?style=for-the-badge
 [gh-workflow-url]: https://github.com/edge-js/parser/actions/workflows/checks.yml "Github action"
