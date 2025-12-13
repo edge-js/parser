@@ -57,7 +57,7 @@
     "acorn": "^8.15.0",
     "astring": "^1.9.0",
     "edge-error": "^4.0.2",
-    "edge-lexer": "^6.0.3",
+    "edge-lexer": "^6.0.4",
     "js-stringify": "^1.0.2"
   },
   "homepage": "https://github.com/edge-js/parser#readme",
