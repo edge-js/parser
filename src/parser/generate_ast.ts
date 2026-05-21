@@ -48,7 +48,7 @@ export function generateAST(jsArg: string, lexerLoc: LexerLoc, filename: string)
     const ast = acornParse(jsArg, acornOptions)
     // @ts-ignore
     return ast['body'][0]
-  } catch (error) {
+  } catch (error: any) {
     /**
      * The error loc is not passed via `onToken` event, so need
      * to patch is here seperately

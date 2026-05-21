@@ -213,7 +213,7 @@ test.group('Parser', () => {
         }
       )
       tokens.forEach((token) => parser.processToken(token, buffer))
-    } catch ({ message, line, col }) {
+    } catch ({ message, line, col }: any) {
       assert.equal(line, 1)
       assert.equal(col, 15)
     }

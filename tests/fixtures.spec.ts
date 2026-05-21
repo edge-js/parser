@@ -11,14 +11,13 @@ import './assert_extend.js'
 
 import { join } from 'node:path'
 import { test } from '@japa/runner'
-import { getDirname } from '@poppinss/utils'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 
 import { Parser } from '../src/parser/main.js'
 import { EdgeBuffer } from '../src/edge_buffer/index.js'
 import { normalizeNewLines, normalizeFilename } from '../tests_helpers/index.js'
 
-const basePath = join(getDirname(import.meta.url), '../fixtures')
+const basePath = join(import.meta.dirname, '../fixtures')
 const tags = {
   if: class If {
     static block = true
