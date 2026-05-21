@@ -3,7 +3,7 @@
   "description": "Parser for edge template engine",
   "version": "9.1.0",
   "engines": {
-    "node": ">=18.16.0"
+    "node": ">=24.0.0"
   },
   "main": "build/index.js",
   "type": "module",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "pretest": "npm run lint",
-    "test": "c8 npm run quick:test",
+    "test": "npm run quick:test",
     "lint": "eslint",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
@@ -44,7 +44,6 @@
     "@types/acorn": "^6.0.4",
     "@types/astring": "^1.7.4",
     "@types/node": "^25.9.1",
-    "c8": "^11.0.0",
     "dedent-js": "^1.0.1",
     "eslint": "^10.4.0",
     "prettier": "^3.8.3",
